@@ -1,0 +1,19 @@
+@charset "utf-8"
+
+@import compass/css3
+@import compass/typography
+
+
+=input-placeholder()
+  $prefixes: "::-webkit-input-" "::-moz-" ":-ms-input-" "::"
+  @for $i from 1 through length($prefixes)
+    $prefix: nth($prefixes, $i)
+    input#{$prefix}placeholder,
+    textarea#{$prefix}placeholder,
+      color: #999
+      opacity: 1
+      transition: opacity 0.25s ease-in-out
+
+    input:focus#{$prefix}placeholder,
+    textarea:focus#{$prefix}placeholder
+      opacity: 0

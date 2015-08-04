@@ -1,0 +1,26 @@
+---
+id: "index"
+layout: "layout"
+title: "新規サイト"
+keywords: ""
+description: ""
+---
+
+/
+/ Index
+/
+svg#lines xmlns="http://www.w3.org/2000/svg" width="600px" height="400px" viewBox="0 0 600 400" data-bind="foreach: lines"
+  a data-bind="attr: { 'xlink:href': '#' + name() }" fill="none"
+    /! ko if: status() !== 'normal'
+    path data-bind="attr: { id: 'path' + id(), d: path, stroke: glow, 'stroke-width': strokeWidth() * 2 }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
+    /! /ko
+    path data-bind="attr: { id: 'path' + id(), d: path, stroke: color, 'stroke-width': strokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
+
+#updates
+  ul data-bind="foreach: updates"
+    li
+      p data-bind="text: title"
+      p data-bind="text: content"
+      p data-bind="text: status.key, style: { color: status.color }"
+
+

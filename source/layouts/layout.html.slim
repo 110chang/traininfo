@@ -1,0 +1,47 @@
+/
+/ Layout
+/
+
+doctype html
+html lang="ja"
+  head
+    meta charset="utf-8"
+    meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"
+    meta name="mobile-web-app-capable" content="yes"
+    title = current_page.data.title || "mysite"
+    meta name="keywords" content="#{current_page.data.keywords}"
+    meta name="description" content="#{current_page.data.description}"
+    meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1"
+    meta name="author" content="yuji ito"
+    /
+    / styles
+    /
+    link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
+    link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'
+    link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700' rel='stylesheet' type='text/css'
+    = NEWLINE
+    = slls stylesheet_link_tag("com", type: nil, media: "all")
+    = NEWLINE
+    - page_styles = get_page_styles(current_page.data.id)
+    - page_styles.each do |v|
+      = slls stylesheet_link_tag(v, type: nil, media: "all")
+      = NEWLINE
+    /
+    / scripts
+    /
+    - data_main = get_data_main(current_page.data.id)
+    = javascript_include_tag "#{data_main}", type: nil
+
+    = NEWLINE
+    /
+    / others
+    /
+    = slls favicon_tag('/img/favicon.ico', rel: "shortcut icon", type: nil)
+  = NEWLINE
+  body id="doc-#{current_page.data.id}"
+    /= partial 'header'
+    article#main
+      = yield
+    = NEWLINE
+    = partial 'footer', locals: { id: current_page.data.id }
+

@@ -1,0 +1,27 @@
+/
+/ Footer partial
+/
+
+- id = locals[:id]
+
+nav.global-nav
+  ul
+    li
+      - link_to "/#/codemit"
+        - if id == "index"
+          i.fa.fa-chevron-up.fa-lg
+        - else
+          i.fa.fa-home.fa-lg
+    li
+      - link_to "/#/about"
+        i.fa.fa-smile-o.fa-lg
+        span.gnav-label
+          | CODE EMITについて
+    - if id != "contact"
+      li.gnav-sub-color
+        - link_to "/contact/index.html"
+          i.fa.fa-envelope
+          span.gnav-label
+            | お問合せ
+
+= NEWLINE
