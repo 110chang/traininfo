@@ -19,6 +19,8 @@ var events = require('events');
 var inherit = require('util').inherits;
 var ko = require('knockout');
 
+var MapControl = require('./mapcontrol');
+
 var skin = {
   normal: {
     thickness: 2,
@@ -60,13 +62,16 @@ function LineVM(o) {
   this.subway = o.color;
   this.path = ko.observable(this.getPath());
   this.strokeWidth = ko.observable(skin.normal.thickness);
+
+  this.map = MapControl();
 }
 inherit(LineVM, events.EventEmitter);
 extend(LineVM.prototype, {
   update: function(status) {
-    console.log(status);
+    //console.log(status);
+    status = status || this.status();
     this.status(status);
-    this.strokeWidth(skin[status].thickness || 1);
+    this.strokeWidth((skin[status].thickness || 1) / this.map.scale());
     this.color(skin[status].color || this.lineColor);
     this.glow(skin[status].glow || null);
   },
@@ -82,14 +87,14 @@ extend(LineVM.prototype, {
     return path.join(' ');
   },
   mouseOverPath: function(e) {
-    console.log(skin[this.status()].thickness);
-    this.strokeWidth(skin.hover.thickness);
+    //console.log(skin[this.status()].thickness);
+    this.strokeWidth(skin.hover.thickness / this.map.scale());
     this.color(this.lineColor);
     this.emit('mouseOver', this);
   },
   mouseOutPath: function(e) {
     //console.log(e);
-    this.strokeWidth(skin[this.status()].thickness || 1);
+    this.strokeWidth((skin[this.status()].thickness || 1) / this.map.scale());
     this.color(skin[this.status()].color || this.lineColor);
   }
 });

@@ -9,12 +9,18 @@ description: ""
 /
 / Index
 /
-svg#lines xmlns="http://www.w3.org/2000/svg" width="600px" height="400px" viewBox="0 0 600 400" data-bind="foreach: lines"
-  a data-bind="attr: { 'xlink:href': '#' + name() }" fill="none"
-    /! ko if: status() !== 'normal'
-    path data-bind="attr: { id: 'path' + id(), d: path, stroke: glow, 'stroke-width': strokeWidth() * 2 }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
-    /! /ko
-    path data-bind="attr: { id: 'path' + id(), d: path, stroke: color, 'stroke-width': strokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
+
+div#routemap
+  svg xmlns="http://www.w3.org/2000/svg" data-bind="attr: { width: width, height: height, viewBox: viewBox }"
+    g data-bind="foreach: lines"
+      a data-bind="attr: { 'xlink:href': '#' + name() }" fill="none"
+        /! ko if: status() !== 'normal'
+        path stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: glow, 'stroke-width': strokeWidth() * 2 }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
+        /! /ko
+        path stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: color, 'stroke-width': strokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
+
+#mapcontrol
+  p data-bind="text: scale"
 
 #updates
   ul data-bind="foreach: updates"

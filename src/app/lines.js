@@ -6,29 +6,30 @@
 var extend = require('extend');
 var events = require('events');
 var inherit = require('util').inherits;
-var ko = require('knockout');
 var ajax = require('superagent');
-var Q = require('q');
-var ko = require('knockout');
 
 var LineVM = require('./line');
+
 var _instance = null;
 
-function LinesVM() {
-  if (_instance instanceof LinesVM) {
+function Lines() {
+  if (_instance instanceof Lines) {
     return _instance;
   }
-  if (!(this instanceof LinesVM)) {
-    return new LinesVM();
+  if (!(this instanceof Lines)) {
+    return new Lines();
   }
+
+  this.data = [];
+
   ajax.get('/lines.json').end(this.loadComplete.bind(this));
 
   _instance = this;
 }
-inherit(LinesVM, events.EventEmitter);
-extend(LinesVM.prototype, {
+inherit(Lines, events.EventEmitter);
+extend(Lines.prototype, {
   loadComplete: function(error, response) {
-    //console.log('LinesVM#loadComplete');
+    //console.log('Lines#loadComplete');
     console.log(response.body);
     var stations = [];
     response.body.forEach(function(line) {
@@ -37,6 +38,9 @@ extend(LinesVM.prototype, {
     this.originalData = response.body;
     this.stations = stations;
     this.emit('loadComplete');
+  },
+  get:function() {
+    return this.data;
   },
   getStations: function() {
     return this.stations;
@@ -47,7 +51,6 @@ extend(LinesVM.prototype, {
   setUp: function(geoCoords) {
     var point;
     var lineVM;
-    var lines = [];
 
     this.originalData.forEach(function(line) {
       line.stations.forEach(function(station) {
@@ -59,30 +62,34 @@ extend(LinesVM.prototype, {
       });
       lineVM = new LineVM(line);
       lineVM.on('mouseOver', this.bringToTop.bind(this));
-      lines.push(lineVM);
+      this.data.push(lineVM);
     }, this);
-
-    this.lines = ko.observableArray(lines);
-    ko.applyBindings(this, document.getElementById('lines'));
   },
   bringToTop: function(e) {
-    this.lines.splice(this.lines.indexOf(e), 1);
-    this.lines.push(e);
+    this.data.splice(this.data.indexOf(e), 1);
+    this.data.push(e);
+    this.emit('changed');
+  },
+  update: function() {
+    this.data.forEach(function(line) {
+      line.update();
+    }, this);
   },
   applyUpdates: function(updates) {
-    console.log(updates);
-    var _self = this;
-    ko.utils.arrayForEach(this.lines(), function(line) {
+    //console.log(updates);
+    this.data.forEach(function(line) {
       updates.forEach(function(update) {
-        console.log(update.title + '===' + line.goo_key);
+        //console.log(update.title + '===' + line.goo_key);
         if (update.title === line.goo_key) {
-          console.log(update);
+          //console.log(update);
           line.update(update.status.key);
-          _self.bringToTop(line);
+          this.bringToTop(line);
         }
-      });
-    });
+      }, this);
+    }, this);
+
+    this.emit('changed');
   }
 });
 
-module.exports = LinesVM;
+module.exports = Lines;
