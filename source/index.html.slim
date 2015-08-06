@@ -14,10 +14,10 @@ div#routemap
   svg xmlns="http://www.w3.org/2000/svg" data-bind="attr: { width: width, height: height, viewBox: viewBox }"
     g data-bind="foreach: lines"
       a data-bind="attr: { 'xlink:href': '#' + name() }" fill="none"
-        /! ko if: status() !== 'normal'
-        path stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: glow, 'stroke-width': strokeWidth() * 2 }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
+        /! ko if: hasStatus()
+        path.subline stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: subColor, 'stroke-width': subStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
         /! /ko
-        path stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: color, 'stroke-width': strokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
+        path.mainline stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
 
 #mapcontrol
   p data-bind="text: scale"

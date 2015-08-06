@@ -13,6 +13,20 @@ var Vector = require('../geom/vector');
 
 var _instance = null;
 
+var DRAG_START_TRIGGER = 'mousedown';
+var DRAG_MOVE_TRIGGER = 'mousemove';
+var DRAG_END_TRIGGER = 'mouseup';
+
+if ('ontouchstart' in document.documentElement) {
+  DRAG_START_TRIGGER = 'touchstart';
+  DRAG_MOVE_TRIGGER = 'touchmove';
+  DRAG_END_TRIGGER = 'touchend';
+}
+
+function isSVGElement(el) {
+  return el.toString() === '[object SVGSVGElement]';
+}
+
 function MapControl() {
   if (_instance instanceof MapControl) {
     return _instance;
@@ -36,8 +50,8 @@ function MapControl() {
   this.M = null;
 
   //this.$el.on('click', this.onClick.bind(this));
-  this.$el.on('mousedown', this.onMouseDown.bind(this));
-  this.$el.on('mouseup', this.onMouseUp.bind(this));
+  this.$el.on(DRAG_START_TRIGGER, this.onMouseDown.bind(this));
+  this.$el.on(DRAG_END_TRIGGER, this.onMouseUp.bind(this));
 
   ko.applyBindings(this, document.getElementById('mapcontrol'));
 
@@ -58,14 +72,17 @@ extend(MapControl.prototype, {
     this.scale(this.appHeight / this.viewHeight);
     this.emit('boundsChanged');
   },
+  getScale: function() {
+    return this.scale();
+  },
   getViewBox: function() {
     return [this.x, this.y, this.viewWidth, this.viewHeight].join(' ');
   },
   startDrag: function() {
-    this.$el.on('mousemove', this.onMouseMove.bind(this));
+    this.$el.on(DRAG_MOVE_TRIGGER, this.onMouseMove.bind(this));
   },
   stopDrag: function() {
-    this.$el.off('mousemove');
+    this.$el.off(DRAG_MOVE_TRIGGER);
   },
   onClick: function(e) {
     if (this.x === 0) {
@@ -84,9 +101,8 @@ extend(MapControl.prototype, {
   },
   onMouseUp: function(e) {
     //console.log('MapControl#onMouseUp');
-    //console.log(e);
     var D = (new Vector(e.clientX, e.clientY)).sub(this.M);
-    if (D.magnitude < 2) {
+    if (isSVGElement(e.target) && D.magnitude < 2) {
       if (this.x === 0) {
         this.setBounds(150, 100, 300, 200);
       } else {

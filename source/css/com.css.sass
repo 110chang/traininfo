@@ -55,6 +55,16 @@ input.placeholder
   height: 100%
   position: relative
 
+@keyframes dash-anim
+  from
+    stroke-dashoffset: 0
+  to
+    stroke-dashoffset: 12px
+
+#routemap
+  .subline-anim
+    stroke-dasharray: 6px 6px
+    animation: 'dash-anim' 1s linear 0s infinite
 
 /* ============================
  * 
@@ -63,7 +73,6 @@ input.placeholder
  * ============================ */
 
 @media screen and (min-width:767px)
-    
 
 
 // EOF

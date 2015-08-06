@@ -12,6 +12,7 @@ name: "JR中央線（快速）"
 stations: Array[32]
 subway: "false"
 */
+
 var $ = require('jquery');
 
 var extend = require('extend');
@@ -20,60 +21,63 @@ var inherit = require('util').inherits;
 var ko = require('knockout');
 
 var MapControl = require('./mapcontrol');
-
-var skin = {
-  normal: {
-    thickness: 2,
-    color: '#CCC'
-  },
-  hover: {
-    thickness: 4
-  },
-  info: {
-    thickness: 2,
-    glow: '#9C3'
-  },
-  delay: {
-    thickness: 2,
-    glow: '#FC3'
-  },
-  suspend: {
-    thickness: 2,
-    glow: '#F66'
-  },
-  restart: {
-    thickness: 2,
-    glow: '#09C'
-  }
-};
+var Status = require('./status');
+var status = Status();
 
 function LineVM(o) {
   events.EventEmitter.call(this);
 
-  this.status = ko.observable('normal');
-  this.lineColor = o.color;
-  this.color = ko.observable(skin.normal.color);
-  this.glow = ko.observable();
+  this.map = MapControl();
+
+  this.status = ko.observable(status.decode(0));
+  this.color = o.color;
   this.goo_key = o.goo_key;
   this.id = ko.observable(o.id);
   this.loop = o.loop === 'true' ? true : false;
   this.name = ko.observable(o.name);
   this.stations = o.stations;
-  this.subway = o.color;
+  this.subway = o.subway;
   this.path = ko.observable(this.getPath());
-  this.strokeWidth = ko.observable(skin.normal.thickness);
+  this.selected = ko.observable(false);
 
-  this.map = MapControl();
+  // skins
+  this.mainColor = ko.computed(this.getMainStrokeColor, this);
+  this.mainStrokeWidth = ko.computed(this.getMainStrokeWidth, this);
+  this.subColor = ko.computed(this.getSubStrokeColor, this);
+  this.subStrokeWidth = ko.computed(this.getSubStrokeWidth, this);
 }
 inherit(LineVM, events.EventEmitter);
 extend(LineVM.prototype, {
+  isSelected: function() {
+    return this.selected();
+  },
+  hasStatus: function() {
+    return this.status().key !== 'normal';
+  },
   update: function(status) {
-    //console.log(status);
     status = status || this.status();
     this.status(status);
-    this.strokeWidth((skin[status].thickness || 1) / this.map.scale());
-    this.color(skin[status].color || this.lineColor);
-    this.glow(skin[status].glow || null);
+  },
+  getMainStrokeColor: function() {
+    if (this.isSelected() || this.hasStatus()) {
+      return this.color;
+    }
+    return '#CCC';
+  },
+  getMainStrokeWidth: function() {
+    if (this.isSelected()) {
+      return 6 / this.map.getScale();
+    }
+    if (this.hasStatus()) {
+      return 4 / this.map.getScale();
+    }
+    return 2 / this.map.getScale();
+  },
+  getSubStrokeColor: function() {
+    return this.status().color;
+  },
+  getSubStrokeWidth: function() {
+    return this.getMainStrokeWidth() + 4 / this.map.getScale();
   },
   getPath: function() {
     var path = this.stations.map(function(station, i) {
@@ -84,18 +88,21 @@ extend(LineVM.prototype, {
     if (this.loop) {
       path.push('Z');
     }
+    if (!path || path.length === 0) {
+      path = ['M0,0'];
+    }
     return path.join(' ');
   },
   mouseOverPath: function(e) {
-    //console.log(skin[this.status()].thickness);
-    this.strokeWidth(skin.hover.thickness / this.map.scale());
-    this.color(this.lineColor);
+    //console.log('LineVM#mouseOverPath');
+    this.selected(true);
     this.emit('mouseOver', this);
   },
   mouseOutPath: function(e) {
-    //console.log(e);
-    this.strokeWidth((skin[this.status()].thickness || 1) / this.map.scale());
-    this.color(skin[this.status()].color || this.lineColor);
+    //console.log('LineVM#mouseOutPath');
+    this.selected(false);
+    //this.strokeWidth((skin[this.status()].thickness || 1) / this.map.scale());
+    //this.color(skin[this.status()].color || this.lineColor);
   }
 });
 

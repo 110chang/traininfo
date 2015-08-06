@@ -74,21 +74,24 @@ extend(Lines.prototype, {
     this.data.forEach(function(line) {
       line.update();
     }, this);
-  },
+  },  
   applyUpdates: function(updates) {
     //console.log(updates);
     this.data.forEach(function(line) {
       updates.forEach(function(update) {
         //console.log(update.title + '===' + line.goo_key);
-        if (update.title === line.goo_key) {
+        if (update.title.match(line.goo_key)) {
           //console.log(update);
-          line.update(update.status.key);
+          line.update(update.status);
           this.bringToTop(line);
         }
       }, this);
     }, this);
 
     this.emit('changed');
+  },
+  onAfterRender: function(e) {
+    console.log(e);
   }
 });
 
