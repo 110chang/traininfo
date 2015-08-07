@@ -22,6 +22,7 @@ html, body
   height: 100%
 
 body
+  overflow: hidden
   width: 100%
   height: 100%
   font-size: 100%
@@ -62,9 +63,15 @@ input.placeholder
     stroke-dashoffset: 12px
 
 #routemap
+  position: fixed
+  left: 0
+  top: 0
   .subline-anim
     stroke-dasharray: 6px 6px
     animation: 'dash-anim' 1s linear 0s infinite
+
+#updates
+  display: none
 
 /* ============================
  * 

@@ -22,14 +22,14 @@ var ko = require('knockout');
 
 var MapControl = require('./mapcontrol');
 var Status = require('./status');
-var status = Status();
+Status = Status();
 
 function LineVM(o) {
   events.EventEmitter.call(this);
 
   this.map = MapControl();
 
-  this.status = ko.observable(status.decode(0));
+  this.status = ko.observable(Status.decode(0));
   this.color = o.color;
   this.goo_key = o.goo_key;
   this.id = ko.observable(o.id);
@@ -53,10 +53,6 @@ extend(LineVM.prototype, {
   },
   hasStatus: function() {
     return this.status().key !== 'normal';
-  },
-  update: function(status) {
-    status = status || this.status();
-    this.status(status);
   },
   getMainStrokeColor: function() {
     if (this.isSelected() || this.hasStatus()) {
@@ -92,6 +88,10 @@ extend(LineVM.prototype, {
       path = ['M0,0'];
     }
     return path.join(' ');
+  },
+  update: function(status) {
+    status = status || this.status();
+    this.status(status);
   },
   mouseOverPath: function(e) {
     //console.log('LineVM#mouseOverPath');

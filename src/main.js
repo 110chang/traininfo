@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     return dfd.promise;
   })).then(function() {
     //console.log(lines.getStations());
-    geoCoords = new GeoCoords(600, 400, lines.getStations());
+    geoCoords = new GeoCoords(window.innerWidth, window.innerHeight, lines.getStations());
     geoCoords.setOffset(10, 10);
     lines.setUp(geoCoords);
     lines.applyUpdates(updates.getUpdates());
