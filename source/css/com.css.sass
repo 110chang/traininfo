@@ -70,6 +70,52 @@ input.placeholder
     stroke-dasharray: 6px 6px
     animation: 'dash-anim' 1s linear 0s infinite
 
+#mapcontrol
+  position: fixed
+  z-index: 9999
+  width: 100%
+
+.scale-slider
+  width: 300px
+  height: 20px
+  background: #FCC
+  text-align: center
+  line-height: 20px
+  &>span
+    display: inline-block
+    vertical-align: middle
+
+.scale-slider-groove
+  width: 240px
+  height: 1px
+  background: #CCC
+
+.scale-slider-icon
+  width: 30px
+  line-height: 16px
+  background: #FFC
+
+.scale-slider-ico-wide
+  margin-top: -0.125em
+
+.scale-slider-ico-tele
+  margin-top: -0.25em
+  i
+    font-size: 0.8rem
+    line-height: 100%
+    letter-spacing: -0.25em
+  i:first-child, i:last-child
+    font-size: 0.5rem
+
+.scale-slider-handle
+  position: absolute
+  width: 20px
+  height: 20px
+  left: 30px
+  background: #000
+  border-radius: 2px
+  cursor: pointer
+
 #updates
   display: none
 

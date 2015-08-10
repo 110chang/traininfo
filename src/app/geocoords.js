@@ -14,19 +14,31 @@ var LatLng = require('./latlng');
 var Point = require('../geom/point');
 var Rectangle = require('../geom/rectangle');
 
-function GeoCoords(appWidth, appHeight, points) {
+var _instance = null;
+
+function GeoCoords(appWidth, appHeight) {
+  if (_instance instanceof GeoCoords) {
+    return _instance;
+  }
+  if (!(this instanceof GeoCoords)) {
+    return new GeoCoords();
+  }
   this.appWidth = appWidth;
   this.appHeight = appHeight;
   this.home = new LatLng(35.685326, 139.7531); // ホームポジション
   this.coords = new LatLng(this.home);
   this.offset = new Point(0, 0);
-  
-  this._getEdge(points);
-  this._getScale();
-  this._getBounds();
+  this.bounds = null;
+
+  _instance = this;
 }
 inherit(GeoCoords, events.EventEmitter);
 extend(GeoCoords.prototype, {
+  initialize: function(points) {
+    this._getEdge(points);
+    this._getScale();
+    this._getBounds();
+  },
   resize: function(appWidth, appHeight) {
     this.appWidth = appWidth;
     this.appHeight = appHeight;

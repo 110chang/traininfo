@@ -21,6 +21,15 @@ div#routemap
 
 #mapcontrol
   p data-bind="text: scale"
+  .scale-slider
+    span.scale-slider-icon.scale-slider-ico-wide
+      i.fa.fa-tree
+    span.scale-slider-groove
+    span.scale-slider-handle data-bind="style: { left: handleLeft }"
+    span.scale-slider-icon.scale-slider-ico-tele
+      i.fa.fa-tree
+      i.fa.fa-tree
+      i.fa.fa-tree
 
 #updates
   ul data-bind="foreach: updates"

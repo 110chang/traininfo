@@ -10,18 +10,12 @@ var ko = require('knockout');
 var $ = require('jQuery');
 
 var Vector = require('../geom/vector');
+var Handle = require('./mapcontrol/handle');
+var GeoCoords = require('../app/geocoords');
 
 var _instance = null;
 
-var DRAG_START_TRIGGER = 'mousedown';
-var DRAG_MOVE_TRIGGER = 'mousemove';
-var DRAG_END_TRIGGER = 'mouseup';
-
-if ('ontouchstart' in document.documentElement) {
-  DRAG_START_TRIGGER = 'touchstart';
-  DRAG_MOVE_TRIGGER = 'touchmove';
-  DRAG_END_TRIGGER = 'touchend';
-}
+var HANDLE_INIT_LEFT = 30;
 
 var abs = Math.abs;
 var floor = Math.floor;
@@ -44,29 +38,35 @@ function MapControl() {
   if (!(this instanceof MapControl)) {
     return new MapControl();
   }
+  this.handle = new Handle();
+  this.handle.on('handleMove', this.onHandleMove.bind(this));
+
   this.$el = $('#routemap');
   this.appWidth = window.innerWidth;
   this.appHeight = window.innerHeight;
+  this.svgWidth = window.innerWidth;
+  this.svgHeight = window.innerHeight;
   this.x = 0;
   this.y = 0;
   this.xMem = 0;
   this.yMem = 0;
-  this.xMin = 0;
-  this.yMin = 0;
   this.xMax = 0;
   this.yMax = 0;
-  this.viewWidth = this.appWidth;
-  this.viewHeight = this.appHeight;
+  this.viewWidth = window.innerWidth;
+  this.viewHeight = window.innerHeight;
   this.scale = ko.observable(1);
+  this.handleLeft = ko.computed(function() {
+    return 240 - this.scale() * 24 + HANDLE_INIT_LEFT + 'px';
+  }, this);
 
   this.M = null;
 
   if (isToushDevice) {
-    this.$el.on('touchstart', this.onTouchStart.bind(this));
-    this.$el.on('touchend', this.onTouchEnd.bind(this));
+    this.$el.on('touchstart._MapControl', this.onTouchStart.bind(this));
+    this.$el.on('touchend._MapControl', this.onTouchEnd.bind(this));
   } else {
-    this.$el.on('mousedown', this.onMouseDown.bind(this));
-    this.$el.on('mouseup', this.onMouseUp.bind(this));
+    this.$el.on('mousedown._MapControl', this.onMouseDown.bind(this));
+    this.$el.on('mouseup._MapControl', this.onMouseUp.bind(this));
     this.$el.on('wheel._MapControl', this.onMouseWheel.bind(this));
   }
   //this.$el.on('click', this.onClick.bind(this));
@@ -77,6 +77,13 @@ function MapControl() {
 }
 inherit(MapControl, events.EventEmitter);
 extend(MapControl.prototype, {
+  initialize: function() {
+    console.log(GeoCoords().bounds);
+    var bounds = GeoCoords().bounds;
+    this.svgWidth = bounds.width;
+    this.svgHeight = bounds.height;
+    this.setBounds(-bounds.x, -bounds.y, this.viewWidth, this.viewHeight);
+  },
   expand: function(scale) {
     if (scale < 1) {
       scale = 1;
@@ -92,13 +99,16 @@ extend(MapControl.prototype, {
     this.scale(scale);
   },
   getBounds: function() {
-    return [this.appWidth, this.appHeight, this.getViewBox()];
+    return [this.svgWidth, this.svgHeight, this.getViewBox()];
   },
   setBounds: function(x, y, w, h) {
     this.viewWidth = w;
     this.viewHeight = h;
-    this.xMax = this.appWidth - this.viewWidth;
-    this.yMax = this.appHeight - this.viewHeight;
+    this.xMax = this.svgWidth - this.viewWidth;
+    this.yMax = this.svgHeight - this.viewHeight;
+    console.log('%s,%s', this.svgWidth, this.svgHeight);
+    console.log('%s,%s', this.viewWidth, this.viewHeight);
+    console.log('%s,%s', this.xMax, this.yMax);
     if (x < 0) {
       x = 0;
     } else if (this.xMax < x) {
@@ -115,6 +125,12 @@ extend(MapControl.prototype, {
   },
   getScale: function() {
     return this.scale();
+  },
+  handleLeftToScale: function(left) {
+    return (HANDLE_INIT_LEFT + 240 - left) / 24;
+  },
+  scaleToHandleLeft: function() {
+    return 240 - this.scale() * 24 + HANDLE_INIT_LEFT;
   },
   getViewBox: function() {
     return [this.x, this.y, this.viewWidth, this.viewHeight].join(' ');
@@ -136,6 +152,7 @@ extend(MapControl.prototype, {
     D = D.scalarMultiply(1 / this.scale());
     if (isSVGElement(e.target) && D.magnitude < 2) {
       this.expand(precision(this.scale() + 1, 2));
+      this.setBounds(this.M.x, this.M.y, this.viewWidth, this.viewHeight);
     }
     this.$el.off('mousemove._MapControl');
   },
@@ -205,6 +222,11 @@ extend(MapControl.prototype, {
     var touches = e.originalEvent.touches;
     var D = this.getPinchDestination(touches) - this.M;
     this.expand(precision(this.scaleMem + D * 0.01, 2));
+  },
+  onHandleMove: function(data) {
+    console.log('MapControl#onHandleMove');
+    this.scale(this.handleLeftToScale(data.x));
+    this.expand(this.scale());
   }
 });
 
