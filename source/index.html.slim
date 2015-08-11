@@ -20,16 +20,22 @@ div#routemap
         path.mainline stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
 
 #mapcontrol
-  p data-bind="text: scale"
+  /p data-bind="text: scale"
   .scale-slider
     span.scale-slider-icon.scale-slider-ico-wide
       i.fa.fa-tree
     span.scale-slider-groove
     span.scale-slider-handle data-bind="style: { left: handleLeft }"
+      i.fa.fa-bars
     span.scale-slider-icon.scale-slider-ico-tele
       i.fa.fa-tree
       i.fa.fa-tree
       i.fa.fa-tree
+    /! ko if: nowScaleChange
+    span.scale-silder-display
+      | &times;
+      span.scale-silder-display-amount data-bind="text: scale"
+    /! /ko
 
 #updates
   ul data-bind="foreach: updates"

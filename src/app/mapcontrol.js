@@ -16,17 +16,21 @@ var GeoCoords = require('../app/geocoords');
 var _instance = null;
 
 var HANDLE_INIT_LEFT = 30;
+var HANDLE_WIDTH = 24;
+var SLIDER_WIDTH = 240;
 
 var abs = Math.abs;
 var floor = Math.floor;
+var sqrt = Math.sqrt;
 var pow = Math.pow;
-var isToushDevice = 'ontouchstart' in document.documentElement;
 
-function precision(n, p) {/* number, precision */
+function trunc(n, p) {/* number, trunc */
   var pp = pow(10, p);
   return floor(n * pp) / pp;
 }
-
+function isToushDevice() {
+  return 'ontouchstart' in document.documentElement;
+}
 function isSVGElement(el) {
   return el.toString() === '[object SVGSVGElement]';
 }
@@ -42,26 +46,31 @@ function MapControl() {
   this.handle.on('handleMove', this.onHandleMove.bind(this));
 
   this.$el = $('#routemap');
+  // Bounds of window
   this.appWidth = window.innerWidth;
   this.appHeight = window.innerHeight;
+  // Bounds of SVG content
   this.svgWidth = window.innerWidth;
   this.svgHeight = window.innerHeight;
-  this.x = 0;
-  this.y = 0;
-  this.xMem = 0;
-  this.yMem = 0;
-  this.xMax = 0;
-  this.yMax = 0;
+  // Bounds of SVG ViewBox
   this.viewWidth = window.innerWidth;
   this.viewHeight = window.innerHeight;
+  this.x = 0;
+  this.y = 0;
+  this.xMax = 0;
+  this.yMax = 0;
+  this.mem = {};
+
+  // ko variables
   this.scale = ko.observable(1);
   this.handleLeft = ko.computed(function() {
-    return 240 - this.scale() * 24 + HANDLE_INIT_LEFT + 'px';
+    return this.scaleToHandleLeft() + 'px';
   }, this);
+  this.nowScaleChange = ko.observable(false);
+  ko.applyBindings(this, document.getElementById('mapcontrol'));
 
-  this.M = null;
-
-  if (isToushDevice) {
+  // Bind events
+  if (isToushDevice()) {
     this.$el.on('touchstart._MapControl', this.onTouchStart.bind(this));
     this.$el.on('touchend._MapControl', this.onTouchEnd.bind(this));
   } else {
@@ -69,9 +78,6 @@ function MapControl() {
     this.$el.on('mouseup._MapControl', this.onMouseUp.bind(this));
     this.$el.on('wheel._MapControl', this.onMouseWheel.bind(this));
   }
-  //this.$el.on('click', this.onClick.bind(this));
-
-  ko.applyBindings(this, document.getElementById('mapcontrol'));
 
   _instance = this;
 }
@@ -83,6 +89,15 @@ extend(MapControl.prototype, {
     this.svgWidth = bounds.width;
     this.svgHeight = bounds.height;
     this.setBounds(-bounds.x, -bounds.y, this.viewWidth, this.viewHeight);
+  },
+  memory: function(a, b, c, d) {
+    if (a != null && b != null && c != null && d != null) {
+      this.mem.V = new Vector(a, b);// View box point
+      this.mem.P = new Vector(c, d);// Click start point
+    } else {
+      this.mem.d = a;
+      this.mem.scale = b;
+    }
   },
   expand: function(scale) {
     if (scale < 1) {
@@ -98,6 +113,12 @@ extend(MapControl.prototype, {
     this.setBounds(this.x + transX, this.y + transY, newWidth, newHeight);
     this.scale(scale);
   },
+  translate: function(x, y) {
+    var V = this.getTranslateVector(x, y);
+    var destX = this.mem.V.x - V.x;
+    var destY = this.mem.V.y - V.y;
+    this.setBounds(destX, destY, this.viewWidth, this.viewHeight);
+  },
   getBounds: function() {
     return [this.svgWidth, this.svgHeight, this.getViewBox()];
   },
@@ -106,9 +127,6 @@ extend(MapControl.prototype, {
     this.viewHeight = h;
     this.xMax = this.svgWidth - this.viewWidth;
     this.yMax = this.svgHeight - this.viewHeight;
-    console.log('%s,%s', this.svgWidth, this.svgHeight);
-    console.log('%s,%s', this.viewWidth, this.viewHeight);
-    console.log('%s,%s', this.xMax, this.yMax);
     if (x < 0) {
       x = 0;
     } else if (this.xMax < x) {
@@ -126,108 +144,119 @@ extend(MapControl.prototype, {
   getScale: function() {
     return this.scale();
   },
+  getScaleText: function() {
+    return 'x' + this.scale();
+  },
   handleLeftToScale: function(left) {
-    return (HANDLE_INIT_LEFT + 240 - left) / 24;
+    return (HANDLE_INIT_LEFT + SLIDER_WIDTH - left) / HANDLE_WIDTH;
   },
   scaleToHandleLeft: function() {
-    return 240 - this.scale() * 24 + HANDLE_INIT_LEFT;
+    return HANDLE_INIT_LEFT + SLIDER_WIDTH - this.scale() * HANDLE_WIDTH;
   },
   getViewBox: function() {
     return [this.x, this.y, this.viewWidth, this.viewHeight].join(' ');
   },
+  getTranslateVector: function(x, y) {
+    return (new Vector(x, y)).sub(this.mem.P).scalarMultiply(1 / this.scale());
+  },
   getPinchDestination: function(touches) {
-    var V = new Vector(touches[1].clientX - touches[0].clientX, touches[1].clientY - touches[0].clientY);
-    return V.magnitude;
+    var x = touches[1].clientX - touches[0].clientX;
+    var y = touches[1].clientY - touches[0].clientY;
+    return sqrt(x * x + y * y);
   },
   onMouseDown: function(e) {
-    console.log('MapControl#onMouseDown');
-    this.xMem = this.x;
-    this.yMem = this.y;
-    this.M = new Vector(e.clientX, e.clientY);
+    //console.log('MapControl#onMouseDown');
+    this.memory(this.x, this.y, e.clientX, e.clientY);
     this.$el.on('mousemove._MapControl', this.onMouseMove.bind(this));
   },
   onMouseUp: function(e) {
-    console.log('MapControl#onMouseUp');
-    var D = (new Vector(e.clientX, e.clientY)).sub(this.M);
-    D = D.scalarMultiply(1 / this.scale());
-    if (isSVGElement(e.target) && D.magnitude < 2) {
-      this.expand(precision(this.scale() + 1, 2));
-      this.setBounds(this.M.x, this.M.y, this.viewWidth, this.viewHeight);
+    //console.log('MapControl#onMouseUp');
+    var V = this.getTranslateVector(e.clientX, e.clientY);
+
+    // マウスダウン位置とマウスアップ位置が近い場合はクリック扱い
+    if (isSVGElement(e.target) && V.magnitude < 2) {
+      this.expand(trunc(this.scale() + 1, 2));
+      this.setBounds(this.mem.V.x, this.mem.V.y, this.viewWidth, this.viewHeight);
+      this.delayScaleChange();
+    } else {
+      this.translate(e.clientX, e.clientY);
     }
     this.$el.off('mousemove._MapControl');
   },
   onMouseMove: function(e) {
-    console.log('MapControl#onMouseMove');
-    var D = (new Vector(e.clientX, e.clientY)).sub(this.M);
-    D = D.scalarMultiply(1 / this.scale());
-    var destX = this.xMem - D.x;
-    var destY = this.yMem - D.y;
-    this.setBounds(destX, destY, this.viewWidth, this.viewHeight);
+    //console.log('MapControl#onMouseMove');
+    this.translate(e.clientX, e.clientY);
   },
   onMouseWheel: function(e) {
-    //console.log('%s,%s', e.originalEvent.deltaX, e.originalEvent.deltaY);
+    //console.log('MapControl#onMouseWheel');
     e.preventDefault();
-    var dx = e.originalEvent.deltaX;
     var dy = e.originalEvent.deltaY;
-    var ix = dx * dx > 0 ? dx / abs(dx) : 0;
     var iy = dy * dy > 0 ? dy / abs(dy) : 0;
-    console.log('%s,%s', ix, iy);
-    this.expand(precision(this.scale() - iy * 0.1, 2));
+    this.expand(trunc(this.scale() - iy * 0.2, 2));
+    this.delayScaleChange();
 
     return false;
   },
   onTouchStart: function(e) {
-    console.log('MapControl#onTouchStart');
+    //console.log('MapControl#onTouchStart');
     var touches = e.originalEvent.touches;
     if (touches.length === 1) {
-      this.xMem = this.x;
-      this.yMem = this.y;
-      this.M = new Vector(touches[0].clientX, touches[0].clientY);
+      this.memory(this.x, this.y, touches[0].clientX, touches[0].clientY);
       this.$el.on('touchmove._MapControl', this.onTouchMove.bind(this));
     } else if (touches.length === 2) {
-      this.scaleMem = this.scale();
-      this.M = this.getPinchDestination(touches);
+      this.memory(this.getPinchDestination(touches), this.scale());
       this.$el.on('touchmove._MapControl', this.onPinchMove.bind(this));
     }
   },
   onTouchEnd: function(e) {
-    console.log('MapControl#onTouchEnd');
+    //console.log('MapControl#onTouchEnd');
     var touches = e.originalEvent.changedTouches;
-    console.log(this.M);
     if (touches.length === 1) {
-      D = (new Vector(touches[0].clientX, touches[0].clientY)).sub(this.M);
-      D = D.scalarMultiply(1 / this.scale());
-      if (isSVGElement(e.target) && D.magnitude < 2) {
-        this.expand(precision(this.scale() + 1, 2));
+      var V = this.getTranslateVector(touches[0].clientX, touches[0].clientY);
+      if (isSVGElement(e.target) && V.magnitude < 2) {
+        this.expand(trunc(this.scale() + 1, 2));
+        this.setBounds(this.mem.V.x, this.mem.V.y, this.viewWidth, this.viewHeight);
+        this.delayScaleChange();
+      } else {
+        this.translate(touches[0].clientX, touches[0].clientY);
       }
       this.$el.off('touchmove._MapControl');
     } else if (touches.length === 2) {
-      D = this.getPinchDestination(touches) - this.M;
-      this.expand(precision(this.scaleMem + D * 0.01, 2));
+      var d = this.getPinchDestination(touches) - this.mem.d;
+      this.expand(trunc(this.mem.scale + d * 0.01, 2));
       this.$el.off('touchmove._MapControl');
     }
   },
   onTouchMove: function(e) {
-    console.log('MapControl#onTouchMove');
+    //console.log('MapControl#onTouchMove');
     var touches = e.originalEvent.touches;
-    console.log(this.M);
-    var D = (new Vector(touches[0].clientX, touches[0].clientY)).sub(this.M);
-    D = D.scalarMultiply(1 / this.scale());
-    var destX = this.xMem - D.x;
-    var destY = this.yMem - D.y;
-    this.setBounds(destX, destY, this.viewWidth, this.viewHeight);
+    this.translate(touches[0].clientX, touches[0].clientY);
   },
   onPinchMove: function(e) {
-    console.log('MapControl#onPinchMove');
+    //console.log('MapControl#onPinchMove');
     var touches = e.originalEvent.touches;
-    var D = this.getPinchDestination(touches) - this.M;
-    this.expand(precision(this.scaleMem + D * 0.01, 2));
+    var d = this.getPinchDestination(touches) - this.mem.d;
+    this.expand(trunc(this.mem.scale + d * 0.01, 2));
+    this.delayScaleChange();
   },
   onHandleMove: function(data) {
-    console.log('MapControl#onHandleMove');
-    this.scale(this.handleLeftToScale(data.x));
+    //console.log('MapControl#onHandleMove');
+    this.scale(trunc(this.handleLeftToScale(data.x), 2));
     this.expand(this.scale());
-  }
+    this.delayScaleChange();
+  },
+  delayScaleChange: (function() {
+    var timer = null;
+    return function() {
+      if (timer) {
+        this.nowScaleChange(true);
+        clearTimeout(timer);
+      }
+      timer = setTimeout(function() {
+        this.nowScaleChange(false);
+      }.bind(this), 500);
+    };
+  }())
 });
 
 module.exports = MapControl;

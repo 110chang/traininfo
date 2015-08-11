@@ -23,18 +23,17 @@ function Handle() {
     return new Handle();
   }
   this.$el = $('.scale-slider-handle');
-  console.log( this.$el);
+  this.$parent =  this.$el.parent();
   this.M = null;
   this.N = null;
 
   if (isToushDevice) {
     this.$el.on('touchstart._MapControlHandle', this.onTouchStart.bind(this));
-    this.$el.on('touchend._MapControlHandle', this.onTouchEnd.bind(this));
+    $doc.on('touchend._MapControlHandle', this.onTouchEnd.bind(this));
   } else {
     this.$el.on('mousedown._MapControlHandle', this.onMouseDown.bind(this));
     $doc.on('mouseup._MapControlHandle', this.onMouseUp.bind(this));
   }
-  this.left = ko.observable(0);
 }
 inherit(Handle, events.EventEmitter);
 extend(Handle.prototype, {
@@ -44,7 +43,7 @@ extend(Handle.prototype, {
 
     $doc.on('mousemove._MapControlHandle', this.onMouseMove.bind(this));
     this.M = new Vector(e.clientX, e.clientY);
-    this.N = new Vector(this.$el.offset().left, this.$el.offset().top);
+    this.N = new Vector(this.$el.position().left, this.$el.position().top);
 
     return false;
   },
@@ -70,7 +69,7 @@ extend(Handle.prototype, {
     var touch = e.originalEvent.touches[0];
     $doc.on('touchmove._MapControlHandle', this.onTouchMove.bind(this));
     this.M = new Vector(touch.clientX, touch.clientY);
-    this.N = new Vector(this.$el.offset().left, this.$el.offset().top);
+    this.N = new Vector(this.$el.position().left, this.$el.position().top);
 
     return false;
   },

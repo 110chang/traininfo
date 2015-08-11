@@ -27,7 +27,7 @@ body
   height: 100%
   font-size: 100%
   line-height: 140%
-
+  font-family: "Montserrat", sans-serif
 
 img
   vertical-align: bottom
@@ -72,34 +72,35 @@ input.placeholder
 
 #mapcontrol
   position: fixed
+  left: 0
+  bottom: 0
   z-index: 9999
   width: 100%
 
 .scale-slider
+  position: relative
   width: 300px
-  height: 20px
-  background: #FCC
+  height: 30px
+  margin: 10px auto
   text-align: center
-  line-height: 20px
+  line-height: 24px
   &>span
     display: inline-block
     vertical-align: middle
 
 .scale-slider-groove
   width: 240px
-  height: 1px
+  height: 2px
   background: #CCC
 
 .scale-slider-icon
   width: 30px
-  line-height: 16px
-  background: #FFC
+  line-height: 24px
 
 .scale-slider-ico-wide
-  margin-top: -0.125em
 
 .scale-slider-ico-tele
-  margin-top: -0.25em
+  margin-top: -0.125em
   i
     font-size: 0.8rem
     line-height: 100%
@@ -109,12 +110,31 @@ input.placeholder
 
 .scale-slider-handle
   position: absolute
-  width: 20px
-  height: 20px
-  left: 30px
+  top: 3px
+  width: 30px
+  height: 30px
+  margin: -3px
   background: #000
-  border-radius: 2px
+  border-radius: 4px
   cursor: pointer
+  font-size: 0.75rem
+  text-align: center
+  line-height: 28px
+  color: #FFF
+  &>.fa
+    transform: rotate(90deg)
+
+.scale-silder-display
+  position: absolute
+  left: 0
+  bottom: 30px
+  width: 100%
+  text-align: center
+
+.scale-silder-display-amount
+  margin-left: 0.125em
+  font-size: 1.25rem
+  line-height: 140%
 
 #updates
   display: none
