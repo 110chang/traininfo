@@ -29,7 +29,7 @@ extend(UpdatesVM.prototype, {
         status: Status().convert(update.content)
       });
     }, this);
-    console.log(updates);
+    //console.log(updates);
     this.updates(updates);
     this.emit('loadComplete');
 

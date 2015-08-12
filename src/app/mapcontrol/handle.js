@@ -63,7 +63,7 @@ extend(Handle.prototype, {
     this.emit('handleMove', { x: D.x, y: D.y });
   },
   onTouchStart: function(e) {
-    console.log('Handle#onTouchStart');
+    //console.log('Handle#onTouchStart');
     e.preventDefault();
 
     var touch = e.originalEvent.touches[0];
@@ -74,12 +74,12 @@ extend(Handle.prototype, {
     return false;
   },
   onTouchEnd: function(e) {
-    console.log('Handle#onMouseUp');
+    //console.log('Handle#onMouseUp');
     $doc.off('touchmove._MapControlHandle');
   },
   onTouchMove: function(e) {
     var touch = e.originalEvent.touches[0];
-    console.log(touch);
+    //console.log(touch);
     var D = (new Vector(touch.clientX, touch.clientY)).sub(this.M).add(this.N);
     this.emit('handleMove', { x: D.x, y: D.y });
   },

@@ -18,6 +18,7 @@ div#routemap
         path.subline stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: subColor, 'stroke-width': subStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
         /! /ko
         path.mainline stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
+    circle r="3" data-bind="attr: { cx: mapControl.avaterX(), cy: mapControl.avaterY() }"
 
 #mapcontrol
   /p data-bind="text: scale"
@@ -36,6 +37,10 @@ div#routemap
       | &times;
       span.scale-silder-display-amount data-bind="text: scale"
     /! /ko
+  .dedug-mapcontrol
+    p data-bind="text: avaterViewBox"
+    p data-bind="text: '0 < ' + avaterX() + ' < ' + avaterXMax()"
+    p data-bind="text: '0 < ' + avaterY() + ' < ' + avaterYMax()"
 
 #updates
   ul data-bind="foreach: updates"

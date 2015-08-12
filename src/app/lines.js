@@ -30,7 +30,7 @@ inherit(Lines, events.EventEmitter);
 extend(Lines.prototype, {
   loadComplete: function(error, response) {
     //console.log('Lines#loadComplete');
-    console.log(response.body);
+    //console.log(response.body);
     var stations = [];
     response.body.forEach(function(line) {
       stations = stations.concat(line.stations);

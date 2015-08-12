@@ -6,8 +6,10 @@
 // external libraries
 var Q = require('q');
 
+require('./mod/trunc');
+
 var Lines = require('./app/lines');
-var MapControl = require('./app/mapcontrol');
+var MapControlFactory = require('./app/mapcontrolfactory');
 var GeoCoords = require('./app/geocoords');
 var UpdatesVM = require('./app/updates');
 var RouteMapVM = require('./app/routemap');
@@ -16,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
   console.log('dom ready.');
 
   var geoCoords = new GeoCoords(window.innerWidth, window.innerHeight);
-  var mapControl = new MapControl();
+  var mapControl = new MapControlFactory();
   var routeMap = new RouteMapVM();
   var lines = new Lines();
   var updates = new UpdatesVM();
@@ -29,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
   mapControl.on('boundsChanged', function(e) {
     //console.log('Main#changed');
     lines.update();
-    routeMap.updateBounds.apply(routeMap, mapControl.getBounds());
+    routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
   });
 
   Q.all([lines, updates].map(function(vm) {
@@ -46,8 +48,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     lines.applyUpdates(updates.getUpdates());
     mapControl.initialize();
 
-    routeMap.updateBounds.apply(routeMap, mapControl.getBounds());
+    routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
   });
-
 });
 

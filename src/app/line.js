@@ -20,14 +20,14 @@ var events = require('events');
 var inherit = require('util').inherits;
 var ko = require('knockout');
 
-var MapControl = require('./mapcontrol');
+var MapControlFactory = require('./mapcontrolfactory');
 var Status = require('./status');
 Status = Status();
 
 function LineVM(o) {
   events.EventEmitter.call(this);
 
-  this.map = MapControl();
+  this.map = MapControlFactory();
 
   this.status = ko.observable(Status.decode(0));
   this.color = o.color;

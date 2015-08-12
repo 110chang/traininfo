@@ -8,6 +8,8 @@ var events = require('events');
 var inherit = require('util').inherits;
 var ko = require('knockout');
 
+var MapControlFactory = require('./mapcontrolfactory');
+
 var _instance = null;
 
 function RouteMapVM() {
@@ -22,11 +24,12 @@ function RouteMapVM() {
   this.height = ko.observable();
   this.viewBox = ko.observable();
   this.lines = ko.observableArray();
+  this.mapControl = MapControlFactory();
 
   ko.applyBindings(this, document.getElementById('routemap'));
 }
 extend(RouteMapVM.prototype, {
-  updateBounds: function(width, height, viewBox) {
+  setSVGAttr: function(width, height, viewBox) {
     this.width(width + 'px');
     this.height(height + 'px');
     this.viewBox(viewBox);
