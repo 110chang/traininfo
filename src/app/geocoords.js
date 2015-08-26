@@ -137,20 +137,20 @@ extend(GeoCoords.prototype, {
     return edge.south < lat && lat < edge.north && edge.west < lng && lng < edge.east;
   },
   _getScale: function() {
-    var lngRange = (this.edge.east - this.edge.west),
-      latRange = (this.edge.north - this.edge.south),
-      xratio = this.appWidth / lngRange;
-      yratio = this.appHeight / latRange;
+    var lngRange = (this.edge.east - this.edge.west);
+    var latRange = (this.edge.north - this.edge.south);
+    var xratio = this.appWidth / lngRange;
+    var yratio = this.appHeight / latRange;
     
     this.scale = (xratio > yratio) ? xratio : yratio;
     //console.log(this.scale);
   },
   _getBounds: function() {
-    var lngRange = (this.edge.east - this.edge.west),
-      latRange = (this.edge.north - this.edge.south),
-      left = (this.appWidth - lngRange * this.scale) / 2,
-      top = (this.appHeight - latRange * this.scale) / 2;
-    
+    var lngRange = (this.edge.east - this.edge.west);
+    var latRange = (this.edge.north - this.edge.south);
+    var left = (this.appWidth - lngRange * this.scale) / 2;
+    var top = (this.appHeight - latRange * this.scale) / 2;
+
     this.bounds = new Rectangle(
       left,                  //x
       top,                   //y

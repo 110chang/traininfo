@@ -12,6 +12,7 @@ var $ = require('jQuery');
 var Rectangle = require('../../geom/rectangle');
 var GeoCoords = require('../../app/geocoords');
 var Handle = require('./handle');
+var Minimap = require('./minimap');
 var Translater = require('./translater');
 
 var _instance = null;
@@ -36,6 +37,9 @@ function AbstructMapControl() {
   this.handle = new Handle();
   this.handle.on('handleMove', this.onHandleMove.bind(this));
 
+  // Minimap instance
+  this.minimap = new Minimap();
+
   // Memory interaction coords
   this.translater = new Translater();
 
@@ -52,15 +56,12 @@ function AbstructMapControl() {
   this.memViewBox = null;
 
   // limit translation
+  this.xMin = 0;
+  this.yMin = 0;
   this.xMax = 0;
   this.yMax = 0;
 
   // ko variables
-  this.scale = ko.observable(1);
-  this.handleLeft = ko.computed(function() {
-    return this.scaleToHandleLeft() + 'px';
-  }, this);
-  this.nowScaleChange = ko.observable(false);
 
   // for testing
   this.avaterX = ko.observable(this.viewBox.x);
@@ -69,37 +70,63 @@ function AbstructMapControl() {
   this.avaterYMax = ko.observable(this.yMax);
   this.avaterViewBox = ko.observable(this.getViewBox());
 
+  this.scale = ko.observable(1);
+  this.handleLeft = ko.computed(function() {
+    return this.scaleToHandleLeft() + 'px';
+  }, this);
+  this.viewBoxStyle = ko.computed(function() {
+    var vb = this.viewBox;
+    return ['left: ', this.avaterX(), 'px; top: ', this.avaterY(), 'px; width: ', vb.width, 'px; height: ', vb.height, 'px'].join('');
+  }, this);
+  this.initViewBoxStyle = ko.computed(function() {
+    var vb = this.viewBox;
+    return ['left: ', 0, 'px; top: ', 0, 'px; width: ', this.appHeight, 'px; height: ', this.appHeight, 'px'].join('');
+  }, this);
+  this.nowScaleChange = ko.observable(false);
+
   _instance = this;
 }
 inherit(AbstructMapControl, events.EventEmitter);
 extend(AbstructMapControl.prototype, {
   initialize: function() {
-    //console.log('AbstructMapControl#initialize');
+    console.log('AbstructMapControl#initialize');
     var bounds = GeoCoords().bounds;
-
+    console.log(bounds.x, bounds.y, bounds.width, bounds.height);
     this.svgWidth = bounds.width;
     this.svgHeight = bounds.height;
-    this.update(-bounds.x, -bounds.y, this.viewBox.width, this.viewBox.height);
+    this.svgX = -bounds.x;
+    this.svgY = -bounds.y;
+    //this.update(0, 0, this.svgWidth, this.svgHeight);
+    this.update(this.svgX, this.svgY, this.viewBox.width, this.viewBox.height);
+
+    this.minimap.initialize(this.svgWidth, this.svgHeight);
 
     ko.applyBindings(this, document.getElementById('mapcontrol'));
   },
   update: function(x, y, w, h) {
-    //console.log('AbstructMapControl#update');
-    this.xMax = this.svgWidth - w;
-    this.yMax = this.svgHeight - h;
+    console.log('AbstructMapControl#update');
 
-    if (x < 0) {
-      x = 0;
+    this.xMin = this.svgX;
+    this.yMin = this.svgY;
+    this.xMax = this.svgX + this.svgWidth - w;
+    this.yMax = this.svgY + this.svgHeight - h;
+
+    if (x < this.xMin) {
+      x = this.xMin;
     } else if (this.xMax < x) {
       x = this.xMax;
     }
-    if (y < 0) {
-      y = 0;
+    if (y < this.yMin) {
+      y = this.yMin;
     } else if (this.yMax < y) {
       y = this.yMax;
     }
+    //console.log(this.viewBox.x, this.viewBox.y);
+    //console.log(x, y);
     //console.log(x, y, w, h);
     this.viewBox = new Rectangle(x, y, w, h);
+    console.log(this.viewBox);
+    this.minimap.update(x - this.svgX, y - this.svgY, w, h);
 
     // for testing
     this.avaterX(this.viewBox.x);
@@ -111,18 +138,29 @@ extend(AbstructMapControl.prototype, {
     this.emit('boundsChanged');
   },
   expand: function(scale) {
-    //console.log('AbstructMapControl#expand');
+    console.log('AbstructMapControl#expand');
+    console.log(this.scale());
+    console.log(scale);
     if (scale < 1) {
       scale = 1;
     } else if (10 < scale) {
       scale = 10;
     }
+    var prevX = this.viewBox.x;
+    var prevY = this.viewBox.y;
+    var prevScale = this.scale();
     var newWidth = this.appWidth / scale;
     var newHeight = this.appHeight / scale;
     var dx = (this.viewBox.width - newWidth) / 2;
     var dy = (this.viewBox.height - newHeight) / 2;
-    //console.log(dx, dy);
-    this.update(this.viewBox.x + dx, this.viewBox.y + dy, newWidth, newHeight);
+
+    //if (scale === 2 && prevScale === 1) {
+      dx -= this.svgX / scale;
+      dy -= this.svgX / scale;
+    //}
+    console.log(dx, dy);
+    console.log(prevX, prevY);
+    this.update(prevX + dx, prevY + dy, newWidth, newHeight);
     this.scale(scale);
     this.delayScaleChange();
   },
@@ -149,6 +187,10 @@ extend(AbstructMapControl.prototype, {
   },
   getScale: function() {
     return this.scale();
+  },
+  getViewBoxStyle: function() {
+    var vb = this.viewBox;
+    return ['{ left: ', vb.x, 'px; top: ', vb.y, 'px; width: ', vb.width, 'px; height: ', vb.height, ' }'].join('');
   },
   handleLeftToScale: function(left) {
     return (HANDLE_INIT_LEFT + SLIDER_WIDTH - left) / HANDLE_WIDTH;

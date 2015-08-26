@@ -43,12 +43,14 @@ document.addEventListener('DOMContentLoaded', function(e) {
   })).then(function() {
     //console.log(lines.getStations());
     geoCoords.initialize(lines.getStations());
-    geoCoords.setOffset(10, 10);
+    //geoCoords.setOffset(10, 10);
     lines.setUp(geoCoords);
     lines.applyUpdates(updates.getUpdates());
     mapControl.initialize();
 
     routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
+
+    //mapControl.expand(1);
   });
 });
 

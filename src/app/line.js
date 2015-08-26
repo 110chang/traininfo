@@ -73,7 +73,7 @@ extend(LineVM.prototype, {
     return this.status().color;
   },
   getSubStrokeWidth: function() {
-    return this.getMainStrokeWidth() + 4 / this.map.getScale();
+    return this.getMainStrokeWidth() + 6 / this.map.getScale();
   },
   getPath: function() {
     var path = this.stations.map(function(station, i) {

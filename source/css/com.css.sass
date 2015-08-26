@@ -60,15 +60,16 @@ input.placeholder
   from
     stroke-dashoffset: 0
   to
-    stroke-dashoffset: 12px
+    stroke-dashoffset: 16px
 
 #routemap
   position: fixed
   left: 0
   top: 0
   .subline-anim
-    stroke-dasharray: 6px 6px
-    animation: 'dash-anim' 1s linear 0s infinite
+    stroke-dasharray: 10px 6px
+    animation: 'dash-anim' 3s linear 0s infinite
+
 
 #mapcontrol
   position: fixed
@@ -79,6 +80,7 @@ input.placeholder
 
 .scale-slider
   position: relative
+  z-index: 9999
   width: 300px
   height: 30px
   margin: 10px auto
@@ -136,14 +138,42 @@ input.placeholder
   font-size: 1.25rem
   line-height: 140%
 
+.minimap
+  position: fixed
+  left: 10px
+  top: 10px
+  &>div
+    position: absolute
+    border: 1px solid #F00
+
 .dedug-mapcontrol
+  position: fixed
+  left: 0
+  top: 0
   text-align: center
   color: #F66
   font-size: 0.5rem
   line-height: 140%
+  border: 1px solid #F00
 
 #updates
   display: none
+
+#horizontal-center
+  position: fixed
+  left: 50%
+  top: 0
+  width: 0
+  height: 100%
+  border-left: 1px solid #F00
+
+#vertical-center
+  position: fixed
+  top: 50%
+  left: 0
+  width: 100%
+  height: 0
+  border-top: 1px solid #F00
 
 /* ============================
  * 
