@@ -58,7 +58,7 @@ extend(LineVM.prototype, {
     if (this.isSelected() || this.hasStatus()) {
       return this.color;
     }
-    return '#CCC';
+    return '#333';
   },
   getMainStrokeWidth: function() {
     if (this.isSelected()) {
@@ -101,6 +101,7 @@ extend(LineVM.prototype, {
   mouseOutPath: function(e) {
     //console.log('LineVM#mouseOutPath');
     this.selected(false);
+    this.emit('mouseOut', this);
     //this.strokeWidth((skin[this.status()].thickness || 1) / this.map.scale());
     //this.color(skin[this.status()].color || this.lineColor);
   }

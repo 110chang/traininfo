@@ -62,6 +62,7 @@ extend(Lines.prototype, {
       });
       lineVM = new LineVM(line);
       lineVM.on('mouseOver', this.bringToTop.bind(this));
+      lineVM.on('mouseOut', this.takeDownBottom.bind(this));
       this.data.push(lineVM);
     }, this);
   },
@@ -69,6 +70,13 @@ extend(Lines.prototype, {
     this.data.splice(this.data.indexOf(e), 1);
     this.data.push(e);
     this.emit('changed');
+  },
+  takeDownBottom: function(e) {
+    if (e.status().id === 0) {
+      this.data.splice(this.data.indexOf(e), 1);
+      this.data.unshift(e);
+      this.emit('changed');
+    }
   },
   update: function() {
     this.data.forEach(function(line) {

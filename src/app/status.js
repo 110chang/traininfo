@@ -19,27 +19,27 @@ var STATUSES = [{
   id: 0,
   key: 'normal',
   label: '平常運転',
-  color: '#D6D3D1'
+  color: '#333'//'#D6D3D1'
 }, {
   id: 1,
   key: 'info',
   label: '運転情報',
-  color: '#9C3'
+  color: '#9C0'//'#9C3'
 }, {
   id: 2,
   key: 'delay',
   label: '遅延',
-  color: '#FC3'
+  color: '#FC0'//'#FC3'
 }, {
   id: 3,
   key: 'suspend',
   label: '運転見合',
-  color: '#F66'
+  color: '#F66'//'#F66'
 }, {
   id: 4,
   key: 'restart',
   label: '運転再開',
-  color: '#09C'
+  color: '#09F'//'#09C'
 }];
 
 function Status() {

@@ -159,12 +159,12 @@ extend(AbstructMapControl.prototype, {
   },
   beforeTranslate: function(x, y) {
     var vb = this.viewBox;
-    if (typeof x === 'undefined') {
+    /*if (typeof x === 'undefined') {
       x = this.appWidth / 2;
     }
     if (typeof y === 'undefined') {
       y = this.appHeight / 2;
-    }
+    }*/
     this.memViewBox = new Rectangle(vb.x, vb.y, vb.width, vb.height);
     this.translater.start(x, y);
   },
