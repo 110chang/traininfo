@@ -17,7 +17,9 @@ var RouteMapVM = require('./app/routemap');
 document.addEventListener('DOMContentLoaded', function(e) {
   console.log('dom ready.');
 
-  var geoCoords = new GeoCoords(window.innerWidth, window.innerHeight);
+  var geoCoords = new GeoCoords({
+    meet: true
+  });
   var mapControl = new MapControlFactory();
   var routeMap = new RouteMapVM();
   var lines = new Lines();

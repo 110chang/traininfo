@@ -16,15 +16,16 @@ var Rectangle = require('../geom/rectangle');
 
 var _instance = null;
 
-function GeoCoords(appWidth, appHeight) {
+function GeoCoords(options) {
   if (_instance instanceof GeoCoords) {
     return _instance;
   }
   if (!(this instanceof GeoCoords)) {
-    return new GeoCoords();
+    return new GeoCoords(options);
   }
-  this.appWidth = appWidth;
-  this.appHeight = appHeight;
+  this.options = extend({}, GeoCoords.defaults, options);
+  this.appWidth = window.innerWidth;
+  this.appHeight = window.innerHeight;
   this.home = new LatLng(35.685326, 139.7531); // ホームポジション
   this.coords = new LatLng(this.home);
   this.offset = new Point(0, 0);
@@ -131,19 +132,23 @@ extend(GeoCoords.prototype, {
     };
     //console.log(this.edge)
   },
-  _edgeContain: function(lat, lng) {
-    var edge = this.edge;
-    //console.log(edge.north +"<"+ lat +"<"+ edge.south);
-    return edge.south < lat && lat < edge.north && edge.west < lng && lng < edge.east;
-  },
   _getScale: function() {
     var lngRange = (this.edge.east - this.edge.west);
     var latRange = (this.edge.north - this.edge.south);
+    var viewRatio = this.appWidth / this.appHeight;
+    var latLngRatio = lngRange / latRange;
+    if (this.options.meet) {
+      if (viewRatio < latLngRatio) {
+        this.appWidth = this.appHeight * lngRange / latRange;
+      } else if (viewRatio > latLngRatio) {
+        this.appHeight = this.appWidth * latRange / lngRange;
+      }
+    }
     var xratio = this.appWidth / lngRange;
     var yratio = this.appHeight / latRange;
     
     this.scale = (xratio > yratio) ? xratio : yratio;
-    //console.log(this.scale);
+    console.log(this.scale);
   },
   _getBounds: function() {
     var lngRange = (this.edge.east - this.edge.west);
@@ -157,8 +162,17 @@ extend(GeoCoords.prototype, {
       lngRange * this.scale, //width
       latRange * this.scale  //height
     );
+    console.log(this.bounds);
+  },
+  _edgeContain: function(lat, lng) {
+    var edge = this.edge;
+    //console.log(edge.north +"<"+ lat +"<"+ edge.south);
+    return edge.south < lat && lat < edge.north && edge.west < lng && lng < edge.east;
   }
 });
+GeoCoords.defaults      = {
+  meet: false
+};
 GeoCoords.CHANGE        = 'onChange'                ;
 GeoCoords.API_SUCCESS   = 'onGeoLocationAPISuccess' ;
 GeoCoords.API_ERROR     = 'onGeoLocationAPIError'   ;

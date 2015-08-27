@@ -97,7 +97,7 @@ extend(AbstructMapControl.prototype, {
     this.svgX = -bounds.x;
     this.svgY = -bounds.y;
     //this.update(0, 0, this.svgWidth, this.svgHeight);
-    this.update(this.svgX, this.svgY, this.viewBox.width, this.viewBox.height);
+    this.update(0, 0, this.viewBox.width, this.viewBox.height);
 
     this.minimap.initialize(this.svgWidth, this.svgHeight);
 
@@ -106,10 +106,10 @@ extend(AbstructMapControl.prototype, {
   update: function(x, y, w, h) {
     console.log('AbstructMapControl#update');
 
-    this.xMin = this.svgX;
-    this.yMin = this.svgY;
-    this.xMax = this.svgX + this.svgWidth - w;
-    this.yMax = this.svgY + this.svgHeight - h;
+    this.xMin = 0;
+    this.yMin = 0;
+    this.xMax = this.svgWidth - w;
+    this.yMax = this.svgHeight - h;
 
     if (x < this.xMin) {
       x = this.xMin;
@@ -155,8 +155,8 @@ extend(AbstructMapControl.prototype, {
     var dy = (this.viewBox.height - newHeight) / 2;
 
     //if (scale === 2 && prevScale === 1) {
-      dx -= this.svgX / scale;
-      dy -= this.svgX / scale;
+    //  dx -= this.svgX / scale;
+    //  dy -= this.svgX / scale;
     //}
     console.log(dx, dy);
     console.log(prevX, prevY);
