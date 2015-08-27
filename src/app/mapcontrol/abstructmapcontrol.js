@@ -137,35 +137,34 @@ extend(AbstructMapControl.prototype, {
 
     this.emit('boundsChanged');
   },
-  expand: function(scale) {
+  expand: function(scale, cx, cy) {
     console.log('AbstructMapControl#expand');
-    console.log(this.scale());
-    console.log(scale);
     if (scale < 1) {
       scale = 1;
     } else if (10 < scale) {
       scale = 10;
     }
-    var prevX = this.viewBox.x;
-    var prevY = this.viewBox.y;
-    var prevScale = this.scale();
     var newWidth = this.appWidth / scale;
     var newHeight = this.appHeight / scale;
     var dx = (this.viewBox.width - newWidth) / 2;
     var dy = (this.viewBox.height - newHeight) / 2;
-
-    //if (scale === 2 && prevScale === 1) {
-    //  dx -= this.svgX / scale;
-    //  dy -= this.svgX / scale;
-    //}
-    console.log(dx, dy);
-    console.log(prevX, prevY);
-    this.update(prevX + dx, prevY + dy, newWidth, newHeight);
+    
+    if (typeof cx === 'number' && typeof cx === 'number') {
+      dx = cx / this.scale() - newWidth / 2;
+      dy = cy / this.scale() - newHeight / 2;
+    }
+    this.update(this.viewBox.x + dx, this.viewBox.y + dy, newWidth, newHeight);
     this.scale(scale);
     this.delayScaleChange();
   },
   beforeTranslate: function(x, y) {
     var vb = this.viewBox;
+    if (typeof x === 'undefined') {
+      x = this.appWidth / 2;
+    }
+    if (typeof y === 'undefined') {
+      y = this.appHeight / 2;
+    }
     this.memViewBox = new Rectangle(vb.x, vb.y, vb.width, vb.height);
     this.translater.start(x, y);
   },
@@ -177,6 +176,13 @@ extend(AbstructMapControl.prototype, {
     var destY = this.memViewBox.y - V.y;
 
     this.update(destX, destY, this.viewBox.width, this.viewBox.height);
+  },
+  center: function(x, y) {
+    var prevX = this.viewBox.x;
+    var prevY = this.viewBox.y;
+    var dx = (x - this.appWidth / 2) / this.scale();
+    var dy = (y - this.appHeight / 2) / this.scale();
+    this.update(prevX + dx, prevY + dy, this.viewBox.width, this.viewBox.height);
   },
   getSVGAttr: function() {
     return [this.svgWidth, this.svgHeight, this.getViewBox()];

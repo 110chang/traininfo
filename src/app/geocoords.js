@@ -28,7 +28,6 @@ function GeoCoords(options) {
   this.appHeight = window.innerHeight;
   this.home = new LatLng(35.685326, 139.7531); // ホームポジション
   this.coords = new LatLng(this.home);
-  this.offset = new Point(0, 0);
   this.bounds = null;
 
   _instance = this;
@@ -57,41 +56,32 @@ extend(GeoCoords.prototype, {
     this._getScale();
     this._getBounds();
   },
-  applyOffset: function(point) {
-    return point.translate(
-      this.offset.x,
-      this.offset.y
-    );
-  },
-  setOffset: function(x, y) {
-    this.offset = new Point(x, y);
-  },
-  getHome: function(screen) {
+  getHome: function(asScreen) {
     var point = this.latLngToScreen(this.home.lat, this.home.lng);
-    point = new Point(point.x + this.offset.x, point.y + this.offset.y);
+    point = new Point(point.x, point.y);
       
-    return screen ? point : this.home;
+    return asScreen ? point : this.home;
   },
-  setCoords: function(_coords) {
-    if (compare(LatLng, _coords)) {
-      this.coords = _coords;
+  setCoords: function(coords) {
+    if (!(coords instanceof LatLng)) {
+      this.coords = coords;
     }
   },
-  getCoords: function(screen) {
+  getCoords: function(asScreen) {
     var point = this.latLngToScreen(this.coords.lat, this.coords.lng);
-    point = new Point(point.x + this.offset.x, point.y + this.offset.y);
+    point = new Point(point.x, point.y);
     
-    return screen ? point : this.coords;
+    return asScreen ? point : this.coords;
   },
   latLngToScreen: function(lat, lng) {
-    var x = this.bounds.x + (lng - this.edge.west) * this.scale,
-      y = this.appHeight - (this.bounds.y + (lat - this.edge.south) * this.scale);
+    var x = this.bounds.x + (lng - this.edge.west) * this.scale;
+    var y = this.appHeight - (this.bounds.y + (lat - this.edge.south) * this.scale);
       
     return new Point(x, y);
   },
   screenToLatLng: function(x, y) {
-    var lat = (this.appHeight - y) / this.scale + this.edge.south * 1,
-      lng = (x - this.bounds.x) / this.scale + this.edge.west * 1;
+    var lat = (this.appHeight - y) / this.scale + this.edge.south * 1;
+    var lng = (x - this.bounds.x) / this.scale + this.edge.west * 1;
       //lng * scale = x - this.bounds.x + this.edge.west * scale;
     return new LatLng(lat, lng);
   },

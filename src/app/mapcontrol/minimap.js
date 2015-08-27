@@ -19,7 +19,7 @@ function Minimap(scale) {
   if (!(this instanceof Minimap)) {
     return new Minimap();
   }
-  this.scale = typeof scale === 'number' ? scale : 10;
+  this.scale = typeof scale === 'number' ? scale : 20;
 
   this.x = ko.observable(0);
   this.y = ko.observable(0);
