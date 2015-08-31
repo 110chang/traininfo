@@ -6,7 +6,7 @@
 var extend = require('extend');
 var inherit = require('util').inherits;
 
-var AbstructMapControl = require('./abstructmapcontrol');
+var MapControl = require('./mapcontrol');
 
 var _instance = null;
 
@@ -20,7 +20,7 @@ function TouchMapControl() {
   if (!(this instanceof TouchMapControl)) {
     return new TouchMapControl();
   }
-  AbstructMapControl.call(this);
+  MapControl.call(this);
 
   this.memDest = null;
   this.memScale = null;
@@ -30,7 +30,7 @@ function TouchMapControl() {
 
   _instance = this;
 }
-inherit(TouchMapControl, AbstructMapControl);
+inherit(TouchMapControl, MapControl);
 extend(TouchMapControl.prototype, {
   onTouchStart: function(e) {
     //console.log('TouchMapControl#onTouchStart');

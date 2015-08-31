@@ -6,7 +6,7 @@
 var extend = require('extend');
 var inherit = require('util').inherits;
 
-var AbstructMapControl = require('./abstructmapcontrol');
+var MapControl = require('./mapcontrol');
 
 var _instance = null;
 
@@ -20,7 +20,7 @@ function MouseMapControl() {
   if (!(this instanceof MouseMapControl)) {
     return new MouseMapControl();
   }
-  AbstructMapControl.call(this);
+  MapControl.call(this);
 
   this.dblClicked = false;
   this.timer = null;
@@ -32,7 +32,7 @@ function MouseMapControl() {
 
   _instance = this;
 }
-inherit(MouseMapControl, AbstructMapControl);
+inherit(MouseMapControl, MapControl);
 extend(MouseMapControl.prototype, {
   onMouseDown: function(e) {
     //console.log('MouseMapControl#onMouseDown');
@@ -58,7 +58,7 @@ extend(MouseMapControl.prototype, {
     }
   },
   onMouseDblClick: function() {
-    console.log('MouseMapControl#onMouseDblClick');
+    //console.log('MouseMapControl#onMouseDblClick');
     this.dblClicked = true;
   },
   onMouseMove: function(e) {
@@ -92,11 +92,11 @@ extend(MouseMapControl.prototype, {
     }, 333);
   },
   singleClickCallback: function(e) {
-    console.log('MouseMapControl#singleClickCallback');
+    //console.log('MouseMapControl#singleClickCallback');
     this.center(e.clientX, e.clientY);
   },
   dblClickCallback: function(e) {
-    console.log('MouseMapControl#dblClickCallback');
+    //console.log('MouseMapControl#dblClickCallback');
     this.expand(trunc(this.scale() + 1, 2), e.clientX, e.clientY);
   }
 });

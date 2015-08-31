@@ -1,6 +1,6 @@
 
 /*
- * AbstructMapControl
+ * MapControl
  */
 
 var extend = require('extend');
@@ -17,18 +17,18 @@ var Translater = require('./translater');
 
 var _instance = null;
 
-var HANDLE_INIT_LEFT = 30;
+var HANDLE_INIT = 30;
 var HANDLE_WIDTH = 24;
 var SLIDER_WIDTH = 240;
 
 var trunc = Math.trunc;
 
-function AbstructMapControl() {
-  if (_instance instanceof AbstructMapControl) {
+function MapControl() {
+  if (_instance instanceof MapControl) {
     return _instance;
   }
-  if (!(this instanceof AbstructMapControl)) {
-    return new AbstructMapControl();
+  if (!(this instanceof MapControl)) {
+    return new MapControl();
   }
   // Target element
   this.$el = $('#routemap');
@@ -72,7 +72,12 @@ function AbstructMapControl() {
 
   this.scale = ko.observable(1);
   this.handleLeft = ko.computed(function() {
-    return this.scaleToHandleLeft() + 'px';
+    var pos = this.handle.isHorizontal() ? this.scaleToHandlePos() : 0;
+    return pos + 'px';
+  }, this);
+  this.handleTop = ko.computed(function() {
+    var pos = this.handle.isVertical() ? this.scaleToHandlePos() : 0;
+    return pos + 'px';
   }, this);
   this.viewBoxStyle = ko.computed(function() {
     var vb = this.viewBox;
@@ -86,26 +91,23 @@ function AbstructMapControl() {
 
   _instance = this;
 }
-inherit(AbstructMapControl, events.EventEmitter);
-extend(AbstructMapControl.prototype, {
+inherit(MapControl, events.EventEmitter);
+extend(MapControl.prototype, {
   initialize: function() {
-    console.log('AbstructMapControl#initialize');
+    //console.log('MapControl#initialize');
     var bounds = GeoCoords().bounds;
-    console.log(bounds.x, bounds.y, bounds.width, bounds.height);
+
     this.svgWidth = bounds.width;
     this.svgHeight = bounds.height;
     this.svgX = -bounds.x;
     this.svgY = -bounds.y;
-    //this.update(0, 0, this.svgWidth, this.svgHeight);
     this.update(0, 0, this.viewBox.width, this.viewBox.height);
-
     this.minimap.initialize(this.svgWidth, this.svgHeight);
 
     ko.applyBindings(this, document.getElementById('mapcontrol'));
   },
   update: function(x, y, w, h) {
-    console.log('AbstructMapControl#update');
-
+    //console.log('MapControl#update');
     this.xMin = 0;
     this.yMin = 0;
     this.xMax = this.svgWidth - w;
@@ -121,11 +123,7 @@ extend(AbstructMapControl.prototype, {
     } else if (this.yMax < y) {
       y = this.yMax;
     }
-    //console.log(this.viewBox.x, this.viewBox.y);
-    //console.log(x, y);
-    //console.log(x, y, w, h);
     this.viewBox = new Rectangle(x, y, w, h);
-    console.log(this.viewBox);
     this.minimap.update(x - this.svgX, y - this.svgY, w, h);
 
     // for testing
@@ -138,7 +136,7 @@ extend(AbstructMapControl.prototype, {
     this.emit('boundsChanged');
   },
   expand: function(scale, cx, cy) {
-    console.log('AbstructMapControl#expand');
+    //console.log('MapControl#expand');
     if (scale < 1) {
       scale = 1;
     } else if (10 < scale) {
@@ -159,12 +157,7 @@ extend(AbstructMapControl.prototype, {
   },
   beforeTranslate: function(x, y) {
     var vb = this.viewBox;
-    /*if (typeof x === 'undefined') {
-      x = this.appWidth / 2;
-    }
-    if (typeof y === 'undefined') {
-      y = this.appHeight / 2;
-    }*/
+
     this.memViewBox = new Rectangle(vb.x, vb.y, vb.width, vb.height);
     this.translater.start(x, y);
   },
@@ -198,15 +191,19 @@ extend(AbstructMapControl.prototype, {
     var vb = this.viewBox;
     return ['{ left: ', vb.x, 'px; top: ', vb.y, 'px; width: ', vb.width, 'px; height: ', vb.height, ' }'].join('');
   },
-  handleLeftToScale: function(left) {
-    return (HANDLE_INIT_LEFT + SLIDER_WIDTH - left) / HANDLE_WIDTH;
+  handlePosToScale: function(pos) {
+    return (HANDLE_INIT + SLIDER_WIDTH - pos) / HANDLE_WIDTH;
   },
-  scaleToHandleLeft: function() {
-    return HANDLE_INIT_LEFT + SLIDER_WIDTH - this.scale() * HANDLE_WIDTH;
+  scaleToHandlePos: function() {
+    return HANDLE_INIT + SLIDER_WIDTH - this.scale() * HANDLE_WIDTH;
   },
   onHandleMove: function(data) {
-    //console.log('AbstructMapControl#onHandleMove');
-    this.scale(trunc(this.handleLeftToScale(data.x), 2));
+    //console.log('MapControl#onHandleMove');
+    var pos = data.x;
+    if (this.handle.isVertical()) {
+      pos = data.y;
+    }
+    this.scale(trunc(this.handlePosToScale(pos), 2));
     this.expand(this.scale());
   },
   delayScaleChange: (function() {
@@ -226,5 +223,5 @@ extend(AbstructMapControl.prototype, {
   }
 });
 
-module.exports = AbstructMapControl;
+module.exports = MapControl;
 

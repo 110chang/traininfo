@@ -88,6 +88,7 @@ input.placeholder
   width: 300px
   height: 30px
   margin: 10px auto
+  background: #FCC
   text-align: center
   line-height: 24px
   &>span
@@ -97,11 +98,12 @@ input.placeholder
 .scale-slider-groove
   width: 240px
   height: 2px
-  background: #CCC
+  background: #666
 
 .scale-slider-icon
   width: 30px
   line-height: 24px
+  color: #999
 
 .scale-slider-ico-wide
 
@@ -118,15 +120,17 @@ input.placeholder
   position: absolute
   top: 3px
   width: 30px
-  height: 30px
+  height: 28px
   margin: -3px
-  background: #000
+  background: #B0B0B0
+  border-top: 1px solid #E0E0E0
+  border-bottom: 1px solid #666
   border-radius: 4px
   cursor: pointer
   font-size: 0.75rem
   text-align: center
   line-height: 28px
-  color: #FFF
+  color: #333
   &>.fa
     transform: rotate(90deg)
 
@@ -141,6 +145,28 @@ input.placeholder
   margin-left: 0.125em
   font-size: 1.25rem
   line-height: 140%
+
+.scale-slider--vertical
+  width: 30px
+  height: 300px
+  margin: auto 10px
+  &>span
+    display: block
+  .scale-slider-groove
+    width: 2px
+    height: 240px
+    margin: 0 auto
+    background: #666
+  .scale-slider-handle
+    margin: -8px 0
+    &>.fa
+      transform: rotate(0deg)
+  .scale-silder-display
+    position: absolute
+    left: 30px
+    bottom: 50%
+    margin-bottom: -0.5em
+
 
 .minimap
   position: fixed
