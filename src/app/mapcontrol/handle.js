@@ -26,7 +26,6 @@ function Handle() {
   this.$parent = this.$el.parent();
   this.M = null;
   this.N = null;
-  this.direction = Handle.DIRECTION_HORIZONTAL;
 
   if (isToushDevice) {
     this.$el.on('touchstart._MapControlHandle', this.onTouchStart.bind(this));
@@ -83,15 +82,6 @@ extend(Handle.prototype, {
     //console.log(touch);
     var D = (new Vector(touch.clientX, touch.clientY)).sub(this.M).add(this.N);
     this.emit('handleMove', { x: D.x, y: D.y });
-  },
-  isVertical: function() {
-    return this.direction === Handle.DIRECTION_VERTICAL;
-  },
-  isHorizontal: function() {
-    return this.direction === Handle.DIRECTION_HORIZONTAL;
   }
 });
-Handle.DIRECTION_VERTICAL = 'directionVertical';
-Handle.DIRECTION_HORIZONTAL = 'directionHorizontal';
-
 module.exports = Handle;

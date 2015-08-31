@@ -70,7 +70,7 @@ extend(LineVM.prototype, {
     return 2 / this.map.getScale();
   },
   getSubStrokeColor: function() {
-    return this.status().color;
+    return this.hasStatus() ? this.status().color : 'rgba(0,0,0,0)';
   },
   getSubStrokeWidth: function() {
     return this.getMainStrokeWidth() + 6 / this.map.getScale();
