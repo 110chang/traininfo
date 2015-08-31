@@ -11,15 +11,11 @@ var $ = require('jQuery');
 
 var Rectangle = require('../../geom/rectangle');
 var GeoCoords = require('../../app/geocoords');
-var Handle = require('./handle');
+var Slider = require('./slider');
 var Minimap = require('./minimap');
 var Translater = require('./translater');
 
 var _instance = null;
-
-var HANDLE_INIT = 30;
-var HANDLE_WIDTH = 24;
-var SLIDER_WIDTH = 240;
 
 var trunc = Math.trunc;
 
@@ -34,8 +30,8 @@ function MapControl() {
   this.$el = $('#routemap');
 
   // Handle instance
-  this.handle = new Handle();
-  this.handle.on('handleMove', this.onHandleMove.bind(this));
+  this.slider = new Slider();
+  this.slider.on('change', this.onSliderChange.bind(this));
 
   // Minimap instance
   this.minimap = new Minimap();
@@ -62,31 +58,11 @@ function MapControl() {
   this.yMax = 0;
 
   // ko variables
-
-  // for testing
-  this.avaterX = ko.observable(this.viewBox.x);
-  this.avaterY = ko.observable(this.viewBox.y);
-  this.avaterXMax = ko.observable(this.xMax);
-  this.avaterYMax = ko.observable(this.yMax);
-  this.avaterViewBox = ko.observable(this.getViewBox());
-
   this.scale = ko.observable(1);
-  this.handleLeft = ko.computed(function() {
-    var pos = this.handle.isHorizontal() ? this.scaleToHandlePos() : 0;
-    return pos + 'px';
+  this.handle = ko.computed(function() {
+    return this.slider.getHandlePos(this.scale());
   }, this);
-  this.handleTop = ko.computed(function() {
-    var pos = this.handle.isVertical() ? this.scaleToHandlePos() : 0;
-    return pos + 'px';
-  }, this);
-  this.viewBoxStyle = ko.computed(function() {
-    var vb = this.viewBox;
-    return ['left: ', this.avaterX(), 'px; top: ', this.avaterY(), 'px; width: ', vb.width, 'px; height: ', vb.height, 'px'].join('');
-  }, this);
-  this.initViewBoxStyle = ko.computed(function() {
-    var vb = this.viewBox;
-    return ['left: ', 0, 'px; top: ', 0, 'px; width: ', this.appHeight, 'px; height: ', this.appHeight, 'px'].join('');
-  }, this);
+
   this.nowScaleChange = ko.observable(false);
 
   _instance = this;
@@ -108,8 +84,8 @@ extend(MapControl.prototype, {
   },
   update: function(x, y, w, h) {
     //console.log('MapControl#update');
-    this.xMin = 0;
-    this.yMin = 0;
+    //this.xMin = 0;
+    //this.yMin = 0;
     this.xMax = this.svgWidth - w;
     this.yMax = this.svgHeight - h;
 
@@ -125,13 +101,6 @@ extend(MapControl.prototype, {
     }
     this.viewBox = new Rectangle(x, y, w, h);
     this.minimap.update(x - this.svgX, y - this.svgY, w, h);
-
-    // for testing
-    this.avaterX(this.viewBox.x);
-    this.avaterY(this.viewBox.y);
-    this.avaterXMax(this.xMax);
-    this.avaterYMax(this.yMax);
-    this.avaterViewBox(this.getViewBox());
 
     this.emit('boundsChanged');
   },
@@ -191,21 +160,6 @@ extend(MapControl.prototype, {
     var vb = this.viewBox;
     return ['{ left: ', vb.x, 'px; top: ', vb.y, 'px; width: ', vb.width, 'px; height: ', vb.height, ' }'].join('');
   },
-  handlePosToScale: function(pos) {
-    return (HANDLE_INIT + SLIDER_WIDTH - pos) / HANDLE_WIDTH;
-  },
-  scaleToHandlePos: function() {
-    return HANDLE_INIT + SLIDER_WIDTH - this.scale() * HANDLE_WIDTH;
-  },
-  onHandleMove: function(data) {
-    //console.log('MapControl#onHandleMove');
-    var pos = data.x;
-    if (this.handle.isVertical()) {
-      pos = data.y;
-    }
-    this.scale(trunc(this.handlePosToScale(pos), 2));
-    this.expand(this.scale());
-  },
   delayScaleChange: (function() {
     var timer = null;
     return function() {
@@ -220,7 +174,12 @@ extend(MapControl.prototype, {
   }()),
   isSVGElement: function(el) {
     return el.toString() === '[object SVGSVGElement]';
-  }
+  },
+  onSliderChange: function(data) {
+    //console.log('Slider#onHandleMove');
+    this.scale(trunc(data.scale, 2));
+    this.expand(this.scale());
+  },
 });
 
 module.exports = MapControl;

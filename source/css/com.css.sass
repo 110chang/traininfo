@@ -76,10 +76,14 @@ input.placeholder
 
 
 #mapcontrol
+
+/* ===== horizontal slider ===== */
+
+#map-slider-horizontal
   position: fixed
   left: 0
   bottom: 0
-  z-index: 9999
+  z-index: 999
   width: 100%
 
 .scale-slider
@@ -88,7 +92,6 @@ input.placeholder
   width: 300px
   height: 30px
   margin: 10px auto
-  background: #FCC
   text-align: center
   line-height: 24px
   &>span
@@ -102,7 +105,8 @@ input.placeholder
 
 .scale-slider-icon
   width: 30px
-  line-height: 24px
+  height: 30px
+  line-height: 30px
   color: #999
 
 .scale-slider-ico-wide
@@ -118,10 +122,10 @@ input.placeholder
 
 .scale-slider-handle
   position: absolute
-  top: 3px
+  top: 0
   width: 30px
   height: 28px
-  margin: -3px
+  margin: 0 -3px
   background: #B0B0B0
   border-top: 1px solid #E0E0E0
   border-bottom: 1px solid #666
@@ -146,6 +150,18 @@ input.placeholder
   font-size: 1.25rem
   line-height: 140%
 
+/* ===== vertical slider ===== */
+
+#map-slider-vertical
+  display: flex
+  position: fixed
+  left: 0
+  top: 0
+  z-index: 999
+  height: 100%
+  flex-direction: column
+  align-items: center
+
 .scale-slider--vertical
   width: 30px
   height: 300px
@@ -158,7 +174,7 @@ input.placeholder
     margin: 0 auto
     background: #666
   .scale-slider-handle
-    margin: -8px 0
+    margin: -3px 0
     &>.fa
       transform: rotate(0deg)
   .scale-silder-display
@@ -179,7 +195,7 @@ input.placeholder
   opacity: 0.8
 .minimap-current
   position: absolute
-  background: #505050
+  background: #FFF
   opacity: 0.8
 
 
@@ -194,7 +210,7 @@ input.placeholder
   border: 1px solid #F00
 
 #updates
-  display: none
+  //display: none
 
 #horizontal-center
   position: fixed
@@ -211,6 +227,17 @@ input.placeholder
   width: 100%
   height: 0
   border-top: 1px solid rgba(0,255,128,0.4)
+
+#menus
+  position: fixed
+  left: 0
+  bottom: 0
+  width: 100%
+  margin: 10px 0
+  font-size: 200%
+  line-height: 140%
+  text-align: center
+
 
 /* ============================
  * 
