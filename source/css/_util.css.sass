@@ -17,3 +17,11 @@
     input:focus#{$prefix}placeholder,
     textarea:focus#{$prefix}placeholder
       opacity: 0
+
+//http://jsfiddle.net/leaverou/SUgfD/light/
+=checkered-background($size, $color)
+  background-image: -moz-linear-gradient(45deg, $color 25%, transparent 25%), -moz-linear-gradient(-45deg, $color 25%, transparent 25%), -moz-linear-gradient(45deg, transparent 75%, $color 75%), -moz-linear-gradient(-45deg, transparent 75%, $color 75%)
+  background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, $color), color-stop(.25, transparent)), -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, $color), color-stop(.25, transparent)), -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, $color)), -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, $color))
+
+  background-size: $size $size
+  background-position: 0 0, $size / 2 0, $size / 2 $size / -2, 0px $size / -2

@@ -26,8 +26,8 @@ function LatLng(a, b) {
 extend(LatLng.prototype, {
   _setup: function (lat, lng) {
     if (typeof lat === 'number' && typeof lng === 'number') {
-      this.lat = lat.toFixed(4) * 1;
-      this.lng = lng.toFixed(4) * 1;
+      this.lat = lat.toFixed(5) * 1;
+      this.lng = lng.toFixed(5) * 1;
     } else {
       throw new Error('Arguments must be Number');
     }

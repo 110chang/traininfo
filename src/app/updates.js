@@ -19,7 +19,8 @@ function UpdatesVM() {
 inherit(UpdatesVM, events.EventEmitter);
 extend(UpdatesVM.prototype, {
   getUpdates: function() {
-    //console.log('UpdatesVM#getUpdates');
+    console.log('UpdatesVM#getUpdates');
+    console.log(this.updates().slice());
     return this.updates().slice();
   },
   load: function() {
@@ -28,12 +29,11 @@ extend(UpdatesVM.prototype, {
   },
   loadComplete: function(error, response) {
     console.log('UpdatesVM#loadComplete');
-    //console.log(response.body[0].value.items);
     if (error) {
       this.handleError(error);
       return;
     }
-
+    console.log(response.body[0].value.items);
     var updates = response.body[0].value.items;
     updates.map(function(update) {
       return extend(update, {

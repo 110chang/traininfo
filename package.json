@@ -2,6 +2,7 @@
   "name": "middleman-template-grunt-browserify",
   "version": "0.1.0",
   "devDependencies": {
+    "decimal.js": "^4.0.2",
     "delegates": "^0.1.0",
     "extend": "^2.0.1",
     "grunt": "~0.4.1",

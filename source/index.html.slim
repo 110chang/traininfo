@@ -77,10 +77,12 @@ div#routemap
 
 #updates
   ul data-bind="foreach: updates"
+    /! ko if: $data.content
     li
       p data-bind="text: title"
       p data-bind="text: content"
       p data-bind="text: status.key, style: { color: status.color }"
+    /! /ko
 
 nav#menus
   ul

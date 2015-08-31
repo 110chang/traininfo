@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', function(e) {
   var routeMap = new RouteMapVM();
   var lines = new Lines();
   var updates = new UpdatesVM();
+  updates.on('loadFailure', function() {
+    console.log('%c%s', 'background:#FF0', 'Main#loadFailure');
+  });
 
   lines.on('changed', function(e) {
     //console.log('Main#changed');
@@ -51,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     mapControl.initialize();
 
     routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
-
     //mapControl.expand(1);
   });
 });
