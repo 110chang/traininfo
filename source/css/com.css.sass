@@ -209,6 +209,20 @@ input.placeholder
 
 #updates
   //display: none
+  overflow: auto
+  position: absolute
+  left: 0
+  bottom: 0
+  width: 100%
+  z-index: 9999
+  background: rgba(0,0,0,0.8)
+  -webkit-overflow-scrolling: touch
+
+.updates-list
+  li
+    border-left: 3px solid #666
+  li>*
+    display: inline-block
 
 #horizontal-center
   position: fixed
@@ -230,6 +244,7 @@ input.placeholder
   position: fixed
   left: 0
   bottom: 0
+  z-index: 9999
   width: 100%
   margin: 10px 0
   font-size: 200%

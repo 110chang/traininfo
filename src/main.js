@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
   Q.all([lines, updates].map(function(vm) {
     var dfd = Q.defer();
     vm.on('loadComplete', function() {
+      //console.log('Main#loadComplete');
       dfd.resolve();
     });
     return dfd.promise;
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
     //geoCoords.setOffset(10, 10);
     lines.setUp(geoCoords);
     lines.applyUpdates(updates.getUpdates());
+    //updates.applyLines(lines.getData());
     mapControl.initialize();
 
     routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());

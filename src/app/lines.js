@@ -30,6 +30,9 @@ inherit(Lines, events.EventEmitter);
 extend(Lines.prototype, {
   loadComplete: function(error, response) {
     //console.log('Lines#loadComplete');
+    if (error) {
+      console.log(error);
+    }
     //console.log(response.body);
     var stations = [];
     response.body.forEach(function(line) {
@@ -49,6 +52,7 @@ extend(Lines.prototype, {
     return this.originalData.slice();
   },
   setUp: function(geoCoords) {
+    //console.log('Lines#setUp');
     var point;
     var lineVM;
 
@@ -82,7 +86,7 @@ extend(Lines.prototype, {
     this.data.forEach(function(line) {
       line.update();
     }, this);
-  },  
+  },
   applyUpdates: function(updates) {
     //console.log(updates);
     this.data.forEach(function(line) {

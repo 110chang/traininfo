@@ -46,7 +46,7 @@ function GeoCoords(options) {
   this.coords = new LatLng(this.home);
   this.bounds = null;
 
-  console.log(this.getDestination(new LatLng(36.10056, 140.09111), new LatLng(35.65500, 139.74472)));
+  //console.log(this.getDestination(new LatLng(36.10056, 140.09111), new LatLng(35.65500, 139.74472)));
 
   _instance = this;
 }
@@ -121,7 +121,6 @@ extend(GeoCoords.prototype, {
     var north, east, west, south, line, len, i;
     
     points.forEach(function(point) {
-      //console.log(line.stations.length);
       if (north === undefined) {
         north = south = point.y;
         east = west = point.x;

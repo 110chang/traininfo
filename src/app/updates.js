@@ -20,7 +20,7 @@ inherit(UpdatesVM, events.EventEmitter);
 extend(UpdatesVM.prototype, {
   getUpdates: function() {
     console.log('UpdatesVM#getUpdates');
-    console.log(this.updates().slice());
+    //console.log(this.updates().slice());
     return this.updates().slice();
   },
   load: function() {
@@ -45,6 +45,26 @@ extend(UpdatesVM.prototype, {
     this.emit('loadComplete');
 
     ko.applyBindings(this, document.getElementById('updates'));
+  },
+  applyLines: function(data) {
+    console.log('UpdatesVM#applyLines');
+    //console.log(data);
+    var updates = this.updates().slice();
+    data.forEach(function(line) {
+      //console.log(line.goo_key);
+      updates.forEach(function(update) {
+        //console.log(update.title);
+        if (update.title.match(line.goo_key)) {
+          //console.log(update.title + '===' + line.goo_key);
+        }
+      }, this);
+      
+      /*if (datum.title.match(line.goo_key)) {
+        console.log(update);
+
+      }*/
+    }, this);
+
   },
   handleError: function(error) {
     console.log('UpdatesVM#handleError');
