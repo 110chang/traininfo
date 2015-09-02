@@ -28,6 +28,7 @@ body
   font-size: 100%
   line-height: 140%
   font-family: "Montserrat", sans-serif
+  font-weight: normal
   background: #181818
   color: #F0F0F0
 
@@ -219,10 +220,29 @@ input.placeholder
   -webkit-overflow-scrolling: touch
 
 .updates-list
+  display: none
+
+.update-popup
+  margin-bottom: -1.4em
+  transition: margin 0.5s ease-in-out
   li
+    margin: 1px
+    padding-left: 2px
     border-left: 3px solid #666
+    font-family: "Source Sans Pro", sans-serif
+    font-size: 0.75rem
+    line-height: 140%
   li>*
     display: inline-block
+
+  .status-icon
+    display: inline-block
+    width: 1.1em
+    text-align: center
+
+.update-popup--show
+  margin-bottom: 0
+
 
 #horizontal-center
   position: fixed
@@ -251,6 +271,8 @@ input.placeholder
   line-height: 140%
   text-align: center
 
+  &--some-option
+    color: #000
 
 /* ============================
  * 

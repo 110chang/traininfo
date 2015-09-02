@@ -17,7 +17,7 @@ div#routemap
         /! ###ko if: hasStatus()
         path.subline stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: subColor, 'stroke-width': subStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
         /! ###/ko
-        path.mainline stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"
+        path.mainline stroke-linecap="round" stroke-linejoin="round" pointer-events="none" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }"
     /circle r="3" data-bind="attr: { cx: mapControl.avaterX(), cy: mapControl.avaterY() }"
     /g
       - 150.times do |i|
@@ -76,16 +76,20 @@ div#routemap
 #vertical-center
 
 #updates
-  ul.updates-list data-bind="foreach: updates"
-    /! ko if: $data.content
-    li data-bind="style: { 'border-color': '#666' }"
-      div.status-icon data-bind="if: status.key === 'normal', style: { color: status.color }"
-        i.fa.fa-check
-      div.status-icon data-bind="if: status.key === 'restart', style: { color: status.color }"
-        i.fa.fa-circle-o
-      p data-bind="text: title"
-      p data-bind="text: content"
-    /! /ko
+  div.update-popup data-bind="css: { 'update-popup--show': hasSelected() }"
+    ul data-bind="foreach: { data: selected, beforeRemove: animationDelay }"
+      li data-bind="if: $data.content, style: { 'border-color': color }"
+        p data-bind="text: title"
+        p data-bind="text: content"
+        .status data-bind="style: { color: status.color }"
+          span data-bind="text: status.label"
+          span.status-icon
+            span data-bind="if: status.key === 'normal'"
+              i.fa.fa-check
+            span data-bind="if: status.key === 'delay'"
+              i.fa.fa-warning
+            span data-bind="if: status.key === 'restart'"
+              i.fa.fa-circle-o
 
 nav#menus
   ul

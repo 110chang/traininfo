@@ -21,6 +21,7 @@ function Lines() {
   }
 
   this.data = [];
+  this.hovered = null;
 
   ajax.get('/lines.json').end(this.loadComplete.bind(this));
 
@@ -65,27 +66,44 @@ extend(Lines.prototype, {
         station.y = point.y;
       });
       lineVM = new LineVM(line);
-      lineVM.on('mouseOver', this.bringToTop.bind(this));
-      lineVM.on('mouseOut', this.takeDownBottom.bind(this));
+      lineVM.on('mouseOver', this.onLineMouseOver.bind(this));
+      lineVM.on('mouseOut', this.onLineMouseOut.bind(this));
       this.data.push(lineVM);
     }, this);
   },
   bringToTop: function(e) {
     this.data.splice(this.data.indexOf(e), 1);
     this.data.push(e);
-    this.emit('changed');
   },
   takeDownBottom: function(e) {
     if (e.status().id === 0) {
       this.data.splice(this.data.indexOf(e), 1);
       this.data.unshift(e);
-      this.emit('changed');
     }
   },
   update: function() {
     this.data.forEach(function(line) {
       line.update();
     }, this);
+  },
+  onLineMouseOver: function(data, e) {
+    console.log('Lines#onLineMouseOver');
+    console.log(this.hovered === e);
+    //if (this.hovered === e) {
+    //  return;
+    //}
+    this.bringToTop(data);
+    this.emit('lineMouseOver', data);
+    this.hovered = data;
+  },
+  onLineMouseOut: function(data, e) {
+    console.log('Lines#onLineMouseOut');
+    //if (this.hovered === null) {
+    //  return;
+    //}
+    this.takeDownBottom(data);
+    this.emit('lineMouseOut', data);
+    this.hovered = null;
   },
   applyUpdates: function(updates) {
     //console.log(updates);
@@ -99,8 +117,6 @@ extend(Lines.prototype, {
         }
       }, this);
     }, this);
-
-    this.emit('changed');
   },
   onAfterRender: function(e) {
     console.log(e);

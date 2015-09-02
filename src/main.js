@@ -28,9 +28,16 @@ document.addEventListener('DOMContentLoaded', function(e) {
     console.log('%c%s', 'background:#FF0', 'Main#loadFailure');
   });
 
-  lines.on('changed', function(e) {
+  lines.on('lineMouseOver', function(e) {
     //console.log('Main#changed');
     routeMap.updateLines(lines.get());
+    updates.popup(e);
+  });
+
+  lines.on('lineMouseOut', function(e) {
+    //console.log('Main#changed');
+    routeMap.updateLines(lines.get());
+    updates.popout();
   });
 
   mapControl.on('boundsChanged', function(e) {
@@ -52,11 +59,13 @@ document.addEventListener('DOMContentLoaded', function(e) {
     //geoCoords.setOffset(10, 10);
     lines.setUp(geoCoords);
     lines.applyUpdates(updates.getUpdates());
-    //updates.applyLines(lines.getData());
+    updates.applyLines(lines.getData());
+    routeMap.updateLines(lines.get());
     mapControl.initialize();
 
     routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
     //mapControl.expand(1);
   });
 });
+
 

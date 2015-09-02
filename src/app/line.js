@@ -62,10 +62,10 @@ extend(LineVM.prototype, {
   },
   getMainStrokeWidth: function() {
     if (this.isSelected()) {
-      return 6 / this.map.getScale();
+      return 10 / this.map.getScale();
     }
     if (this.hasStatus()) {
-      return 4 / this.map.getScale();
+      return 6 / this.map.getScale();
     }
     return 2 / this.map.getScale();
   },
@@ -73,7 +73,7 @@ extend(LineVM.prototype, {
     return this.hasStatus() ? this.status().color : 'rgba(0,0,0,0)';
   },
   getSubStrokeWidth: function() {
-    return this.getMainStrokeWidth() + 6 / this.map.getScale();
+    return this.getMainStrokeWidth() + 8 / this.map.getScale();
   },
   getPath: function() {
     var path = this.stations.map(function(station, i) {
@@ -93,17 +93,15 @@ extend(LineVM.prototype, {
     status = status || this.status();
     this.status(status);
   },
-  mouseOverPath: function(e) {
+  mouseOverPath: function(data, e) {
     //console.log('LineVM#mouseOverPath');
     this.selected(true);
-    this.emit('mouseOver', this);
+    this.emit('mouseOver', this, e);
   },
-  mouseOutPath: function(e) {
+  mouseOutPath: function(data, e) {
     //console.log('LineVM#mouseOutPath');
     this.selected(false);
-    this.emit('mouseOut', this);
-    //this.strokeWidth((skin[this.status()].thickness || 1) / this.map.scale());
-    //this.color(skin[this.status()].color || this.lineColor);
+    this.emit('mouseOut', this, e);
   }
 });
 
