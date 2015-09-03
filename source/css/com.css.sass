@@ -69,14 +69,61 @@ input.placeholder
   position: fixed
   left: 0
   top: 0
+  width: 100%
+  height: 100%
   .subline
     opacity: 0.6
   .subline-anim
     stroke-dasharray: 10px 6px
     animation: 'dash-anim' 3s linear 0s infinite
-
+  svg
+    position: fixed
+    left: 0
+    top: 0
+  path
+    transition: all 0.25s ease-in-out
 
 #mapcontrol
+
+#popup
+  position: absolute
+  left: 0
+  bottom: 0
+  width: 100%
+  z-index: 999
+  background: rgba(0,0,0,0.8)
+
+  li
+    position: relative
+    border-top: 2px solid #333
+    font-family: "Source Sans Pro", sans-serif
+    font-size: 0.75rem
+    line-height: 140%
+    &>*
+      display: inline-block
+
+.popup-title
+  margin: 0.1em 0.25em
+  font-weight: bold
+
+.popup-msg
+  margin: 0.2em 0.25em
+  font-size: 0.625rem
+  line-height: 120%
+
+.popup-status
+
+.popup-status-icon
+  margin: 0.1em 0.25em
+
+.popup-status-label
+  margin: 0.1em 0.25em
+  padding: 0.1em 0.25em
+  border-radius: 4px
+  background: #333
+  color: #F0F0F0
+  font-size: 0.625rem
+  line-height: 140%
 
 /* ===== horizontal slider ===== */
 

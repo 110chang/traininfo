@@ -7,8 +7,10 @@ var extend = require('extend');
 var events = require('events');
 var inherit = require('util').inherits;
 var ajax = require('superagent');
+var ko = require('knockout');
 
 var LineVM = require('./line');
+var Status = require('./status');
 
 var _instance = null;
 
@@ -20,8 +22,8 @@ function Lines() {
     return new Lines();
   }
 
-  this.data = [];
-  this.hovered = null;
+  this.data = ko.observableArray([]);
+  this.focused = ko.observableArray([]);
 
   ajax.get('/lines.json').end(this.loadComplete.bind(this));
 
@@ -44,7 +46,7 @@ extend(Lines.prototype, {
     this.emit('loadComplete');
   },
   get:function() {
-    return this.data;
+    return this.data();
   },
   getStations: function() {
     return this.stations;
@@ -68,58 +70,60 @@ extend(Lines.prototype, {
       lineVM = new LineVM(line);
       lineVM.on('mouseOver', this.onLineMouseOver.bind(this));
       lineVM.on('mouseOut', this.onLineMouseOut.bind(this));
-      this.data.push(lineVM);
+      this.data().push(lineVM);
     }, this);
   },
   bringToTop: function(e) {
-    this.data.splice(this.data.indexOf(e), 1);
+    this.data().splice(this.data.indexOf(e), 1);
     this.data.push(e);
   },
   takeDownBottom: function(e) {
     if (e.status().id === 0) {
-      this.data.splice(this.data.indexOf(e), 1);
-      this.data.unshift(e);
+      var _self = this;
+      setTimeout(function() {
+        _self.data().splice(_self.data.indexOf(e), 1);
+        _self.data.unshift(e);
+      }, 250);
     }
   },
   update: function() {
-    this.data.forEach(function(line) {
+    this.data().forEach(function(line) {
       line.update();
     }, this);
   },
   onLineMouseOver: function(data, e) {
-    console.log('Lines#onLineMouseOver');
-    console.log(this.hovered === e);
-    //if (this.hovered === e) {
+    //console.log('Lines#onLineMouseOver');
+    console.log(data);
+    //if (this.focused === e) {
     //  return;
     //}
     this.bringToTop(data);
     this.emit('lineMouseOver', data, e);
-    this.hovered = data;
+    this.focused(data);
   },
   onLineMouseOut: function(data, e) {
-    console.log('Lines#onLineMouseOut');
-    //if (this.hovered === null) {
+    //console.log('Lines#onLineMouseOut');
+    //if (this.focused === null) {
     //  return;
     //}
     this.takeDownBottom(data);
     this.emit('lineMouseOut', data, e);
-    this.hovered = null;
+    this.focused([]);
   },
   applyUpdates: function(updates) {
     //console.log(updates);
-    this.data.forEach(function(line) {
+    this.data().forEach(function(line) {
       updates.forEach(function(update) {
         //console.log(update.title + '===' + line.goo_key);
         if (update.title.match(line.goo_key)) {
-          //console.log(update);
-          line.update(update.status);
+          console.log(update);
+          line.update(update.status, update.content);
           this.bringToTop(line);
+        } else {
+          //line.update(Status().decode(0));
         }
       }, this);
     }, this);
-  },
-  onAfterRender: function(e) {
-    console.log(e);
   }
 });
 

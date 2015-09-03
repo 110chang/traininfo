@@ -28,18 +28,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     console.log('%c%s', 'background:#FF0', 'Main#loadFailure');
   });
 
-  lines.on('lineMouseOver', function(data, e) {
-    //console.log('Main#changed');
-    routeMap.updateLines(lines.get());
-    updates.popup(data, e);
-  });
-
-  lines.on('lineMouseOut', function(data, e) {
-    //console.log('Main#changed');
-    routeMap.updateLines(lines.get());
-    updates.popout();
-  });
-
   mapControl.on('boundsChanged', function(e) {
     //console.log('Main#changed');
     lines.update();
@@ -58,9 +46,10 @@ document.addEventListener('DOMContentLoaded', function(e) {
     geoCoords.initialize(lines.getStations());
     //geoCoords.setOffset(10, 10);
     lines.setUp(geoCoords);
+    console.log(updates.getUpdates());
     lines.applyUpdates(updates.getUpdates());
     updates.applyLines(lines.getData());
-    routeMap.updateLines(lines.get());
+    routeMap.initialize();
     mapControl.initialize();
 
     routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());

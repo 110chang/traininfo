@@ -8,7 +8,7 @@ var extend = require('extend');
 
 var _instance = null;
 
-var REG_RESTART = /(:?遅れ|運休|運転変更)?が出ていましたが.+平常/;
+var REG_RESTART = /(:?遅れ|運休|運転変更|運転を?見合).+いましたが.+(:?平常|運転を?再開)/;
 var REG_INFO = /(:?運転状況|一部列車に(:?遅れ|運休|運転変更))/;
 var REG_DELAY = /(:?遅れ|列車遅延)/;
 var REG_SUSPEND = /運転(:?.+)?見合/;
@@ -19,7 +19,7 @@ var STATUSES = [{
   id: 0,
   key: 'normal',
   label: '平常運転',
-  color: '#333'//'#D6D3D1'
+  color: '#390'
 }, {
   id: 1,
   key: 'info',

@@ -22,14 +22,14 @@ var ko = require('knockout');
 
 var MapControlFactory = require('./mapcontrolfactory');
 var Status = require('./status');
-Status = Status();
 
 function LineVM(o) {
   events.EventEmitter.call(this);
 
   this.map = MapControlFactory();
 
-  this.status = ko.observable(Status.decode(0));
+  this.status = ko.observable(Status().decode(0));
+  this.content = ko.observable('');
   this.color = o.color;
   this.goo_key = o.goo_key;
   this.id = ko.observable(o.id);
@@ -89,9 +89,12 @@ extend(LineVM.prototype, {
     }
     return path.join(' ');
   },
-  update: function(status) {
+  update: function(status, content) {
+    //console.log(status);
     status = status || this.status();
+    content = content || this.content();
     this.status(status);
+    this.content(content);
   },
   mouseOverPath: function(data, e) {
     //console.log('LineVM#mouseOverPath');
