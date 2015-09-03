@@ -3,6 +3,9 @@
  * updates
  */
 
+var $ = jQuery = require('jquery');
+require('jquery.easing');
+
 var extend = require('extend');
 var events = require('events');
 var inherit = require('util').inherits;
@@ -82,12 +85,12 @@ extend(UpdatesVM.prototype, {
       this.emit('loadFailure');
     }
   },
-  popup: function(e) {
+  popup: function(data, e) {
     console.log('UpdatesVM#popup');
-    this.selected([]);
+    //this.selected([]);
     var filtered = this.updates().filter(function(update) {
       //console.log(updates.title +'==='+ e.goo_key);
-      return update.title.match(e.goo_key);
+      return update.title.match(data.goo_key);
     }, this);
     console.log(filtered);
     if (filtered && filtered.length > 0) {
@@ -103,13 +106,24 @@ extend(UpdatesVM.prototype, {
     this.updates(this.origUpdates);
     this.selected([]);
   },
-  animationDelay: function(e) {
-    console.log('UpdatesVM#animationDelay');
+  afterPopup: function(e) {
+    console.log('UpdatesVM#afterPopup');
     if (e.nodeType === 1) {
-      var _self = this;
-      setTimeout(function() {
+      $(e).stop().css({
+        'margin-bottom': -$(e).height()
+      }).animate({
+        'margin-bottom': 0
+      }, 250, 'easeInOutQuad');
+    }
+  },
+  beforePopout: function(e) {
+    console.log('UpdatesVM#beforePopout');
+    if (e.nodeType === 1) {
+      $(e).stop().animate({
+        'margin-bottom': -$(e).height()
+      }, 250, 'easeInOutQuad', function() {
         e.parentNode.removeChild(e);
-      }, 500);
+      });
     }
   }
 });

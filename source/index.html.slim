@@ -76,20 +76,24 @@ div#routemap
 #vertical-center
 
 #updates
-  div.update-popup data-bind="css: { 'update-popup--show': hasSelected() }"
-    ul data-bind="foreach: { data: selected, beforeRemove: animationDelay }"
-      li data-bind="if: $data.content, style: { 'border-color': color }"
-        p data-bind="text: title"
-        p data-bind="text: content"
+  div.update-popup
+    ul data-bind="foreach: { data: selected, afterAdd: afterPopup, beforeRemove: beforePopout }"
+      li data-bind="style: { 'border-color': color }"
+        p.update-title data-bind="text: title"
+        p.update-content data-bind="text: content"
         .status data-bind="style: { color: status.color }"
           span data-bind="text: status.label"
           span.status-icon
             span data-bind="if: status.key === 'normal'"
               i.fa.fa-check
+            span data-bind="if: status.key === 'info'"
+              i.fa.fa-info-circle
             span data-bind="if: status.key === 'delay'"
               i.fa.fa-warning
+            span data-bind="if: status.key === 'suspend'"
+              i.fa.fa-minus-circle
             span data-bind="if: status.key === 'restart'"
-              i.fa.fa-circle-o
+              i.fa.fa-refresh
 
 nav#menus
   ul

@@ -93,7 +93,7 @@ extend(Lines.prototype, {
     //  return;
     //}
     this.bringToTop(data);
-    this.emit('lineMouseOver', data);
+    this.emit('lineMouseOver', data, e);
     this.hovered = data;
   },
   onLineMouseOut: function(data, e) {
@@ -102,7 +102,7 @@ extend(Lines.prototype, {
     //  return;
     //}
     this.takeDownBottom(data);
-    this.emit('lineMouseOut', data);
+    this.emit('lineMouseOut', data, e);
     this.hovered = null;
   },
   applyUpdates: function(updates) {

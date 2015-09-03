@@ -28,13 +28,13 @@ document.addEventListener('DOMContentLoaded', function(e) {
     console.log('%c%s', 'background:#FF0', 'Main#loadFailure');
   });
 
-  lines.on('lineMouseOver', function(e) {
+  lines.on('lineMouseOver', function(data, e) {
     //console.log('Main#changed');
     routeMap.updateLines(lines.get());
-    updates.popup(e);
+    updates.popup(data, e);
   });
 
-  lines.on('lineMouseOut', function(e) {
+  lines.on('lineMouseOut', function(data, e) {
     //console.log('Main#changed');
     routeMap.updateLines(lines.get());
     updates.popout();

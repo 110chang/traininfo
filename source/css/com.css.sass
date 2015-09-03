@@ -211,7 +211,7 @@ input.placeholder
 #updates
   //display: none
   overflow: auto
-  position: absolute
+  position: fixed
   left: 0
   bottom: 0
   width: 100%
@@ -223,11 +223,12 @@ input.placeholder
   display: none
 
 .update-popup
-  margin-bottom: -1.4em
-  transition: margin 0.5s ease-in-out
+  //margin-bottom: -1.4em
+  //transition: margin 0.5s ease-in-out
   li
-    margin: 1px
-    padding-left: 2px
+    position: relative
+    overflow: hidden
+    padding: 2px 4px
     border-left: 3px solid #666
     font-family: "Source Sans Pro", sans-serif
     font-size: 0.75rem
@@ -240,9 +241,8 @@ input.placeholder
     width: 1.1em
     text-align: center
 
-.update-popup--show
-  margin-bottom: 0
-
+.update-title
+  font-weight: bold
 
 #horizontal-center
   position: fixed
@@ -282,5 +282,10 @@ input.placeholder
 
 @media screen and (min-width:767px)
 
+  .update-popup
+    li
+      padding: 3px 6px
+      font-size: 1rem
+      line-height: 140%
 
 // EOF
