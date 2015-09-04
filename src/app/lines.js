@@ -3,6 +3,12 @@
  * lines
  */
 
+var $ = require('jquery');
+if (!window.jQuery) {
+  window.jQuery = $;
+}
+require('jquery.easing');
+
 var extend = require('extend');
 var events = require('events');
 var inherit = require('util').inherits;
@@ -93,19 +99,12 @@ extend(Lines.prototype, {
   },
   onLineMouseOver: function(data, e) {
     //console.log('Lines#onLineMouseOver');
-    console.log(data);
-    //if (this.focused === e) {
-    //  return;
-    //}
     this.bringToTop(data);
     this.emit('lineMouseOver', data, e);
     this.focused(data);
   },
   onLineMouseOut: function(data, e) {
     //console.log('Lines#onLineMouseOut');
-    //if (this.focused === null) {
-    //  return;
-    //}
     this.takeDownBottom(data);
     this.emit('lineMouseOut', data, e);
     this.focused([]);
@@ -116,7 +115,7 @@ extend(Lines.prototype, {
       updates.forEach(function(update) {
         //console.log(update.title + '===' + line.goo_key);
         if (update.title.match(line.goo_key)) {
-          console.log(update);
+          //console.log(update);
           line.update(update.status, update.content);
           this.bringToTop(line);
         } else {
@@ -124,6 +123,26 @@ extend(Lines.prototype, {
         }
       }, this);
     }, this);
+  },
+  afterPopup: function(e) {
+    //console.log('Lines#afterPopup');
+    if (e.nodeType === 1) {
+      $(e).stop().css({
+        'margin-top': -$(e).height()
+      }).animate({
+        'margin-top': 0
+      }, 250, 'easeInOutQuad');
+    }
+  },
+  beforePopout: function(e) {
+    //console.log('Lines#beforePopout');
+    if (e.nodeType === 1) {
+      $(e).stop().animate({
+        'margin-top': -$(e).height()
+      }, 250, 'easeInOutQuad', function() {
+        e.parentNode.removeChild(e);
+      });
+    }
   }
 });
 

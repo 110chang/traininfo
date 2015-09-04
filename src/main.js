@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function(e) {
     geoCoords.initialize(lines.getStations());
     //geoCoords.setOffset(10, 10);
     lines.setUp(geoCoords);
-    console.log(updates.getUpdates());
     lines.applyUpdates(updates.getUpdates());
     updates.applyLines(lines.getData());
     routeMap.initialize();

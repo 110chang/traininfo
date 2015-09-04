@@ -30,8 +30,8 @@ div#routemap
         path d="M0,#{10 * i} L1500, #{10 * i}" stroke="#{color}" stroke-width="#{width}"
 
   #popup
-    ul data-bind="foreach: lines.focused"
-      li data-bind="style: { 'border-color': color }"
+    ul data-bind="foreach: { data: lines.focused, afterAdd: lines.afterPopup, beforeRemove: lines.beforePopout }"
+      li.popup-container data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status().key !== 'normal' }, event: { click: popout }"
         p.popup-status data-bind="style: { color: status().color }"
           span.popup-status-icon
             span data-bind="if: status().key === 'normal'"
@@ -85,36 +85,33 @@ div#routemap
         span.scale-silder-display-amount data-bind="text: scale"
       /! /ko
   .minimap
-    .minimap-init data-bind="style: { left: 0, top: 0, width: minimap.svgWidth() + 'px', height: minimap.svgHeight() + 'px' }"
+    .minimap-init data-bind="style: { width: minimap.svgWidth() + 'px', height: minimap.svgHeight() + 'px' }"
       .minimap-current data-bind="style: { left: minimap.x() + 'px', top: minimap.y() + 'px', width: minimap.width() + 'px', height: minimap.height() + 'px' }"
-    /p data-bind="text: avaterViewBox"
-    /p data-bind="text: '0 < ' + avaterX() + ' < ' + avaterXMax()"
-    /p data-bind="text: '0 < ' + avaterY() + ' < ' + avaterYMax()"
 
 #horizontal-center
 #vertical-center
 
 #updates
-  div.update-popup
-    ul data-bind="foreach: { data: selected, afterAdd: afterPopup, beforeRemove: beforePopout }"
-      li data-bind="style: { 'border-color': color }"
-        p.update-title data-bind="text: title"
-        p.update-content data-bind="text: content"
-        .status data-bind="style: { color: status.color }"
-          span data-bind="text: status.label"
-          span.status-icon
-            span data-bind="if: status.key === 'normal'"
-              i.fa.fa-check
-            span data-bind="if: status.key === 'info'"
-              i.fa.fa-info-circle
-            span data-bind="if: status.key === 'delay'"
-              i.fa.fa-warning
-            span data-bind="if: status.key === 'suspend'"
-              i.fa.fa-minus-circle
-            span data-bind="if: status.key === 'restart'"
-              i.fa.fa-refresh
+  ul#updates-list data-bind="foreach: updates"
+    li.popup-container.update-container data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status.key !== 'normal' }"
+      p.popup-status data-bind="style: { color: status.color }"
+        span.popup-status-icon
+          span data-bind="if: status.key === 'normal'"
+            i.fa.fa-check
+          span data-bind="if: status.key === 'info'"
+            i.fa.fa-info-circle
+          span data-bind="if: status.key === 'delay'"
+            i.fa.fa-warning
+          span data-bind="if: status.key === 'suspend'"
+            i.fa.fa-minus-circle
+          span data-bind="if: status.key === 'restart'"
+            i.fa.fa-refresh
+        span.popup-status-label data-bind="text: status.label, style: { background: status.color }"
+      p.popup-title data-bind="text: name"
+      p.popup-msg data-bind="text: content"
+  nav.updates-nav-bar data-bind="css: { 'update-nav-bar--open': isShow }"
+    ul
+      li.update-nav-toggle data-bind="event: { click: toggle }, css: { 'update-nav-toggle--open': isShow }"
+        span.updates-icon
+          i.fa.fa-plus
 
-nav#menus
-  ul
-    li
-      i.fa.fa-train

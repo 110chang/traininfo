@@ -3,7 +3,10 @@
  * updates
  */
 
-var $ = jQuery = require('jquery');
+var $ = require('jquery');
+if (!window.jQuery) {
+  window.jQuery = $;
+}
 require('jquery.easing');
 
 var extend = require('extend');
@@ -14,32 +17,33 @@ var ajax = require('superagent');
 
 var Status = require('./status');
 
+var escapeLineName = /([\\\*\+\.\?\{\}\(\)\[\]\^\$\-\|\/])/g;
+
 function UpdatesVM() {
+  this.$el = $('#updates');
+  this.$list = $('#updates-list');
   this.numTrial = 0;
-  this.selected = ko.observableArray([]);
+  this.isShow = ko.observable(false);
   this.updates = ko.observableArray([]);
   this.origUpdates = [];
   this.load();
 }
 inherit(UpdatesVM, events.EventEmitter);
 extend(UpdatesVM.prototype, {
-  hasSelected: function() {
-    return this.selected().length > 0;
-  },
   hasUpdates: function() {
+    //console.log('UpdatesVM#hasUpdates');
     return this.updates().length > 0;
   },
   getUpdates: function() {
     //console.log('UpdatesVM#getUpdates');
-    //console.log(this.updates().slice());
     return this.updates().slice();
   },
   load: function() {
-    console.log('UpdatesVM#load');
+    //console.log('UpdatesVM#load');
     ajax.get('http://192.168.1.11:8002/').end(this.loadComplete.bind(this));
   },
   loadComplete: function(error, response) {
-    console.log('UpdatesVM#loadComplete');
+    //console.log('UpdatesVM#loadComplete');
     if (error) {
       this.handleError(error);
       return;
@@ -55,28 +59,8 @@ extend(UpdatesVM.prototype, {
     this.updates(updates);
     this.emit('loadComplete');
   },
-  applyLines: function(data) {
-    console.log('UpdatesVM#applyLines');
-    //console.log(data);
-    var updates = this.getUpdates();
-    data.forEach(function(line) {
-      //console.log(line.goo_key);
-      updates.forEach(function(update) {
-        //console.log(update.title.match(line.goo_key));
-        if (update.title.match(line.goo_key)) {
-          console.log(update.title + '===' + line.goo_key);
-          update.color = line.color;
-        }
-      }, this);
-    }, this);
-    console.log(updates);
-    this.updates(updates);
-    this.origUpdates = this.getUpdates();
-
-    ko.applyBindings(this, document.getElementById('updates'));
-  },
   handleError: function(error) {
-    console.log('UpdatesVM#handleError');
+    //console.log('UpdatesVM#handleError');
     this.numTrial++;
     if (this.numTrial < UpdatesVM.MAX_NUMBER_OF_TRIAL) {
       this.load();
@@ -85,46 +69,49 @@ extend(UpdatesVM.prototype, {
       this.emit('loadFailure');
     }
   },
-  popup: function(data, e) {
-    console.log('UpdatesVM#popup');
-    //this.selected([]);
-    var filtered = this.updates().filter(function(update) {
-      //console.log(updates.title +'==='+ e.goo_key);
-      return update.title.match(data.goo_key);
+  applyLines: function(data) {
+    //console.log('UpdatesVM#applyLines');
+    var updates = this.getUpdates();
+    data.forEach(function(line) {
+      //console.log(line.goo_key);
+      var regTitle = new RegExp(line.goo_key.replace(escapeLineName, '\\$1'));
+      //console.log(regTitle);
+      this.updates().map(function(update) {
+        //console.log(update.title + '===' + line.goo_key);
+        if (regTitle.test(update.title)) {
+          //console.log(update.title + '===' + line.goo_key);
+          update.color = line.color;
+          update.name = line.name;
+        }
+      }, this);
     }, this);
-    console.log(filtered);
-    if (filtered && filtered.length > 0) {
-      this.updates([]);
-      this.selected(filtered);
+    //console.log(updates);
+    this.updates(updates);
+    this.origUpdates = this.getUpdates();
+
+    ko.applyBindings(this, this.$el.get(0));
+
+    this.close();
+  },
+  toggle: function() {
+    if (this.isShow()) {
+      this.close();
     } else {
-      this.popout();
+      this.open();
     }
+    this.isShow(!this.isShow());
   },
-  popout: function() {
-    console.log('UpdatesVM#popout');
-    console.log(this.origUpdates);
-    this.updates(this.origUpdates);
-    this.selected([]);
+  open: function(data, e) {
+    //console.log('UpdatesVM#open');
+    this.$el.stop().animate({
+      'bottom': 0
+    }, 250, 'easeInOutExpo');
   },
-  afterPopup: function(e) {
-    console.log('UpdatesVM#afterPopup');
-    if (e.nodeType === 1) {
-      $(e).stop().css({
-        'margin-bottom': -$(e).height()
-      }).animate({
-        'margin-bottom': 0
-      }, 250, 'easeInOutQuad');
-    }
-  },
-  beforePopout: function(e) {
-    console.log('UpdatesVM#beforePopout');
-    if (e.nodeType === 1) {
-      $(e).stop().animate({
-        'margin-bottom': -$(e).height()
-      }, 250, 'easeInOutQuad', function() {
-        e.parentNode.removeChild(e);
-      });
-    }
+  close: function() {
+    //console.log('UpdatesVM#close');
+    this.$el.stop().animate({
+      'bottom': -this.$el.height()
+    }, 250, 'easeInOutExpo');
   }
 });
 UpdatesVM.MAX_NUMBER_OF_TRIAL = 5;

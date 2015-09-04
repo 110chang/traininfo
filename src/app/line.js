@@ -13,8 +13,6 @@ stations: Array[32]
 subway: "false"
 */
 
-var $ = require('jquery');
-
 var extend = require('extend');
 var events = require('events');
 var inherit = require('util').inherits;
@@ -70,10 +68,12 @@ extend(LineVM.prototype, {
     return 2 / this.map.getScale();
   },
   getSubStrokeColor: function() {
-    return this.hasStatus() ? this.status().color : 'rgba(0,0,0,0)';
+    var normalColor = this.isSelected() ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,0)';
+    return this.hasStatus() ? this.status().color : normalColor;
   },
   getSubStrokeWidth: function() {
-    return this.getMainStrokeWidth() + 8 / this.map.getScale();
+    var fat = this.isSelected() ? 16 : 8;
+    return this.getMainStrokeWidth() + fat / this.map.getScale();
   },
   getPath: function() {
     var path = this.stations.map(function(station, i) {
@@ -105,6 +105,10 @@ extend(LineVM.prototype, {
     //console.log('LineVM#mouseOutPath');
     this.selected(false);
     this.emit('mouseOut', this, e);
+  },
+  popout: function(e) {
+    //console.log('LineVM#popout');
+    //console.log(e);
   }
 });
 
