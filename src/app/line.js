@@ -13,8 +13,6 @@ stations: Array[32]
 subway: "false"
 */
 
-var $ = require('jquery');
-
 var extend = require('extend');
 var events = require('events');
 var inherit = require('util').inherits;
@@ -22,14 +20,14 @@ var ko = require('knockout');
 
 var MapControlFactory = require('./mapcontrolfactory');
 var Status = require('./status');
-Status = Status();
 
 function LineVM(o) {
   events.EventEmitter.call(this);
 
   this.map = MapControlFactory();
 
-  this.status = ko.observable(Status.decode(0));
+  this.status = ko.observable(Status().decode(0));
+  this.content = ko.observable('');
   this.color = o.color;
   this.goo_key = o.goo_key;
   this.id = ko.observable(o.id);
@@ -70,10 +68,12 @@ extend(LineVM.prototype, {
     return 2 / this.map.getScale();
   },
   getSubStrokeColor: function() {
-    return this.hasStatus() ? this.status().color : 'rgba(0,0,0,0)';
+    var normalColor = this.isSelected() ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,0)';
+    return this.hasStatus() ? this.status().color : normalColor;
   },
   getSubStrokeWidth: function() {
-    return this.getMainStrokeWidth() + 8 / this.map.getScale();
+    var fat = this.isSelected() ? 16 : 8;
+    return this.getMainStrokeWidth() + fat / this.map.getScale();
   },
   getPath: function() {
     var path = this.stations.map(function(station, i) {
@@ -89,9 +89,12 @@ extend(LineVM.prototype, {
     }
     return path.join(' ');
   },
-  update: function(status) {
+  update: function(status, content) {
+    //console.log(status);
     status = status || this.status();
+    content = content || this.content();
     this.status(status);
+    this.content(content);
   },
   mouseOverPath: function(data, e) {
     //console.log('LineVM#mouseOverPath');
@@ -102,6 +105,10 @@ extend(LineVM.prototype, {
     //console.log('LineVM#mouseOutPath');
     this.selected(false);
     this.emit('mouseOut', this, e);
+  },
+  popout: function(e) {
+    //console.log('LineVM#popout');
+    //console.log(e);
   }
 });
 
