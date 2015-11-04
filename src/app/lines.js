@@ -42,13 +42,12 @@ extend(Lines.prototype, {
     if (error) {
       console.log(error);
     }
-    console.log(response);
-    console.log(response.body);
     var stations = [];
-    response.body.forEach(function(line) {
+    var res = response.body || JSON.parse(response.text);
+    res.forEach(function(line) {
       stations = stations.concat(line.stations);
     }, this);
-    this.originalData = response.body;
+    this.originalData = res.slice();
     this.stations = stations;
     this.emit('loadComplete');
   },
