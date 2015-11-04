@@ -42,6 +42,7 @@ extend(Lines.prototype, {
     if (error) {
       console.log(error);
     }
+    console.log(response);
     console.log(response.body);
     var stations = [];
     response.body.forEach(function(line) {
