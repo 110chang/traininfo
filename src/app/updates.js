@@ -40,7 +40,7 @@ extend(UpdatesVM.prototype, {
   },
   load: function() {
     //console.log('UpdatesVM#load');
-    ajax.get('http://192.168.1.11:8002/').end(this.loadComplete.bind(this));
+    ajax.get(window.UPDATE_SRC).end(this.loadComplete.bind(this));
   },
   loadComplete: function(error, response) {
     //console.log('UpdatesVM#loadComplete');

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>新規サイト</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1">
+    <meta name="author" content="yuji ito">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700" rel="stylesheet" type="text/css">
+    <link href="css/com.css" rel="stylesheet" media="all">
+    
+    <script>
+      window.UPDATE_SRC = 'http://' + 'src.traininfo.tokyo' + '/';
+    </script>
+    <script src="js/all.js"></script>
+    <link rel="shortcut icon" href="img/favicon.ico">
+  </head>
+  
+  <body id="doc-index">
+    <article id="main">
+      <div id="routemap">
+        <svg xmlns="http://www.w3.org/2000/svg" data-bind="attr: { width: width, height: height, viewBox: viewBox }" preserveAspectRatio="xMinYMin"><g data-bind="foreach: lines.data"><a data-bind="attr: { 'xlink:href': '#' + name() }" fill="none"><!--###ko if: hasStatus()--><path class="subline" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: subColor, 'stroke-width': subStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"></path><!--###/ko--><path class="mainline" stroke-linecap="round" stroke-linejoin="round" pointer-events="none" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }"></path></a></g></svg>
+        <div id="popup">
+          <ul data-bind="foreach: { data: lines.focused, afterAdd: lines.afterPopup, beforeRemove: lines.beforePopout }">
+            <li class="popup-container" data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status().key !== 'normal' }, event: { click: popout }">
+              <p class="popup-status" data-bind="style: { color: status().color }">
+                <span class="popup-status-icon"><span data-bind="if: status().key === 'normal'"><i class="fa fa-check"></i></span><span data-bind="if: status().key === 'info'"><i class="fa fa-info-circle"></i></span><span data-bind="if: status().key === 'delay'"><i class="fa fa-warning"></i></span><span data-bind="if: status().key === 'suspend'"><i class="fa fa-minus-circle"></i></span><span data-bind="if: status().key === 'restart'"><i class="fa fa-refresh"></i></span></span><span class="popup-status-label" data-bind="text: status().label, style: { background: status().color }"></span>
+              </p>
+              <p class="popup-title" data-bind="text: name"></p>
+              <p class="popup-msg" data-bind="text: content"></p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div id="mapcontrol">
+        <div id="map-slider-vertical">
+          <div class="scale-slider scale-slider--vertical">
+            <span class="scale-slider-icon scale-slider-ico-wide"><i class="fa fa-tree"></i></span><span class="scale-slider-groove"></span><span class="scale-slider-handle" data-bind="style: { left: handle().left, top: handle().top }"><i class="fa fa-bars"></i></span><span class="scale-slider-icon scale-slider-ico-tele"><i class="fa fa-tree"></i><i class="fa fa-tree"></i><i class="fa fa-tree"></i></span><!--ko if: nowScaleChange--><span class="scale-silder-display">&times;<span class="scale-silder-display-amount" data-bind="text: scale"></span></span><!--/ko-->
+          </div>
+        </div>
+        <div class="minimap">
+          <div class="minimap-init" data-bind="style: { width: minimap.svgWidth() + 'px', height: minimap.svgHeight() + 'px' }">
+            <div class="minimap-current" data-bind="style: { left: minimap.x() + 'px', top: minimap.y() + 'px', width: minimap.width() + 'px', height: minimap.height() + 'px' }"></div>
+          </div>
+        </div>
+      </div>
+      <div id="horizontal-center"></div>
+      <div id="vertical-center"></div>
+      <div id="updates">
+        <ul id="updates-list" data-bind="foreach: updates">
+          <li class="popup-container update-container" data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status.key !== 'normal' }">
+            <p class="popup-status" data-bind="style: { color: status.color }">
+              <span class="popup-status-icon"><span data-bind="if: status.key === 'normal'"><i class="fa fa-check"></i></span><span data-bind="if: status.key === 'info'"><i class="fa fa-info-circle"></i></span><span data-bind="if: status.key === 'delay'"><i class="fa fa-warning"></i></span><span data-bind="if: status.key === 'suspend'"><i class="fa fa-minus-circle"></i></span><span data-bind="if: status.key === 'restart'"><i class="fa fa-refresh"></i></span></span><span class="popup-status-label" data-bind="text: status.label, style: { background: status.color }"></span>
+            </p>
+            <p class="popup-title" data-bind="text: name"></p>
+            <p class="popup-msg" data-bind="text: content"></p>
+          </li>
+        </ul>
+        <nav class="updates-nav-bar" data-bind="css: { 'update-nav-bar--open': isShow }">
+          <ul>
+            <li class="update-nav-toggle" data-bind="event: { click: toggle }, css: { 'update-nav-toggle--open': isShow }">
+              <span class="updates-icon"><i class="fa fa-plus"></i></span>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </article>
+    <nav class="global-nav">
+      <ul>
+        <li>
+        </li>
+        <li>
+        </li>
+        <li class="gnav-sub-color">
+        </li>
+      </ul>
+    </nav>
+    
+  </body>
+</html>

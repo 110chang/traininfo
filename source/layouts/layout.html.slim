@@ -29,6 +29,12 @@ html lang="ja"
     /
     / scripts
     /
+    - if build?
+      javascript:
+        window.UPDATE_SRC = 'http://' + 'src.traininfo.tokyo' + '/';
+    - else
+      javascript:
+        window.UPDATE_SRC = 'http://' + location.hostname + ':8002/';
     - data_main = get_data_main(current_page.data.id)
     = javascript_include_tag "#{data_main}", type: nil
 

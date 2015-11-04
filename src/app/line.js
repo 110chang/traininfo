@@ -31,7 +31,7 @@ function LineVM(o) {
   this.color = o.color;
   this.goo_key = o.goo_key;
   this.id = ko.observable(o.id);
-  this.loop = o.loop === 'true' ? true : false;
+  this.loop = !!o.loop;
   this.name = ko.observable(o.name);
   this.stations = o.stations;
   this.subway = o.subway;
@@ -80,7 +80,7 @@ extend(LineVM.prototype, {
       var cmd = i > 0 ? 'L' : 'M';
       return cmd + station.x + ',' + station.y;
     });
-    
+    //console.log(this.loop);
     if (this.loop) {
       path.push('Z');
     }
