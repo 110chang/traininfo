@@ -31,18 +31,18 @@ function Lines() {
   this.data = ko.observableArray([]);
   this.focused = ko.observableArray([]);
 
-  ajax.get('/lines.json').end(this.loadComplete.bind(this));
+  ajax.get('./lines.json').end(this.loadComplete.bind(this));
 
   _instance = this;
 }
 inherit(Lines, events.EventEmitter);
 extend(Lines.prototype, {
   loadComplete: function(error, response) {
-    //console.log('Lines#loadComplete');
+    console.log('Lines#loadComplete');
     if (error) {
       console.log(error);
     }
-    //console.log(response.body);
+    console.log(response.body);
     var stations = [];
     response.body.forEach(function(line) {
       stations = stations.concat(line.stations);
