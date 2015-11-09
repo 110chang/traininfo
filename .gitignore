@@ -31,3 +31,4 @@ sprite_s*.png
 bower_components
 node_modules
 gruntfile.js
+vender
