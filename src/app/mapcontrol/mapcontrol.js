@@ -80,6 +80,8 @@ extend(MapControl.prototype, {
     this.update(0, 0, this.viewBox.width, this.viewBox.height);
     this.minimap.initialize(this.svgWidth, this.svgHeight);
 
+    this.center(this.svgWidth / 2, this.svgHeight / 2);
+
     ko.applyBindings(this, document.getElementById('mapcontrol'));
   },
   update: function(x, y, w, h) {
