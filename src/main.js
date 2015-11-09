@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
   Q.all([lines, updates].map(function(vm) {
     var dfd = Q.defer();
     vm.on('loadComplete', function() {
-      //console.log('Main#loadComplete');
+      console.log('Main#loadComplete');
       dfd.resolve();
     });
     return dfd.promise;

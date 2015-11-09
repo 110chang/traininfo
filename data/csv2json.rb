@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-# ruby csv2json.rb lines.csv
+# $ ruby csv2json.rb lines.csv
 
 require 'csv'
 require 'uri'
@@ -45,10 +45,10 @@ lines.each.with_index(0) do |line, i|
     json = JSON.parse(Net::HTTP.get(uri))
     line['stations'] = json['response']['station']
   end
-  line['loop'] = line['loop'] == 1 ? true : false
-  line['subway'] = line['subway'] == 1 ? true : false
+  line['loop'] = line['loop'] == "1" ? true : false
+  line['subway'] = line['subway'] == "1" ? true : false
   line['id'] = i
-  #p line['name']
+  #p line['loop']
   new_lines.push(line)
 end
 
