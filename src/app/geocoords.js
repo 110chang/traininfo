@@ -45,7 +45,7 @@ function GeoCoords(options) {
   this.home = new LatLng(35.685326, 139.7531); // ホームポジション
   this.coords = new LatLng(this.home);
   this.bounds = null;
-
+  //console.log(window.innerWidth, window.innerHeight);
   //console.log(this.getDestination(new LatLng(36.10056, 140.09111), new LatLng(35.65500, 139.74472)));
 
   _instance = this;
@@ -92,6 +92,8 @@ extend(GeoCoords.prototype, {
     return asScreen ? point : this.coords;
   },
   latLngToScreen: function(lat, lng) {
+    //console.log(window.innerWidth, window.innerHeight);
+    //console.log(this.appWidth, this.appHeight);
     var x = this.bounds.x + (lng - this.edge.west) * this.scale;
     var y = this.appHeight - (this.bounds.y + (lat - this.edge.south) * this.scale);
       
@@ -162,14 +164,13 @@ extend(GeoCoords.prototype, {
     var latRange = (this.edge.north - this.edge.south);
     var left = (this.appWidth - lngRange * this.scale) / 2;
     var top = (this.appHeight - latRange * this.scale) / 2;
-
+    //console.log(this.appWidth, this.appHeight);
     this.bounds = new Rectangle(
       left,                  //x
       top,                   //y
       lngRange * this.scale, //width
       latRange * this.scale  //height
     );
-    //console.log(this.bounds);
   },
   _edgeContain: function(lat, lng) {
     var edge = this.edge;

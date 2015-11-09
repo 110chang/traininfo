@@ -48,6 +48,11 @@ div#routemap
         p.popup-title data-bind="text: name"
         p.popup-msg data-bind="text: content"
 
+  #debug
+    p data-bind="text: 'VB:' + dumpViewBox()"
+    p data-bind="text: 'IB:' + dumpInnerWindow()"
+    p data-bind="text: 'Pixel ratio:' + dumpDevicePixelRatio()"
+
 #mapcontrol
   /p data-bind="text: scale"
   / Horizontal Slider

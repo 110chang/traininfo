@@ -79,7 +79,6 @@ extend(MapControl.prototype, {
     this.svgY = -bounds.y;
     this.update(0, 0, this.viewBox.width, this.viewBox.height);
     this.minimap.initialize(this.svgWidth, this.svgHeight);
-
     this.center(this.svgWidth / 2, this.svgHeight / 2);
 
     ko.applyBindings(this, document.getElementById('mapcontrol'));
@@ -122,6 +121,7 @@ extend(MapControl.prototype, {
       dx = cx / this.scale() - newWidth / 2;
       dy = cy / this.scale() - newHeight / 2;
     }
+    //console.log(dx, dy);
     this.update(this.viewBox.x + dx, this.viewBox.y + dy, newWidth, newHeight);
     this.scale(scale);
     this.delayScaleChange();
