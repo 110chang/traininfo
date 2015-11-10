@@ -166,7 +166,7 @@ configure :development do
 end
 
 activate :autoprefixer do |config|
-  config.browsers = ['last 2 versions', 'Explorer > 9']
+  config.browsers = ['last 2 versions', 'Explorer > 9', 'Android > 4.1']
   config.cascade  = false
   # config.inline   = true
   # config.ignore   = ['hacks.css']
