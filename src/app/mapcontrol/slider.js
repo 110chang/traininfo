@@ -7,7 +7,8 @@ var extend = require('extend');
 var events = require('events');
 var inherit = require('util').inherits;
 
-var Handle = require('./handle');
+//var Handle = require('./handle');
+var HandleFactory = require('./handlefactory');
 
 var HANDLE_INIT = 30;
 var HANDLE_WIDTH = 24;
@@ -20,7 +21,7 @@ function Slider() {
   this.direction = Slider.DIRECTION_VERTICAL;
 
   // Handle instance
-  this.handle = new Handle();
+  this.handle = new HandleFactory();
   this.handle.on('handleMove', this.onHandleMove.bind(this));
 
   _instance = this;
