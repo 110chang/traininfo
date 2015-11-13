@@ -5,7 +5,7 @@
 
 
 // external libraries
-var $ = jQuery = require('jquery');
+var $ = window.jQuery = require('jquery');
 var Browser = require('./browser');
 
 var resizeEvent = Browser().nonPC() ? 'orientationchange' : 'resize';

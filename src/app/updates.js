@@ -110,8 +110,14 @@ extend(UpdatesVM.prototype, {
   close: function() {
     //console.log('UpdatesVM#close');
     this.$el.stop().animate({
-      'bottom': -this.$el.height()
+      'bottom': -this.$el.height() - 44
     }, 250, 'easeInOutExpo');
+  },
+  resize: function() {
+    //console.log('UpdatesVM#resize');
+    this.$el.css({
+      'bottom': -this.$el.height() - 44
+    });
   }
 });
 UpdatesVM.MAX_NUMBER_OF_TRIAL = 5;

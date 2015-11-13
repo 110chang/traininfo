@@ -4,9 +4,11 @@
  */
 
 // external libraries
+var $ = window.jQuery = require('jquery');
 var Q = require('q');
 
 require('./mod/trunc');
+require('./mod/reducedresize');
 
 var Lines = require('./app/lines');
 var MapControlFactory = require('./app/mapcontrolfactory');
@@ -54,6 +56,17 @@ document.addEventListener('DOMContentLoaded', function(e) {
     routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
     //mapControl.expand(1);
   });
+
+  function resize() {
+    console.log('Main#resize');
+    geoCoords.resize(window.innerWidth, window.innerHeight);
+    mapControl.resize(window.innerWidth, window.innerHeight);
+    updates.resize(lines.getData());
+    routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
+  }
+
+  $(window).on('reducedResize', resize);
+  $(window).on('orientationchange', resize);
 });
 
 

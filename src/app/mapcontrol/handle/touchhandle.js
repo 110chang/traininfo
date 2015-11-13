@@ -23,7 +23,7 @@ function TouchHandle() {
   this.$el.on('touchstart._MapControlHandle', this.onTouchStart.bind(this));
   this.$el.on('touchcancel._MapControlHandle', this.onTouchCancel.bind(this));
   //this.$el.off('touchcancel');
-  $('*').on('touchmove', function(e) {
+  this.$el.on('touchmove', function(e) {
     e.preventDefault();
   });
 }

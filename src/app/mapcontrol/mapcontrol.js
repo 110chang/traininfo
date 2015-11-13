@@ -28,6 +28,9 @@ function MapControl() {
   }
   // Target element
   this.$el = $('#routemap');
+  this.$el.on('touchmove', function(e) {
+    e.preventDefault();
+  });
 
   // Handle instance
   this.slider = new Slider();
@@ -82,6 +85,22 @@ extend(MapControl.prototype, {
     this.center(this.svgWidth / 2, this.svgHeight / 2);
 
     ko.applyBindings(this, document.getElementById('mapcontrol'));
+  },
+  resize: function(w, h) {
+    console.log('MapControl#resize');
+    var bounds = GeoCoords().bounds;
+    console.log(w, h);
+    console.log(bounds);
+    this.appWidth = w;
+    this.appHeight = h;
+    this.svgWidth = bounds.width;
+    this.svgHeight = bounds.height;
+    this.svgX = -bounds.x;
+    this.svgY = -bounds.y;
+    this.scale(1);
+    this.update(0, 0, w, h);
+    this.minimap.resize(this.svgWidth, this.svgHeight);
+    this.center(this.svgWidth / 2, this.svgHeight / 2);
   },
   update: function(x, y, w, h) {
     //console.log('MapControl#update');

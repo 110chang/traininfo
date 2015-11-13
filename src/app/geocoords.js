@@ -45,6 +45,7 @@ function GeoCoords(options) {
   this.home = new LatLng(35.685326, 139.7531); // ホームポジション
   this.coords = new LatLng(this.home);
   this.bounds = null;
+  this.points = null;
   //console.log(window.innerWidth, window.innerHeight);
   //console.log(this.getDestination(new LatLng(36.10056, 140.09111), new LatLng(35.65500, 139.74472)));
 
@@ -56,12 +57,13 @@ extend(GeoCoords.prototype, {
     this._getEdge(points);
     this._getScale();
     this._getBounds();
+    this.points = points;
   },
   resize: function(appWidth, appHeight) {
     this.appWidth = appWidth;
     this.appHeight = appHeight;
     
-    this._getEdge();
+    this._getEdge(this.points);
     this._getScale();
     this._getBounds();
   },

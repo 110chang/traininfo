@@ -97,23 +97,24 @@ div#routemap
 #vertical-center
 
 #updates
-  ul#updates-list data-bind="foreach: updates"
-    li.popup-container.update-container data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status.key !== 'normal' }"
-      p.popup-status data-bind="style: { color: status.color }"
-        span.popup-status-icon
-          span data-bind="if: status.key === 'normal'"
-            i.fa.fa-check
-          span data-bind="if: status.key === 'info'"
-            i.fa.fa-info-circle
-          span data-bind="if: status.key === 'delay'"
-            i.fa.fa-warning
-          span data-bind="if: status.key === 'suspend'"
-            i.fa.fa-minus-circle
-          span data-bind="if: status.key === 'restart'"
-            i.fa.fa-refresh
-        span.popup-status-label data-bind="text: status.label, style: { background: status.color }"
-      p.popup-title data-bind="text: name"
-      p.popup-msg data-bind="text: content"
+  #updates-list
+    ul data-bind="foreach: updates"
+      li.popup-container.update-container data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status.key !== 'normal' }"
+        p.popup-status data-bind="style: { color: status.color }"
+          span.popup-status-icon
+            span data-bind="if: status.key === 'normal'"
+              i.fa.fa-check
+            span data-bind="if: status.key === 'info'"
+              i.fa.fa-info-circle
+            span data-bind="if: status.key === 'delay'"
+              i.fa.fa-warning
+            span data-bind="if: status.key === 'suspend'"
+              i.fa.fa-minus-circle
+            span data-bind="if: status.key === 'restart'"
+              i.fa.fa-refresh
+          span.popup-status-label data-bind="text: status.label, style: { background: status.color }"
+        p.popup-title data-bind="text: name"
+        p.popup-msg data-bind="text: content"
   nav.updates-nav-bar data-bind="css: { 'update-nav-bar--open': isShow }"
     ul
       li.update-nav-toggle data-bind="event: { click: toggle }, css: { 'update-nav-toggle--open': isShow }"
