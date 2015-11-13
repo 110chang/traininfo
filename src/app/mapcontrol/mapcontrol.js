@@ -16,6 +16,7 @@ var Minimap = require('./minimap');
 var Translater = require('./translater');
 
 var _instance = null;
+var MAX_SCALE = 10;
 
 var trunc = Math.trunc;
 
@@ -28,6 +29,9 @@ function MapControl() {
   }
   // Target element
   this.$el = $('#routemap');
+  this.$el.on('touchmove', function(e) {
+    e.preventDefault();
+  });
 
   // Handle instance
   this.slider = new Slider();
@@ -79,8 +83,25 @@ extend(MapControl.prototype, {
     this.svgY = -bounds.y;
     this.update(0, 0, this.viewBox.width, this.viewBox.height);
     this.minimap.initialize(this.svgWidth, this.svgHeight);
+    this.center(this.svgWidth / 2, this.svgHeight / 2);
 
     ko.applyBindings(this, document.getElementById('mapcontrol'));
+  },
+  resize: function(w, h) {
+    console.log('MapControl#resize');
+    var bounds = GeoCoords().bounds;
+    console.log(w, h);
+    console.log(bounds);
+    this.appWidth = w;
+    this.appHeight = h;
+    this.svgWidth = bounds.width;
+    this.svgHeight = bounds.height;
+    this.svgX = -bounds.x;
+    this.svgY = -bounds.y;
+    this.scale(1);
+    this.update(0, 0, w, h);
+    this.minimap.resize(this.svgWidth, this.svgHeight);
+    this.center(this.svgWidth / 2, this.svgHeight / 2);
   },
   update: function(x, y, w, h) {
     //console.log('MapControl#update');
@@ -108,8 +129,8 @@ extend(MapControl.prototype, {
     //console.log('MapControl#expand');
     if (scale < 1) {
       scale = 1;
-    } else if (10 < scale) {
-      scale = 10;
+    } else if (MAX_SCALE < scale) {
+      scale = MAX_SCALE;
     }
     var newWidth = this.appWidth / scale;
     var newHeight = this.appHeight / scale;
@@ -120,6 +141,7 @@ extend(MapControl.prototype, {
       dx = cx / this.scale() - newWidth / 2;
       dy = cy / this.scale() - newHeight / 2;
     }
+    //console.log(dx, dy);
     this.update(this.viewBox.x + dx, this.viewBox.y + dy, newWidth, newHeight);
     this.scale(scale);
     this.delayScaleChange();

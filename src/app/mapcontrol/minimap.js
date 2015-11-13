@@ -25,14 +25,22 @@ function Minimap(scale) {
   this.y = ko.observable(0);
   this.width = ko.observable(0);
   this.height = ko.observable(0);
+  this.svgWidth = ko.observable(0);
+  this.svgHeight = ko.observable(0);
+
 
   _instance = this;
 }
 extend(Minimap.prototype, {
   initialize: function(w, h) {
     console.log('Minimap#initialize');
-    this.svgWidth = ko.observable(w / this.scale);
-    this.svgHeight = ko.observable(h / this.scale);
+    this.svgWidth(w / this.scale);
+    this.svgHeight(h / this.scale);
+  },
+  resize: function(w, h) {
+    console.log('Minimap#resize');
+    this.svgWidth(w / this.scale);
+    this.svgHeight(h / this.scale);
   },
   update: function(x, y, w, h) {
     this.x(x / this.scale);

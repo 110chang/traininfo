@@ -19,6 +19,7 @@
  * ============================ */
 
 html, body
+  overflow: hidden
   height: 100%
 
 body
@@ -31,6 +32,8 @@ body
   font-weight: normal
   background: #181818
   color: #F0F0F0
+  -webkit-overflow-scrolling: touch
+  -webkit-text-size-adjust: 100%
 
 img
   vertical-align: bottom
@@ -72,27 +75,44 @@ input.placeholder
   z-index: 0
   width: 100%
   height: 100%
+  //background: #CCF
   .subline
     opacity: 0.6
   a:hover
     .subline
-      opacity: 0.4
+      opacity: 1
       //stroke-dasharray: 30px 30px
       //animation: 'dash-anim' 3s linear 0s infinite
   svg
-    position: fixed
+    position: absolute
     left: 0
     top: 0
     z-index: 0
+    max-height: 100%
+    //background: #FCC
   path
     transition: stroke-width 0.25s ease-in-out, stroke 0.25s ease-in-out, opacity 0.25s ease-in-out
+  text
+    fill: #FFF
+    text-shadow: 0 0 1px rgba(0,0,0,1)
+
+
+#stations
+  position: fixed
+
+.stations-list
+  .station
+    position: fixed
+    left: 0
+    top: 0
+    font-size: 0.75rem
 
 #popup
   position: fixed
   left: 0
   top: 0
   width: 100%
-  z-index: 999
+  z-index: 9
   background: rgba(0,0,0,0.8)
 
 .popup-container
@@ -137,6 +157,12 @@ input.placeholder
   line-height: 140%
   text-align: center
 
+#debug
+  position: absolute
+  right: 0
+  top: 0
+  z-index: 10
+  background: rgba(0,0,255,0.9)
 
 //#mapcontrol
 
@@ -146,7 +172,7 @@ input.placeholder
   position: fixed
   left: 0
   bottom: 0
-  z-index: 999
+  z-index: 8
   width: 100%
 
 .scale-slider
@@ -157,6 +183,7 @@ input.placeholder
   margin: 10px auto
   text-align: center
   line-height: 24px
+  //background: #FCC
   &>span
     display: inline-block
     vertical-align: middle
@@ -220,7 +247,7 @@ input.placeholder
   position: fixed
   left: 0
   top: 0
-  z-index: 99
+  z-index: 8
   height: 100%
   flex-direction: column
   align-items: center
@@ -246,12 +273,15 @@ input.placeholder
     bottom: 50%
     margin-bottom: -0.5em
 
+@media screen and (max-height: 414px)
+  #map-slider-vertical
+    display: none
 
 .minimap
   position: fixed
   left: 10px
   bottom: 10px
-  z-index: 100
+  z-index: 7
 .minimap-init
   position: absolute
   left: 0
@@ -282,13 +312,13 @@ input.placeholder
 
 #updates-list
   box-sizing: border-box
-  overflow: auto
+  overflow: scroll
   position: relative
   width: 100%
+  //height: 200px
   max-height: 100%
   padding-bottom: 44px
   background: rgba(0,0,0,0.8)
-  -webkit-overflow-scrolling: touch
 
 .update-container
   margin: 1px
@@ -363,5 +393,7 @@ input.placeholder
       padding: 3px 6px
       font-size: 1rem
       line-height: 140%
+
+
 
 // EOF
