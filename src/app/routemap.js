@@ -9,6 +9,7 @@ var inherit = require('util').inherits;
 var ko = require('knockout');
 
 var Lines = require('./lines');
+var Stations = require('./stations');
 
 var _instance = null;
 
@@ -32,6 +33,7 @@ function RouteMapVM() {
 extend(RouteMapVM.prototype, {
   initialize: function() {
     this.lines = Lines();
+    this.stations = Stations();
 
     ko.applyBindings(this, document.getElementById('routemap'));
   },

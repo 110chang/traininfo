@@ -3,10 +3,7 @@
  * lines
  */
 
-var $ = require('jquery');
-if (!window.jQuery) {
-  window.jQuery = $;
-}
+var $ = window.jQuery || require('jquery');
 require('jquery.easing');
 
 var extend = require('extend');
@@ -42,13 +39,8 @@ extend(Lines.prototype, {
     if (error) {
       console.log(error);
     }
-    var stations = [];
     var res = response.body || JSON.parse(response.text);
-    res.forEach(function(line) {
-      stations = stations.concat(line.stations);
-    }, this);
     this.originalData = res.slice();
-    this.stations = stations;
     this.emit('loadComplete');
   },
   get:function() {
@@ -61,7 +53,7 @@ extend(Lines.prototype, {
     return this.originalData.slice();
   },
   setUp: function(geoCoords) {
-    //console.log('Lines#setUp');
+    console.log('Lines#setUp');
     var point;
     var lineVM;
 
