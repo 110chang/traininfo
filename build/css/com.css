@@ -65,6 +65,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
  *
  * ============================ */
 html, body {
+  overflow: hidden;
   height: 100%;
 }
 
@@ -78,6 +79,8 @@ body {
   font-weight: normal;
   background: #181818;
   color: #F0F0F0;
+  -webkit-overflow-scrolling: touch;
+  -webkit-text-size-adjust: 100%;
 }
 
 img {
@@ -136,16 +139,33 @@ input.placeholder {
   opacity: 0.6;
 }
 #routemap a:hover .subline {
-  opacity: 0.4;
+  opacity: 1;
 }
 #routemap svg {
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   z-index: 0;
+  max-height: 100%;
 }
 #routemap path {
+  -webkit-transition: stroke-width 0.25s ease-in-out, stroke 0.25s ease-in-out, opacity 0.25s ease-in-out;
   transition: stroke-width 0.25s ease-in-out, stroke 0.25s ease-in-out, opacity 0.25s ease-in-out;
+}
+#routemap text {
+  fill: #FFF;
+  text-shadow: 0 0 1px black;
+}
+
+#stations {
+  position: fixed;
+}
+
+.stations-list .station {
+  position: fixed;
+  left: 0;
+  top: 0;
+  font-size: 0.75rem;
 }
 
 #popup {
@@ -153,7 +173,7 @@ input.placeholder {
   left: 0;
   top: 0;
   width: 100%;
-  z-index: 999;
+  z-index: 9;
   background: rgba(0, 0, 0, 0.8);
 }
 
@@ -204,12 +224,20 @@ input.placeholder {
   text-align: center;
 }
 
+#debug {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 10;
+  background: rgba(0, 0, 255, 0.9);
+}
+
 /* ===== horizontal slider ===== */
 #map-slider-horizontal {
   position: fixed;
   left: 0;
   bottom: 0;
-  z-index: 999;
+  z-index: 8;
   width: 100%;
 }
 
@@ -289,17 +317,21 @@ input.placeholder {
 
 /* ===== vertical slider ===== */
 #map-slider-vertical {
+  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 99;
+  z-index: 8;
   height: 100%;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-align: center;
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
@@ -333,11 +365,16 @@ input.placeholder {
   margin-bottom: -0.5em;
 }
 
+@media screen and (max-height: 414px) {
+  #map-slider-vertical {
+    display: none;
+  }
+}
 .minimap {
   position: fixed;
   left: 10px;
   bottom: 10px;
-  z-index: 100;
+  z-index: 7;
 }
 
 .minimap-init {
@@ -351,6 +388,8 @@ input.placeholder {
 
 .minimap-current {
   position: absolute;
+  background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.6) 25%, rgba(0, 0, 0, 0) 25%), -webkit-linear-gradient(135deg, rgba(255, 255, 255, 0.6) 25%, rgba(0, 0, 0, 0) 25%), -webkit-linear-gradient(45deg, rgba(0, 0, 0, 0) 75%, rgba(255, 255, 255, 0.6) 75%), -webkit-linear-gradient(135deg, rgba(0, 0, 0, 0) 75%, rgba(255, 255, 255, 0.6) 75%);
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.6) 25%, rgba(0, 0, 0, 0) 25%), linear-gradient(-45deg, rgba(255, 255, 255, 0.6) 25%, rgba(0, 0, 0, 0) 25%), linear-gradient(45deg, rgba(0, 0, 0, 0) 75%, rgba(255, 255, 255, 0.6) 75%), linear-gradient(-45deg, rgba(0, 0, 0, 0) 75%, rgba(255, 255, 255, 0.6) 75%);
   background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.6) 25%, transparent 25%), -moz-linear-gradient(-45deg, rgba(255, 255, 255, 0.6) 25%, transparent 25%), -moz-linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.6) 75%), -moz-linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.6) 75%);
   background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.6)), color-stop(0.25, transparent)), -webkit-gradient(linear, 0 0, 100% 100%, color-stop(0.25, rgba(255, 255, 255, 0.6)), color-stop(0.25, transparent)), -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.75, transparent), color-stop(0.75, rgba(255, 255, 255, 0.6))), -webkit-gradient(linear, 0 0, 100% 100%, color-stop(0.75, transparent), color-stop(0.75, rgba(255, 255, 255, 0.6)));
   background-size: 2px 2px;
@@ -378,13 +417,12 @@ input.placeholder {
 
 #updates-list {
   box-sizing: border-box;
-  overflow: auto;
+  overflow: scroll;
   position: relative;
   width: 100%;
   max-height: 100%;
   padding-bottom: 44px;
   background: rgba(0, 0, 0, 0.8);
-  -webkit-overflow-scrolling: touch;
 }
 
 .update-container {
@@ -410,7 +448,7 @@ input.placeholder {
 .update-nav-toggle {
   -webkit-transform: rotate(0);
   transform: rotate(0);
-  transition: -webkit-transform 0.25s ease-in-out;
+  -webkit-transition: -webkit-transform 0.25s ease-in-out;
   transition: transform 0.25s ease-in-out;
 }
 
