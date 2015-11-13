@@ -56,7 +56,7 @@ extend(Stations.prototype, {
       //console.log(station.name);
       var target;
       registered = stations.filter(function(s) {
-        return s.name === station.name;
+        return s.name === station.name && s.prefecture === station.prefecture;
       });
       //console.log(registered);
       if (registered.length === 0) {
@@ -67,33 +67,35 @@ extend(Stations.prototype, {
       }
       //console.log(target);
       duplicates = this.originalData.filter(function(orig) {
-        return orig.name === station.name;
+        return orig.name === station.name && orig.prefecture === station.prefecture;
       });
       //console.log(duplicates.length);
       duplicates.forEach(function(dup) {
         target.averageLatLng(dup.lat * 1, dup.lng * 1);
         target.averagePos(dup.x, dup.y);
+        target.addPoint(dup.x, dup.y);
         target.addLine(dup.line);
         target.addNext(dup.next);
         target.addPrev(dup.prev);
       });
+      target.setPriority();
     }, this);
-    console.log(stations.length, this.originalData.length);
+    console.log(stations);
     this.data(stations);
     this.getStationPriorityRange();
   },
   getStationPriorityRange: function() {
     this.data().forEach(function(station) {
-      if (station.priority > this.priorityRange.max) {
-        this.priorityRange.max = station.priority;
+      if (station.priority() > this.priorityRange.max) {
+        this.priorityRange.max = station.priority();
       }
-      if (station.priority < this.priorityRange.min) {
-        this.priorityRange.min = station.priority;
+      if (station.priority() < this.priorityRange.min) {
+        this.priorityRange.min = station.priority();
       }
     }, this);
     this.data().forEach(function(station) {
       station.setThreshold(this.priorityRange.min, this.priorityRange.max);
-      console.log(station);
+      //console.log(station);
     }, this);
   }
 });

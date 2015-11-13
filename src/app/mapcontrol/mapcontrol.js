@@ -16,6 +16,7 @@ var Minimap = require('./minimap');
 var Translater = require('./translater');
 
 var _instance = null;
+var MAX_SCALE = 10;
 
 var trunc = Math.trunc;
 
@@ -128,8 +129,8 @@ extend(MapControl.prototype, {
     //console.log('MapControl#expand');
     if (scale < 1) {
       scale = 1;
-    } else if (10 < scale) {
-      scale = 10;
+    } else if (MAX_SCALE < scale) {
+      scale = MAX_SCALE;
     }
     var newWidth = this.appWidth / scale;
     var newHeight = this.appHeight / scale;

@@ -20,7 +20,9 @@ div#routemap
         path.mainline stroke-linecap="round" stroke-linejoin="round" pointer-events="none" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }"
     g data-bind="foreach: stations.data"
       /! ko if: switchVisibility()
-      text data-bind="text: name, attr: { x: x, y: y, 'font-size': getFontSize() }"
+      //circle.station-point fill="#FFF" data-bind="attr: { cx: x, cy: y, r: r }"
+      path stroke="#FFF" fill="#FFF" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { d: getPointPath(), 'stroke-width': getStrokeWidth() }"
+      text.station-label text-anchor="middle" data-bind="text: name, attr: { x: x, y: getLabelY(), 'font-size': getFontSize() }"
       /! /ko
     /circle r="3" data-bind="attr: { cx: mapControl.avaterX(), cy: mapControl.avaterY() }"
     /g / for test
