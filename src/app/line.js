@@ -63,16 +63,16 @@ extend(LineVM.prototype, {
       return 10 / this.map.getScale();
     }
     if (this.hasStatus()) {
-      return 6 / this.map.getScale();
+      return 4 / this.map.getScale();
     }
-    return 2 / this.map.getScale();
+    return 1 / this.map.getScale();
   },
   getSubStrokeColor: function() {
-    var normalColor = this.isSelected() ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,0)';
+    var normalColor = this.isSelected() ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,0.05)';
     return this.hasStatus() ? this.status().color : normalColor;
   },
   getSubStrokeWidth: function() {
-    var fat = this.isSelected() ? 16 : 8;
+    var fat = this.isSelected() ? 12 : 6;
     return this.getMainStrokeWidth() + fat / this.map.getScale();
   },
   getPath: function() {

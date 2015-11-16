@@ -80,7 +80,6 @@ extend(StationVM.prototype, {
     if (this.line.indexOf(name) === -1) {
       this.line.push(name);
     }
-    this.priority(this.line.length);
 
   },
   addNext: function(name) {
@@ -102,12 +101,14 @@ extend(StationVM.prototype, {
   setPriority: function() {
     //console.log(this.prev);
     //console.log(this.next);
+    this.priority(this.line.length);
     if (this.prev.length === 0 || this.next.length === 0) {
       this.priority(this.priority() + 1);
     }
   },
   setThreshold: function(min, max) {
-    this.threshold = max - this.priority() - min;
+    var p = this.priority();
+    this.threshold = max - p - ceil(p / 2 - 1) + min;
   },
   getFontSize: function() {
     return 10 / this.map.getScale();

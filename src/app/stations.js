@@ -80,9 +80,9 @@ extend(Stations.prototype, {
       });
       target.setPriority();
     }, this);
-    console.log(stations);
     this.data(stations);
     this.getStationPriorityRange();
+    //console.log(stations);
   },
   getStationPriorityRange: function() {
     this.data().forEach(function(station) {
