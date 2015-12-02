@@ -1,36 +1,59 @@
+
 /*
- *   Clock
+ *   App/Clock
  */
 
-var extend = require('extend');
-var inherit = require('util').inherits;
+(function(global) {
 
-var Timer = require('../mod/timer');
+  var ko = require('knockout');
+  var extend = require('extend');
+  var events = require('events');
+  var inherit = require('util').inherits;
 
-function Clock() {
-  Timer.call(this);
+  var numberf = require('../mod/numberf');
+  var Timer = require('../mod/timer');
 
-}
-inherit(Clock, Timer);
+  function Clock(duration, rwDuration, repeat) {
 
-Clock.START =  'onStart';
-Clock.STOP =  'onStop';
+    this.timer = new Timer(60000, 6, 1);
+    this.timer.on(Timer.TIMER_START, this._onTimerStart.bind(this));
+    this.timer.on(Timer.TIMER_TICK, this._onTimer.bind(this));
+    this.timer.on(Timer.TIMER_STOP, this._onTimerStop.bind(this));
 
-extend(Clock.prototype, {
-  start: function() {
-    this.timer.init(60000, 6);
-    this.timer.subscribe(Timer.TIMER_LAP, '_onTimer', this);
-    this.timer.subscribe(Timer.TIMER_STOP, '_onTimerStop', this);
-    this.timer.start();
-    this.publish(Clock.START);
-  },
-  reset: function() {
-    this.rewind = true;
-    this.timer.init(250, 61);
-    this.timer.subscribe(Timer.TIMER_LAP, '_onTimer', this);
-    this.timer.subscribe(Timer.TIMER_STOP, '_onTimerStop', this);
-    this.timer.start();
+    this.isRewind = false;
+
+    this.disp = ko.observable('0');
+
+    ko.applyBindings(this, document.getElementById('clock'));
   }
-});
+  inherit(Clock, events.EventEmitter);
 
-module.exports = Clock;
+  Clock.START = 'onClockStart';
+  Clock.CLOCK = 'onClock'     ;
+  Clock.STOP  = 'onClockStop' ;
+
+  extend(Clock.prototype, {
+    start: function() {
+      this.timer.initialize(60000, 12, 1);
+      this.timer.start();
+    },
+    rewind: function() {
+      this.isRewind = true;
+      this.timer.initialize(250, 61, 1);
+      this.timer.start();
+    },
+    _onTimerStart: function(e) {
+      this.emit(Clock.START, e);
+    },
+    _onTimer: function(e) {
+      this.disp(e.frame);
+      this.emit(Clock.CLOCK, e);
+    },
+    _onTimerStop: function(e) {
+      this.emit(Clock.STOP, e);
+    }
+  });
+
+  module.exports = Clock;
+
+})((this || 0).self || global);
