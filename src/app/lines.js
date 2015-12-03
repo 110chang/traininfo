@@ -103,17 +103,24 @@ extend(Lines.prototype, {
   },
   applyUpdates: function(updates) {
     //console.log(updates);
+    var targets = [];
     this.data().forEach(function(line) {
       updates.forEach(function(update) {
         //console.log(update.title + '===' + line.goo_key);
         if (update.title.match(line.goo_key)) {
           //console.log(update);
           line.update(update.status, update.content);
-          this.bringToTop(line);
+          //this.bringToTop(line);
         } else {
           //line.update(Status().decode(0));
         }
       }, this);
+    }, this);
+
+    this.data().forEach(function(line) {
+      if (line.status().id > 0) {
+        this.bringToTop(line);
+      }
     }, this);
   },
   afterPopup: function(e) {

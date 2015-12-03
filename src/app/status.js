@@ -9,7 +9,7 @@ var extend = require('extend');
 var _instance = null;
 
 var REG_RESTART = /(:?遅れ|運休|運転変更|運転を?見合).+いましたが.+(:?平常|運転を?再開)/;
-var REG_INFO = /(:?運転状況|一部列車に(:?遅れ|運休|運転変更))/;
+var REG_INFO = /(:?運転状況|一部列車に(:?遅れ|運休|運転変更|区間運休))/;
 var REG_DELAY = /(:?遅れ|列車遅延)/;
 var REG_SUSPEND = /運転(:?.+)?見合/;
 var REG_NORMAL = /マッチなし/;
@@ -64,9 +64,9 @@ extend(Status.prototype, {
     } else if (REG_DELAY.test(msg)) {
       return 2;
     } else if (REG_NORMAL.test(msg)) {
-      return 0;
-    } else {
       return 1;
+    } else {
+      return 0;
     }
     return 1;
   },
