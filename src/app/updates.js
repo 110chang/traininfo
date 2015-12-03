@@ -40,7 +40,7 @@
     },
     load: function() {
       //console.log('UpdatesVM#load');
-      ajax.get(window.UPDATE_SRC).end(this.loadComplete.bind(this));
+      ajax.get(global.UPDATE_SRC).end(this.loadComplete.bind(this));
     },
     loadComplete: function(error, response) {
       //console.log('UpdatesVM#loadComplete');

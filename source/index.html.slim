@@ -104,7 +104,10 @@ div#routemap
 #vertical-center
 
 #clock
-  p data-bind="text: disp"
+  svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin"
+    circle stroke="#333" fill="none" data-bind="attr: { cx: size / 2, cy: size / 2, r: (size - thickness) / 2, 'stroke-width': thickness }"
+    path stroke="#999" fill="none" data-bind="attr: { d: getPath(), 'stroke-width': thickness }"
+    text text-anchor="middle" data-bind="text: getDisplayTime()" font-size="16" x="20" y="26" fill="#999"
 
 #updates
   #updates-list
