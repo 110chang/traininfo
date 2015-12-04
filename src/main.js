@@ -12,26 +12,28 @@
   require('./mod/trunc');
   require('./mod/reducedresize');
 
-  var Lines = require('./app/lines');
-  var Stations = require('./app/stations');
+  var Lines             = require('./app/lines');
+  var Stations          = require('./app/stations');
   var MapControlFactory = require('./app/mapcontrolfactory');
-  var GeoCoords = require('./app/geocoords');
-  var UpdatesVM = require('./app/updates');
-  var RouteMapVM = require('./app/routemap');
-  var Clock = require('./app/clock');
+  var GeoCoords         = require('./app/geocoords');
+  var UpdatesVM         = require('./app/updates');
+  var RouteMapVM        = require('./app/routemap');
+  var Clock             = require('./app/clock');
+  var Popup             = require('./app/popup');
 
   document.addEventListener('DOMContentLoaded', function(e) {
     console.log('dom ready.');
 
-    var geoCoords = new GeoCoords({
+    var geoCoords  = new GeoCoords({
       meet: true
     });
     var mapControl = new MapControlFactory();
-    var routeMap = new RouteMapVM();
-    var lines = new Lines();
-    var stations = new Stations();
-    var updates = new UpdatesVM();
-    var clock = new Clock();
+    var routeMap   = new RouteMapVM();
+    var lines      = new Lines();
+    var stations   = new Stations();
+    var updates    = new UpdatesVM();
+    var clock      = new Clock();
+    var popup      = new Popup();
 
     updates.on('loadFailure', function() {
       console.log('%c%s', 'background:#FF0', 'Main#loadFailure');
@@ -41,6 +43,14 @@
       //console.log('Main#changed');
       lines.update();
       routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
+    });
+
+    lines.on('lineMouseOver', function(data, e) {
+      popup.show(data, e);
+    });
+
+    lines.on('lineMouseOut', function(data, e) {
+      popup.hide();
     });
 
     clock.on(Clock.STOP, function(e) {

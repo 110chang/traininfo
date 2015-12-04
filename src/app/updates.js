@@ -55,7 +55,7 @@
           status: Status().convert(update.content)
         });
       }, this);
-      //console.log(updates);
+      console.log(updates);
       this.updates(updates);
       this.emit('loadComplete');
     },
@@ -89,7 +89,7 @@
       this.updates(updates);
       this.origUpdates = this.getUpdates();
 
-      ko.applyBindings(this, this.$el.get(0));
+      //ko.applyBindings(this, this.$el.get(0));
 
       this.close();
     },

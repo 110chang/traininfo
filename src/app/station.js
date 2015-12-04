@@ -33,25 +33,22 @@ function StationVM(o) {
   //console.log('StationVM#constructor');
   events.EventEmitter.call(this);
 
-  this.map = MapControlFactory();
-  this.lat = o.lat * 1;
-  this.lng = o.lng * 1;
-  this.line = [o.line];
-  this.name = o.name;
-  this.postal = o.postal;
+  this.map        = MapControlFactory();
+  this.lat        = o.lat * 1;
+  this.lng        = o.lng * 1;
+  this.line       = [o.line];
+  this.name       = o.name;
+  this.postal     = o.postal;
   this.prefecture = o.prefecture;
-  //this.priority = o.priority;
-  //this.priorityRange = o.priorityRange;
-  //this.threshold = this.getPriorityThreshold();
-  this.next = [];
+  this.next       = [];
   this.addNext(o.next);
-  this.prev = [];
+  this.prev       = [];
   this.addPrev(o.prev);
-  this.x = o.x * 1;
-  this.y = o.y * 1;
-  this.points = [new Point(this.x, this.y)];
-  this.priority = ko.observable(0);
-  this.threshold = 0;
+  this.x          = o.x * 1;
+  this.y          = o.y * 1;
+  this.points     = [new Point(this.x, this.y)];
+  this.priority   = ko.observable(0);
+  this.threshold  = 0;
 
   this.r = ko.computed(function() {
     return (1 + ceil(this.priority() / 3)) / this.map.getScale();
@@ -80,7 +77,6 @@ extend(StationVM.prototype, {
     if (this.line.indexOf(name) === -1) {
       this.line.push(name);
     }
-
   },
   addNext: function(name) {
     if (name === null || name === 'null') {

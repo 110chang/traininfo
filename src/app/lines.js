@@ -5,9 +5,6 @@
 
 (function(global) {
 
-  var $ = global.jQuery || require('jquery');
-  require('jquery.easing');
-
   var extend = require('extend');
   var events = require('events');
   var inherit = require('util').inherits;
@@ -45,11 +42,8 @@
       this.originalData = res.slice();
       this.emit('loadComplete');
     },
-    get:function() {
+    get: function() {
       return this.data();
-    },
-    getStations: function() {
-      return this.stations;
     },
     getData: function() {
       return this.originalData.slice();
@@ -124,26 +118,6 @@
           this.bringToTop(line);
         }
       }, this);
-    },
-    afterPopup: function(e) {
-      //console.log('Lines#afterPopup');
-      if (e.nodeType === 1) {
-        $(e).stop().css({
-          'margin-top': -$(e).height()
-        }).animate({
-          'margin-top': 0
-        }, 250, 'easeInOutQuad');
-      }
-    },
-    beforePopout: function(e) {
-      //console.log('Lines#beforePopout');
-      if (e.nodeType === 1) {
-        $(e).stop().animate({
-          'margin-top': -$(e).height()
-        }, 250, 'easeInOutQuad', function() {
-          e.parentNode.removeChild(e);
-        });
-      }
     }
   });
 
