@@ -43,6 +43,12 @@
       routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
     });
 
+    clock.on(Clock.STOP, function(e) {
+      console.log('Main#clock');
+      console.log(e);
+      //updates.load();
+    });
+
     Q.all([lines, updates].map(function(vm) {
       var dfd = Q.defer();
       vm.on('loadComplete', function() {
