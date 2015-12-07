@@ -52,8 +52,7 @@
 
       var ww = this.$wrapper.width();
       var wh = this.$wrapper.height();
-      var rect = lineVM.getLineRect();
-      var left = rect.left + rect.width / 2 - ww / 2;
+      var left = e.clientX - ww / 2;
       var top = e.clientY;
 
       if (left < 0) {

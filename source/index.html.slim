@@ -34,7 +34,12 @@ div#routemap
         - color = i % 10 === 0 ? "#FCC" : "#CCC"
         - width = i % 10 === 0 ? "2" : "1"
         path d="M0,#{10 * i} L1500, #{10 * i}" stroke="#{color}" stroke-width="#{width}"
-      
+
+  /#debug
+    p data-bind="text: 'VB:' + dumpViewBox()"
+    p data-bind="text: 'IB:' + dumpInnerWindow()"
+    p data-bind="text: 'Pixel ratio:' + dumpDevicePixelRatio()"
+
 
 #popup.popup-container data-bind="style: { left: left, top: top }, css: { 'popup-container--has-info': status().key !== 'normal' }"
   .popup-container-wrapper data-bind="style: { 'border-color': color }"
@@ -53,13 +58,6 @@ div#routemap
       span.popup-status-label data-bind="text: status().label, style: { background: status().color }"
     p.popup-title data-bind="text: name"
     p.popup-msg data-bind="text: content"
-
-  /.popup-container data-bind="style: { left: getPopupPos().left, top: getPopupPos().top, width: 'auto', 'border-color': color }, css: { 'popup-container--has-info': status().key !== 'normal' }, event: { click: popout }"
-
-  /#debug
-    p data-bind="text: 'VB:' + dumpViewBox()"
-    p data-bind="text: 'IB:' + dumpInnerWindow()"
-    p data-bind="text: 'Pixel ratio:' + dumpDevicePixelRatio()"
 
 #mapcontrol
   /p data-bind="text: scale"

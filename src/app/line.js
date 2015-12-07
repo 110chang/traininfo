@@ -20,7 +20,6 @@ var ko = require('knockout');
 
 var MapControlFactory = require('./mapcontrolfactory');
 var Status = require('./status');
-var Screen = require('../mod/screen');
 
 function LineVM(o) {
   events.EventEmitter.call(this);
