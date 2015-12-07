@@ -58,6 +58,47 @@ input.placeholder
  *
  * ============================ */
 
+/* ===== Line display panel ===== */
+
+.line-display
+  color: #999
+  &>*
+    display: inline-block
+
+.line--has-info
+  color: #FFF
+
+.line-title
+  margin: 0.2em 0.25em
+  font-weight: bold
+
+.line-msg
+  margin: 0.2em 0.25em
+  font-size: 0.625rem
+  line-height: 120%
+  word-wrap: break-word
+
+.line-status
+
+.line-status-icon
+  display: inline-block
+  width: 1.1em
+  margin: 0.2em 0.25em
+  text-align: center
+
+.line-status-label
+  display: inline-block
+  width: 4em
+  margin: 0.2em 0.25em
+  padding: 0.1em 0.25em
+  border-radius: 4px
+  background: #333
+  color: #F0F0F0
+  font-size: 0.625rem
+  line-height: 140%
+  text-align: center
+
+
 #main
   height: 100%
   position: relative
@@ -108,56 +149,28 @@ input.placeholder
     font-size: 0.75rem
 
 #popup
-  position: fixed
-  left: 0
-  top: 0
-  width: 100%
-  z-index: 9
-  background: rgba(0,0,0,0.8)
+  position: absolute
+  z-index: 999
 
 .popup-container
-  position: relative
-  border-bottom: 2px solid #333
+  overflow: hidden
   font-family: "Source Sans Pro", sans-serif
   font-size: 0.75rem
   line-height: 140%
-  color: #999
-  &>*
-    display: inline-block
 
-.popup-container--has-info
-  color: #FFF
+.popup-container-wrapper
+  background: rgba(0,0,0,0.8)
+  border-bottom: 2px solid #333
+  margin-bottom: -100%
+  transition: margin 0.25s ease-in-out
 
-.popup-title
-  margin: 0.2em 0.25em
-  font-weight: bold
+.popup--show
+  .popup-container-wrapper
+    margin-bottom: 0
 
-.popup-msg
-  margin: 0.2em 0.25em
-  font-size: 0.625rem
-  line-height: 120%
-
-.popup-status
-
-.popup-status-icon
-  display: inline-block
-  width: 1.1em
-  margin: 0.2em 0.25em
-  text-align: center
-
-.popup-status-label
-  display: inline-block
-  width: 4em
-  margin: 0.2em 0.25em
-  padding: 0.1em 0.25em
-  border-radius: 4px
-  background: #333
-  color: #F0F0F0
-  font-size: 0.625rem
-  line-height: 140%
-  text-align: center
 
 #debug
+  display: none
   position: absolute
   right: 0
   top: 0
@@ -273,6 +286,15 @@ input.placeholder
     bottom: 50%
     margin-bottom: -0.5em
 
+#clock
+  position: fixed
+  right: 20px
+  top: 20px
+  width: 40px
+  height: 40px
+  //background: rgba(0,0,255,0.5)
+  color: #FFF
+
 @media screen and (max-height: 414px)
   #map-slider-vertical
     display: none
@@ -308,7 +330,9 @@ input.placeholder
   left: 0
   bottom: 0
   width: 100%
+  height: 100%
   z-index: 9999
+  background: rgba(0,0,0,0.8)
 
 #updates-list
   box-sizing: border-box
@@ -317,15 +341,87 @@ input.placeholder
   width: 100%
   //height: 200px
   max-height: 100%
+  padding-bottom: 96px
+
+.update-nav-bar
+  position: absolute
+  left: 0
+  bottom: 0
+  width: 100%
+  height: 54px
   padding-bottom: 44px
-  background: rgba(0,0,0,0.8)
+  background: #000
+  ul
+    display: table
+    width: 100%
+    background: #333
+    letter-spacing: -0.3em
+  li
+    display: table-cell
+    position: relative
+    vertical-align: top
+    letter-spacing: 0
+    &:nth-child(2)
+      width: 2 * 55px
+
+.update-nav-btns
+  width: 2 * 54px
+  text-align: right
+
+.update-nav-btn
+  display: inline-block
+  padding: 1em
+  background: #333
+  border-left: 1px solid #000
+  cursor: pointer
+  +link-colors(#FFF, #CCC, #FFF, #FFF, #FFF)//n-h-a-v-f
+  text-decoration: none
+  &:hover
+    background: #666
+
+.update-nav-label
+  display: none
+
+.update-nav-icon
+  margin-left: 0.25em
+  margin-right: 0.25em
+
+.update-nav-search-box
+  position: relative
+  display: block
+  padding-right: 54px
+  vertical-align: top
+  background: #333
+  label
+    display: block
+    padding: 0.25em 0.5em
+    font-size: 0.75rem
+    line-height: 140%
+  input
+    box-sizing: border-box
+    width: 100%
+    margin: 0
+    padding: 0.4em 0.5em
+    border: 0
+    background: #202020
+    color: #FFF
+    font-size: 1rem
+    border-radius: 0
+
+.update-search-nav-btn
+  display: block
+  position: absolute
+  right: 0
+  top: 0
+  vertical-align: top
+  border-left: 0
 
 .update-container
   margin: 1px
   border-left: 3px solid #666
   border-bottom: 0
 
-.updates-nav-bar
+.updates-bottom-bar
   position: fixed
   left: 0
   bottom: 0
@@ -343,11 +439,11 @@ input.placeholder
 //.update-nav-bar--open
 //  background: rgba(0,0,0,0)
 
-.update-nav-toggle
+.update-toggle-nav
   transform: rotate(0)
   transition: transform 0.25s ease-in-out
 
-.update-nav-toggle--open
+.update-toggle-nav--open
   transform: rotate(45deg)
 
 //.updates-icon
@@ -376,15 +472,15 @@ input.placeholder
  * ============================ */
 
 @media screen and (min-width:767px)
-  .popup-container
+  .line-container
     font-size: 1rem
     line-height: 140%
 
-  .popup-msg
+  .line-msg
     font-size: 0.75rem
     line-height: 120%
 
-  .popup-status-label
+  .line-status-label
     font-size: 0.75rem
     line-height: 140%
 
@@ -394,6 +490,41 @@ input.placeholder
       font-size: 1rem
       line-height: 140%
 
+  .update-nav-bar
+    ul
+      display: table
+      width: 100%
+      letter-spacing: -0.3em
+    li
+      display: table-cell
+      width: 60%
+      vertical-align: top
+      letter-spacing: 0
+      &:nth-child(2)
+        width: 39%
 
+  .update-nav-label
+    display: inline-block
+
+  .update-nav-search-box
+    display: inline-block
+    width: 100%
+    padding-right: 0
+    label
+      display: inline-block
+      margin-left: 1em
+      margin-right: 1em
+      font-size: 0.75rem
+    input
+      width: 60%
+      padding: 1.1em
+
+  .update-search-nav-btn
+    display: inline-block
+    position: relative
+    right: auto
+    top: auto
+    vertical-align: top
+    border-right: 1px solid #000
 
 // EOF

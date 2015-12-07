@@ -140,16 +140,7 @@ configure :build do
   # set :http_path, "/Content/images/"
 
   ignore "*.bak"
-  ignore "js/build.js"
-  ignore "js/build-*.js"
-  ignore "js/main.js"
-  ignore "js/main-*.js"
-  ignore "js/mod"
-  ignore "js/mod/*.js"
-  ignore "js/app"
-  ignore "js/app/*.js"
-  ignore "js/lib/require.js"
-  ignore "js/lib/almond.js"
+  ignore "test.json"
   ignore "sprite_*-s*.png"
 
 end

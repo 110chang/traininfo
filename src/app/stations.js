@@ -3,18 +3,10 @@
  * stations
  */
 
-var $ = window.jQuery || require('jquery');
-require('jquery.easing');
-
 var extend = require('extend');
-var events = require('events');
-var inherit = require('util').inherits;
 var ko = require('knockout');
 
-var GeoCoords = require('./geocoords');
-var LineVM = require('./line');
 var StationVM = require('./station');
-var Status = require('./status');
 
 var _instance = null;
 
@@ -34,7 +26,6 @@ function Stations() {
 
   _instance = this;
 }
-inherit(Stations, events.EventEmitter);
 extend(Stations.prototype, {
   getData:function() {
     return this.originalData;
@@ -80,9 +71,9 @@ extend(Stations.prototype, {
       });
       target.setPriority();
     }, this);
-    console.log(stations);
     this.data(stations);
     this.getStationPriorityRange();
+    //console.log(stations);
   },
   getStationPriorityRange: function() {
     this.data().forEach(function(station) {

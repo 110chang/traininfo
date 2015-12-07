@@ -9,8 +9,8 @@ var extend = require('extend');
 var _instance = null;
 
 var REG_RESTART = /(:?遅れ|運休|運転変更|運転を?見合).+いましたが.+(:?平常|運転を?再開)/;
-var REG_INFO = /(:?運転状況|一部列車に(:?遅れ|運休|運転変更))/;
-var REG_DELAY = /(:?遅れ|列車遅延)/;
+var REG_INFO = /(:?運転状況|一部列車に(:?遅れ|運休|運転変更|))/;
+var REG_DELAY = /(:?遅れ|列車遅延|列車に遅れ)/;
 var REG_SUSPEND = /運転(:?.+)?見合/;
 var REG_NORMAL = /マッチなし/;
 var REG_ALL = /(:?再開|(:?遅れ|運休|運転変更)?が出ていましたが.+平常|一部列車.運休|遅れ.運転変更|直通運転.中止|遅れ.運休|運転変更|臨時|遅れ|遅延|見合|運休|平常)/;
@@ -57,14 +57,12 @@ extend(Status.prototype, {
 
     if (REG_RESTART.test(msg)) {
       return 4;
-    } else if (REG_INFO.test(msg)) {
-      return 1;
     } else if (REG_SUSPEND.test(msg)) {
       return 3;
     } else if (REG_DELAY.test(msg)) {
       return 2;
-    } else if (REG_NORMAL.test(msg)) {
-      return 0;
+    } else if (REG_INFO.test(msg)) {
+      return 1;
     } else {
       return 1;
     }
