@@ -41,6 +41,10 @@ function LineVM(o) {
   }, this);
   this.selected = ko.observable(false);
 
+  this.stationNameStr = this.stations.map(function(e) {
+    return e.name;
+  }).join(',');
+
   // skins
   this.mainColor       = ko.computed(this.getMainStrokeColor, this);
   this.mainStrokeWidth = ko.computed(this.getMainStrokeWidth, this);

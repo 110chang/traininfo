@@ -35,6 +35,7 @@ html lang="ja"
     - else
       javascript:
         window.UPDATE_SRC = 'http://' + location.hostname + ':8002/';
+        //window.UPDATE_SRC = './test.json';
     - data_main = get_data_main(current_page.data.id)
     = javascript_include_tag "#{data_main}", type: nil
 

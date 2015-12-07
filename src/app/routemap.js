@@ -63,3 +63,4 @@ extend(RouteMapVM.prototype, {
 });
 
 module.exports = RouteMapVM;
+

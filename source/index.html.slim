@@ -41,10 +41,10 @@ div#routemap
     p data-bind="text: 'Pixel ratio:' + dumpDevicePixelRatio()"
 
 
-#popup.popup-container data-bind="style: { left: left, top: top }, css: { 'popup-container--has-info': status().key !== 'normal' }"
-  .popup-container-wrapper data-bind="style: { 'border-color': color }"
-    p.popup-status data-bind="style: { color: status().color }"
-      span.popup-status-icon
+#popup.popup-container data-bind="style: { left: left, top: top }"
+  .popup-container-wrapper.line-display data-bind="style: { 'border-color': color }, css: { 'line--has-info': status().key !== 'normal' }"
+    p.line-status data-bind="style: { color: status().color }"
+      span.line-status-icon
         span data-bind="if: status().key === 'normal'"
           i.fa.fa-check
         span data-bind="if: status().key === 'info'"
@@ -55,9 +55,9 @@ div#routemap
           i.fa.fa-minus-circle
         span data-bind="if: status().key === 'restart'"
           i.fa.fa-refresh
-      span.popup-status-label data-bind="text: status().label, style: { background: status().color }"
-    p.popup-title data-bind="text: name"
-    p.popup-msg data-bind="text: content"
+      span.line-status-label data-bind="text: status().label, style: { background: status().color }"
+    p.line-title data-bind="text: name"
+    p.line-msg data-bind="text: content"
 
 #mapcontrol
   /p data-bind="text: scale"
@@ -105,28 +105,49 @@ div#routemap
     path stroke="#999" fill="none" data-bind="attr: { d: getPath(), 'stroke-width': thickness }"
     text text-anchor="middle" data-bind="text: getDisplayTime()" font-size="16" x="20" y="26" fill="#999"
 
-/#updates
+#updates
   #updates-list
-    ul data-bind="foreach: updates"
-      li.popup-container.update-container data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status.key !== 'normal' }"
-        p.popup-status data-bind="style: { color: status.color }"
-          span.popup-status-icon
-            span data-bind="if: status.key === 'normal'"
+    ul data-bind="foreach: filtered"
+      li.update-container.line-display data-bind="style: { 'border-color': color }, css: { 'line--has-info': status().key !== 'normal' }"
+        p.line-status data-bind="style: { color: status().color }"
+          span.line-status-icon
+            span data-bind="if: status().key === 'normal'"
               i.fa.fa-check
-            span data-bind="if: status.key === 'info'"
+            span data-bind="if: status().key === 'info'"
               i.fa.fa-info-circle
-            span data-bind="if: status.key === 'delay'"
+            span data-bind="if: status().key === 'delay'"
               i.fa.fa-warning
-            span data-bind="if: status.key === 'suspend'"
+            span data-bind="if: status().key === 'suspend'"
               i.fa.fa-minus-circle
-            span data-bind="if: status.key === 'restart'"
+            span data-bind="if: status().key === 'restart'"
               i.fa.fa-refresh
-          span.popup-status-label data-bind="text: status.label, style: { background: status.color }"
-        p.popup-title data-bind="text: name"
-        p.popup-msg data-bind="text: content"
-  nav.updates-nav-bar data-bind="css: { 'update-nav-bar--open': isShow }"
+          span.line-status-label data-bind="text: status().label, style: { background: status().color }"
+        p.line-title data-bind="text: name"
+        p.line-msg data-bind="text: content"
+  nav.update-nav-bar
     ul
-      li.update-nav-toggle data-bind="event: { click: toggle }, css: { 'update-nav-toggle--open': isShow }"
+      li
+        .update-nav-search-box
+          label
+            | キーワード
+          input type="text" data-bind="value: keyword, valueUpdate: 'afterinput'"
+          a.update-nav-btn.update-search-nav-btn href="javascript:void(0);" data-bind="event: { click: match }"
+            span.update-nav-icon
+              i.fa.fa-search
+      li.update-nav-btns
+        a.update-nav-btn href="javascript:void(0);" data-bind="event: { click: all }"
+          span.update-nav-icon
+            i.fa.fa-circle-o
+          span.update-nav-label
+            | すべて
+        a.update-nav-btn href="javascript:void(0);" data-bind="event: { click: hasInfo }"
+          span.update-nav-icon
+            i.fa.fa-filter
+          span.update-nav-label
+            | 情報あり
+  nav.updates-bottom-bar data-bind="css: { 'update-nav-bar--open': isShow }"
+    ul
+      li.update-toggle-nav data-bind="event: { click: toggle }, css: { 'update-toggle-nav--open': isShow }"
         span.updates-icon
           i.fa.fa-plus
 

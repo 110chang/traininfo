@@ -35,9 +35,9 @@
     var clock      = new Clock();
     var popup      = new Popup();
 
-    updates.on('loadFailure', function() {
-      console.log('%c%s', 'background:#FF0', 'Main#loadFailure');
-    });
+    //updates.on('loadFailure', function() {
+    //  console.log('%c%s', 'background:#FF0', 'Main#loadFailure');
+    //});
 
     mapControl.on('boundsChanged', function(e) {
       //console.log('Main#changed');
@@ -59,22 +59,15 @@
       //updates.load();
     });
 
-    Q.all([lines, updates].map(function(vm) {
-      var dfd = Q.defer();
-      vm.on('loadComplete', function() {
-        console.log('Main#loadComplete');
-        dfd.resolve();
-      });
-      return dfd.promise;
-    })).then(function() {
-      //console.log(lines.getStations());
+    lines.on('loadComplete', function(e) {
+      console.log('Main#loadComplete');
       stations.initialize(lines.getData());
       geoCoords.initialize(stations.getData());
       //geoCoords.setOffset(10, 10);
       lines.setUp(geoCoords);
       stations.setUp(geoCoords);
-      lines.applyUpdates(updates.getUpdates());
-      updates.applyLines(lines.getData());
+      lines.applyUpdates();
+      updates.initialize();
       routeMap.initialize();
       mapControl.initialize();
       clock.start();
@@ -87,7 +80,7 @@
       console.log('Main#resize');
       geoCoords.resize(window.innerWidth, window.innerHeight);
       mapControl.resize(window.innerWidth, window.innerHeight);
-      updates.resize(lines.getData());
+      //updates.resize(lines.getData());
       routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
     }
 
