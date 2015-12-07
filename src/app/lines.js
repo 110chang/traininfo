@@ -10,6 +10,7 @@
   var inherit = require('util').inherits;
   var ajax = require('superagent');
   var ko = require('knockout');
+  var Q = require('q');
 
   var LineVM = require('./line');
   var Status = require('./status');
@@ -25,21 +26,52 @@
     }
 
     this.data = ko.observableArray([]);
+    this.updates = ko.observableArray([]);
     this.focused = ko.observableArray([]);
 
-    ajax.get('./lines.json').end(this.loadComplete.bind(this));
+    //ajax.get('./lines.json').end(this.loadComplete.bind(this));
+
+
+    Q.all([this.loadLineData(), this.loadUpdateData()])
+      .then(this.loadComplete.bind(this));
 
     _instance = this;
   }
   inherit(Lines, events.EventEmitter);
   extend(Lines.prototype, {
-    loadComplete: function(error, response) {
+    loadLineData: function() {
+      var dfd = Q.defer();
+      ajax.get('./lines.json').end(function(error, response) {
+        if (error) {
+          dfd.reject();
+        }
+        dfd.resolve(response.body || JSON.parse(response.text));
+      });
+      return dfd.promise;
+    },
+    loadUpdateData: function() {
+      var dfd = Q.defer();
+      ajax.get(global.UPDATE_SRC).end(function(error, response) {
+        if (error) {
+          dfd.reject();
+        }
+        dfd.resolve(response && response.body[0].value.items.map(function(update) {
+          return extend(update, {
+            status: Status().convert(update.content)
+          });
+        }, this));
+      });
+      return dfd.promise;
+    },
+    loadComplete: function(responces) {
       console.log('Lines#loadComplete');
-      if (error) {
-        console.log(error);
-      }
-      var res = response.body || JSON.parse(response.text);
-      this.originalData = res.slice();
+      var data = responces[0];
+      var updates = responces[1];
+      //console.log(data);
+      //console.log(updates);
+      this.originalData = data.slice();
+      //this.data(data);
+      this.updates(updates);
       this.emit('loadComplete');
     },
     get: function() {
@@ -66,6 +98,7 @@
         lineVM.on('mouseOut', this.onLineMouseOut.bind(this));
         this.data().push(lineVM);
       }, this);
+      //console.log(this.data());
     },
     bringToTop: function(e) {
       this.data().splice(this.data.indexOf(e), 1);
@@ -97,11 +130,11 @@
       this.emit('lineMouseOut', data, e);
       this.focused([]);
     },
-    applyUpdates: function(updates) {
-      //console.log(updates);
+    applyUpdates: function() {
+      console.log('Lines#applyUpdates');
       var targets = [];
       this.data().forEach(function(line) {
-        updates.forEach(function(update) {
+        this.updates().forEach(function(update) {
           //console.log(update.title + '===' + line.goo_key);
           if (update.title.match(line.goo_key)) {
             //console.log(update);

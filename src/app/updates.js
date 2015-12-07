@@ -13,87 +13,50 @@
   var events = require('events');
   var inherit = require('util').inherits;
   var ko = require('knockout');
-  var ajax = require('superagent');
 
-  var Status = require('./status');
-
-  var escapeLineName = /([\\\*\+\.\?\{\}\(\)\[\]\^\$\-\|\/])/g;
+  var Lines = require('./lines');
 
   function UpdatesVM() {
     this.$el = $('#updates');
     this.$list = $('#updates-list');
-    this.numTrial = 0;
     this.isShow = ko.observable(false);
-    this.updates = ko.observableArray([]);
-    this.origUpdates = [];
-    this.load();
+    this.close();
+
+    this.lines = Lines();
+    this.keyword = ko.observable('');
+    this.keyword.subscribe(function(val) {
+      if (val) {
+        var filtered = this.filterKeyword(val);
+        console.log(filtered);
+        if (filtered.length > 0) {
+          this.filtered(filtered);
+        } else {
+
+        }
+      } else {
+        this.all();
+      }
+    }, this);
+    this.filtered = ko.observableArray([]);
+
+    ko.applyBindings(this, this.$el.get(0));
   }
   inherit(UpdatesVM, events.EventEmitter);
   extend(UpdatesVM.prototype, {
-    hasUpdates: function() {
-      //console.log('UpdatesVM#hasUpdates');
-      return this.updates().length > 0;
+    initialize: function() {
+      this.filtered(this.filterAll());
     },
-    getUpdates: function() {
-      //console.log('UpdatesVM#getUpdates');
-      return this.updates().slice();
+    all: function() {
+      this.filtered(this.filterAll());
     },
-    load: function() {
-      //console.log('UpdatesVM#load');
-      ajax.get(global.UPDATE_SRC).end(this.loadComplete.bind(this));
+    hasInfo: function() {
+      this.filtered(this.filterHasInfo());
     },
-    loadComplete: function(error, response) {
-      //console.log('UpdatesVM#loadComplete');
-      if (error) {
-        this.handleError(error);
-        return;
-      }
-      //console.log(response.body[0].value.items);
-      var updates = response.body[0].value.items;
-      updates.map(function(update) {
-        return extend(update, {
-          status: Status().convert(update.content)
-        });
-      }, this);
-      console.log(updates);
-      this.updates(updates);
-      this.emit('loadComplete');
-    },
-    handleError: function(error) {
-      //console.log('UpdatesVM#handleError');
-      this.numTrial++;
-      if (this.numTrial < UpdatesVM.MAX_NUMBER_OF_TRIAL) {
-        this.load();
-      } else {
-        this.numTrial = 0;
-        this.emit('loadFailure');
-      }
-    },
-    applyLines: function(data) {
-      //console.log('UpdatesVM#applyLines');
-      var updates = this.getUpdates();
-      data.forEach(function(line) {
-        //console.log(line.goo_key);
-        var regTitle = new RegExp(line.goo_key.replace(escapeLineName, '\\$1'));
-        //console.log(regTitle);
-        this.updates().map(function(update) {
-          //console.log(update.title + '===' + line.goo_key);
-          if (regTitle.test(update.title)) {
-            //console.log(update.title + '===' + line.goo_key);
-            update.color = line.color;
-            update.name = line.name;
-          }
-        }, this);
-      }, this);
-      //console.log(updates);
-      this.updates(updates);
-      this.origUpdates = this.getUpdates();
-
-      //ko.applyBindings(this, this.$el.get(0));
-
-      this.close();
+    match: function() {
+      this.filtered(this.filterKeyword());
     },
     toggle: function() {
+      console.log('UpdatesVM#toggle');
       if (this.isShow()) {
         this.close();
       } else {
@@ -118,10 +81,33 @@
       this.$el.css({
         'bottom': -this.$el.height() - 44
       });
+    },
+    filterAll: function() {
+      return this.lines.data().slice().sort(function(a, b) {
+        return a.id() - b.id();
+      }, this);
+    },
+    filterHasInfo: function() {
+      return this.lines.data().slice().filter(function(e) {
+        return e.status().key !== 'normal';
+      }, this).sort(function(a, b) {
+        return a.id() - b.id();
+      }, this);
+    },
+    filterKeyword: function(keyword) {
+      keyword = this.keyword();
+      console.log(keyword);
+      return this.lines.data().slice().filter(function(e) {
+        var matchName = e.name().match(keyword);
+        var matchInfo = e.content().match(keyword);
+        var matchStation = e.stationNameStr.match(keyword);
+        //console.log(e.name(), keyword);
+        //console.log(e.content(), keyword);
+        //console.log(matchName, matchInfo);
+        return matchName || matchInfo || matchStation;
+      }, this);
     }
   });
-  UpdatesVM.MAX_NUMBER_OF_TRIAL = 5;
-
 
   module.exports = UpdatesVM;
 
