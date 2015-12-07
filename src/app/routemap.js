@@ -24,7 +24,6 @@ function RouteMapVM() {
   this.width = ko.observable();
   this.height = ko.observable();
   this.viewBox = ko.observable('0 0 0 0');
-  this.lineData = ko.observable();
 
   //this.viewBox.subscribe(function(val) {
   //  console.log(val);

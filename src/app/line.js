@@ -26,23 +26,26 @@ function LineVM(o) {
 
   this.map = MapControlFactory();
 
-  this.status = ko.observable(Status().decode(0));
-  this.content = ko.observable('');
-  this.color = o.color;
-  this.goo_key = o.goo_key;
-  this.id = ko.observable(o.id);
-  this.loop = !!o.loop;
-  this.name = ko.observable(o.name);
+  this.status   = ko.observable(Status().decode(0));
+  this.content  = ko.observable('');
+  this.color    = o.color;
+  this.goo_key  = o.goo_key;
+  this.id       = ko.observable(o.id);
+  this.loop     = !!o.loop;
+  this.name     = ko.observable(o.name);
   this.stations = o.stations;
-  this.subway = o.subway;
-  this.path = ko.observable(this.getPath());
+  this.subway   = o.subway;
+  this.path     = ko.observable(this.getPath());
+  this.bounds   = ko.computed(function() {
+    return this.getBounds();
+  }, this);
   this.selected = ko.observable(false);
 
   // skins
-  this.mainColor = ko.computed(this.getMainStrokeColor, this);
+  this.mainColor       = ko.computed(this.getMainStrokeColor, this);
   this.mainStrokeWidth = ko.computed(this.getMainStrokeWidth, this);
-  this.subColor = ko.computed(this.getSubStrokeColor, this);
-  this.subStrokeWidth = ko.computed(this.getSubStrokeWidth, this);
+  this.subColor        = ko.computed(this.getSubStrokeColor, this);
+  this.subStrokeWidth  = ko.computed(this.getSubStrokeWidth, this);
 }
 inherit(LineVM, events.EventEmitter);
 extend(LineVM.prototype, {
@@ -57,6 +60,38 @@ extend(LineVM.prototype, {
       return this.color;
     }
     return '#333';
+  },
+  getLineRect: function() {
+    var bounds = this.bounds();
+    var scale = this.map.scale();
+    var vb = this.map.viewBox;
+    var width = bounds[1] - bounds[0];
+    var height = bounds[3] - bounds[2];
+    var left = bounds[0] - vb.x * scale;
+    var top = bounds[2] - vb.y * scale;
+
+    return {
+      left: left,
+      top: top,
+      width: width,
+      height: height
+    };
+  },
+  getBounds: function() {
+    var scale = this.map.scale();
+    var xMin = 99999;
+    var xMax = 0;
+    var yMin = 99999;
+    var yMax = 0;
+
+    this.stations.forEach(function(station, i) {
+      xMin = station.x * scale < xMin ? station.x * scale : xMin;
+      xMax = xMax < station.x * scale ? station.x * scale : xMax;
+      yMin = station.y * scale < yMin ? station.y * scale : yMin;
+      yMax = yMax < station.y * scale ? station.y * scale : yMax;
+    });
+
+    return [xMin, xMax, yMin, yMax];
   },
   getMainStrokeWidth: function() {
     if (this.isSelected()) {
@@ -105,10 +140,6 @@ extend(LineVM.prototype, {
     //console.log('LineVM#mouseOutPath');
     this.selected(false);
     this.emit('mouseOut', this, e);
-  },
-  popout: function(e) {
-    //console.log('LineVM#popout');
-    //console.log(e);
   }
 });
 

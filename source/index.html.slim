@@ -34,31 +34,30 @@ div#routemap
         - color = i % 10 === 0 ? "#FCC" : "#CCC"
         - width = i % 10 === 0 ? "2" : "1"
         path d="M0,#{10 * i} L1500, #{10 * i}" stroke="#{color}" stroke-width="#{width}"
-      
 
-  #popup
-    ul data-bind="foreach: { data: lines.focused, afterAdd: lines.afterPopup, beforeRemove: lines.beforePopout }"
-      li.popup-container data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status().key !== 'normal' }, event: { click: popout }"
-        p.popup-status data-bind="style: { color: status().color }"
-          span.popup-status-icon
-            span data-bind="if: status().key === 'normal'"
-              i.fa.fa-check
-            span data-bind="if: status().key === 'info'"
-              i.fa.fa-info-circle
-            span data-bind="if: status().key === 'delay'"
-              i.fa.fa-warning
-            span data-bind="if: status().key === 'suspend'"
-              i.fa.fa-minus-circle
-            span data-bind="if: status().key === 'restart'"
-              i.fa.fa-refresh
-          span.popup-status-label data-bind="text: status().label, style: { background: status().color }"
-        p.popup-title data-bind="text: name"
-        p.popup-msg data-bind="text: content"
-
-  #debug
+  /#debug
     p data-bind="text: 'VB:' + dumpViewBox()"
     p data-bind="text: 'IB:' + dumpInnerWindow()"
     p data-bind="text: 'Pixel ratio:' + dumpDevicePixelRatio()"
+
+
+#popup.popup-container data-bind="style: { left: left, top: top }, css: { 'popup-container--has-info': status().key !== 'normal' }"
+  .popup-container-wrapper data-bind="style: { 'border-color': color }"
+    p.popup-status data-bind="style: { color: status().color }"
+      span.popup-status-icon
+        span data-bind="if: status().key === 'normal'"
+          i.fa.fa-check
+        span data-bind="if: status().key === 'info'"
+          i.fa.fa-info-circle
+        span data-bind="if: status().key === 'delay'"
+          i.fa.fa-warning
+        span data-bind="if: status().key === 'suspend'"
+          i.fa.fa-minus-circle
+        span data-bind="if: status().key === 'restart'"
+          i.fa.fa-refresh
+      span.popup-status-label data-bind="text: status().label, style: { background: status().color }"
+    p.popup-title data-bind="text: name"
+    p.popup-msg data-bind="text: content"
 
 #mapcontrol
   /p data-bind="text: scale"
@@ -100,10 +99,13 @@ div#routemap
     .minimap-init data-bind="style: { width: minimap.svgWidth() + 'px', height: minimap.svgHeight() + 'px' }"
       .minimap-current data-bind="style: { left: minimap.x() + 'px', top: minimap.y() + 'px', width: minimap.width() + 'px', height: minimap.height() + 'px' }"
 
-#horizontal-center
-#vertical-center
+#clock
+  svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin"
+    circle stroke="#333" fill="none" data-bind="attr: { cx: size / 2, cy: size / 2, r: (size - thickness) / 2, 'stroke-width': thickness }"
+    path stroke="#999" fill="none" data-bind="attr: { d: getPath(), 'stroke-width': thickness }"
+    text text-anchor="middle" data-bind="text: getDisplayTime()" font-size="16" x="20" y="26" fill="#999"
 
-#updates
+/#updates
   #updates-list
     ul data-bind="foreach: updates"
       li.popup-container.update-container data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status.key !== 'normal' }"

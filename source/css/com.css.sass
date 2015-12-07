@@ -107,23 +107,27 @@ input.placeholder
     top: 0
     font-size: 0.75rem
 
-#popup
-  position: fixed
-  left: 0
-  top: 0
-  width: 100%
-  z-index: 9
-  background: rgba(0,0,0,0.8)
 
 .popup-container
-  position: relative
-  border-bottom: 2px solid #333
+  position: absolute
+  z-index: 999
+  overflow: hidden
   font-family: "Source Sans Pro", sans-serif
   font-size: 0.75rem
   line-height: 140%
   color: #999
+
+.popup-container-wrapper
+  background: rgba(0,0,0,0.8)
+  border-bottom: 2px solid #333
+  margin-bottom: -100%
+  transition: margin 0.25s ease-in-out
   &>*
     display: inline-block
+
+.popup--show
+  .popup-container-wrapper
+    margin-bottom: 0
 
 .popup-container--has-info
   color: #FFF
@@ -158,6 +162,7 @@ input.placeholder
   text-align: center
 
 #debug
+  display: none
   position: absolute
   right: 0
   top: 0
@@ -272,6 +277,15 @@ input.placeholder
     left: 30px
     bottom: 50%
     margin-bottom: -0.5em
+
+#clock
+  position: fixed
+  right: 20px
+  top: 20px
+  width: 40px
+  height: 40px
+  //background: rgba(0,0,255,0.5)
+  color: #FFF
 
 @media screen and (max-height: 414px)
   #map-slider-vertical
