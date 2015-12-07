@@ -44,7 +44,7 @@
   inherit(UpdatesVM, events.EventEmitter);
   extend(UpdatesVM.prototype, {
     initialize: function() {
-      this.filtered(this.filterAll());
+      this.filtered(this.filterHasInfo());
     },
     all: function() {
       this.filtered(this.filterAll());

@@ -106,28 +106,6 @@ div#routemap
     text text-anchor="middle" data-bind="text: getDisplayTime()" font-size="16" x="20" y="26" fill="#999"
 
 #updates
-  nav.update-nav-bar
-    ul
-      li.update-nav-item
-        .update-nav-search-box
-          label
-            | キーワード
-          input type="text" placeholder="渋谷" data-bind="value: keyword, valueUpdate: 'afterinput'"
-        a.update-nav-btn.update-search-nav-btn href="javascript:void(0);" data-bind="event: { click: match }"
-          span.update-nav-icon
-            i.fa.fa-search
-      li.update-nav-item
-        a.update-nav-btn href="javascript:void(0);" data-bind="event: { click: all }"
-          span.update-nav-icon
-            i.fa.fa-circle-o
-          span.update-nav-label
-            | すべて
-      li.update-nav-item
-        a.update-nav-btn href="javascript:void(0);" data-bind="event: { click: hasInfo }"
-          span.update-nav-icon
-            i.fa.fa-filter
-          span.update-nav-label
-            | 情報あり
   #updates-list
     ul data-bind="foreach: filtered"
       li.update-container.line-display data-bind="style: { 'border-color': color }, css: { 'line--has-info': status().key !== 'normal' }"
@@ -146,6 +124,27 @@ div#routemap
           span.line-status-label data-bind="text: status().label, style: { background: status().color }"
         p.line-title data-bind="text: name"
         p.line-msg data-bind="text: content"
+  nav.update-nav-bar
+    ul
+      li
+        .update-nav-search-box
+          label
+            | キーワード
+          input type="text" data-bind="value: keyword, valueUpdate: 'afterinput'"
+          a.update-nav-btn.update-search-nav-btn href="javascript:void(0);" data-bind="event: { click: match }"
+            span.update-nav-icon
+              i.fa.fa-search
+      li.update-nav-btns
+        a.update-nav-btn href="javascript:void(0);" data-bind="event: { click: all }"
+          span.update-nav-icon
+            i.fa.fa-circle-o
+          span.update-nav-label
+            | すべて
+        a.update-nav-btn href="javascript:void(0);" data-bind="event: { click: hasInfo }"
+          span.update-nav-icon
+            i.fa.fa-filter
+          span.update-nav-label
+            | 情報あり
   nav.updates-bottom-bar data-bind="css: { 'update-nav-bar--open': isShow }"
     ul
       li.update-toggle-nav data-bind="event: { click: toggle }, css: { 'update-toggle-nav--open': isShow }"

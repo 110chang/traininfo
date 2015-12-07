@@ -341,20 +341,38 @@ input.placeholder
   width: 100%
   //height: 200px
   max-height: 100%
-  padding-bottom: 88px
+  padding-bottom: 96px
 
 .update-nav-bar
-  letter-spacing: -0.25em
+  position: absolute
+  left: 0
+  bottom: 0
+  width: 100%
+  height: 54px
+  padding-bottom: 44px
+  background: #000
+  ul
+    display: table
+    width: 100%
+    background: #333
+    letter-spacing: -0.3em
   li
-    margin: 0 1px
-.update-nav-item
-  display: inline-block
-  letter-spacing: 0
-  vertical-align: top
+    display: table-cell
+    position: relative
+    vertical-align: top
+    letter-spacing: 0
+    &:nth-child(2)
+      width: 2 * 55px
+
+.update-nav-btns
+  width: 2 * 54px
+  text-align: right
+
 .update-nav-btn
   display: inline-block
   padding: 1em
   background: #333
+  border-left: 1px solid #000
   cursor: pointer
   +link-colors(#FFF, #CCC, #FFF, #FFF, #FFF)//n-h-a-v-f
   text-decoration: none
@@ -369,26 +387,34 @@ input.placeholder
   margin-right: 0.25em
 
 .update-nav-search-box
-  display: inline-block
+  position: relative
+  display: block
+  padding-right: 54px
   vertical-align: top
+  background: #333
   label
     display: block
-    margin-left: 0.5em
-    margin-right: 0.5em
+    padding: 0.25em 0.5em
     font-size: 0.75rem
     line-height: 140%
-
   input
-    appearance: none
-    padding: 0.5em
-    background: #333
+    box-sizing: border-box
+    width: 100%
+    margin: 0
+    padding: 0.4em 0.5em
     border: 0
+    background: #202020
     color: #FFF
     font-size: 1rem
+    border-radius: 0
 
 .update-search-nav-btn
-  display: inline-block
+  display: block
+  position: absolute
+  right: 0
+  top: 0
   vertical-align: top
+  border-left: 0
 
 .update-container
   margin: 1px
@@ -464,16 +490,41 @@ input.placeholder
       font-size: 1rem
       line-height: 140%
 
+  .update-nav-bar
+    ul
+      display: table
+      width: 100%
+      letter-spacing: -0.3em
+    li
+      display: table-cell
+      width: 60%
+      vertical-align: top
+      letter-spacing: 0
+      &:nth-child(2)
+        width: 39%
+
   .update-nav-label
     display: inline-block
 
   .update-nav-search-box
+    display: inline-block
+    width: 100%
+    padding-right: 0
     label
       display: inline-block
       margin-left: 1em
       margin-right: 1em
       font-size: 0.75rem
     input
+      width: 60%
       padding: 1.1em
+
+  .update-search-nav-btn
+    display: inline-block
+    position: relative
+    right: auto
+    top: auto
+    vertical-align: top
+    border-right: 1px solid #000
 
 // EOF
