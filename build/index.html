@@ -25,21 +25,14 @@
     <article id="main">
       <div id="routemap">
         <svg xmlns="http://www.w3.org/2000/svg" data-bind="attr: { width: width, height: height, viewBox: viewBox }" preserveAspectRatio="xMinYMin"><g data-bind="foreach: lines.data"><a data-bind="attr: { 'xlink:href': '#' + name() }" fill="none"><!--###ko if: hasStatus()--><path class="subline" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: subColor, 'stroke-width': subStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"></path><!--###/ko--><path class="mainline" stroke-linecap="round" stroke-linejoin="round" pointer-events="none" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }"></path></a></g><g data-bind="foreach: stations.data"><!--ko if: switchVisibility()--><path stroke="#FFF" fill="#FFF" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { d: getPointPath(), 'stroke-width': getStrokeWidth() }"></path><text class="station-label" text-anchor="middle" data-bind="text: name, attr: { x: x, y: getLabelY(), 'font-size': getFontSize() }"></text><!--/ko--></g></svg>
-        <div id="popup">
-          <ul data-bind="foreach: { data: lines.focused, afterAdd: lines.afterPopup, beforeRemove: lines.beforePopout }">
-            <li class="popup-container" data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status().key !== 'normal' }, event: { click: popout }">
-              <p class="popup-status" data-bind="style: { color: status().color }">
-                <span class="popup-status-icon"><span data-bind="if: status().key === 'normal'"><i class="fa fa-check"></i></span><span data-bind="if: status().key === 'info'"><i class="fa fa-info-circle"></i></span><span data-bind="if: status().key === 'delay'"><i class="fa fa-warning"></i></span><span data-bind="if: status().key === 'suspend'"><i class="fa fa-minus-circle"></i></span><span data-bind="if: status().key === 'restart'"><i class="fa fa-refresh"></i></span></span><span class="popup-status-label" data-bind="text: status().label, style: { background: status().color }"></span>
-              </p>
-              <p class="popup-title" data-bind="text: name"></p>
-              <p class="popup-msg" data-bind="text: content"></p>
-            </li>
-          </ul>
-        </div>
-        <div id="debug">
-          <p data-bind="text: 'VB:' + dumpViewBox()"></p>
-          <p data-bind="text: 'IB:' + dumpInnerWindow()"></p>
-          <p data-bind="text: 'Pixel ratio:' + dumpDevicePixelRatio()"></p>
+      </div>
+      <div id="popup" class="popup-container" data-bind="style: { left: left, top: top }">
+        <div class="popup-container-wrapper line-display" data-bind="style: { 'border-color': color }, css: { 'line--has-info': status().key !== 'normal' }">
+          <p class="line-status" data-bind="style: { color: status().color }">
+            <span class="line-status-icon"><span data-bind="if: status().key === 'normal'"><i class="fa fa-check"></i></span><span data-bind="if: status().key === 'info'"><i class="fa fa-info-circle"></i></span><span data-bind="if: status().key === 'delay'"><i class="fa fa-warning"></i></span><span data-bind="if: status().key === 'suspend'"><i class="fa fa-minus-circle"></i></span><span data-bind="if: status().key === 'restart'"><i class="fa fa-refresh"></i></span></span><span class="line-status-label" data-bind="text: status().label, style: { background: status().color }"></span>
+          </p>
+          <p class="line-title" data-bind="text: name"></p>
+          <p class="line-msg" data-bind="text: content"></p>
         </div>
       </div>
       <div id="mapcontrol">
@@ -54,23 +47,36 @@
           </div>
         </div>
       </div>
-      <div id="horizontal-center"></div>
-      <div id="vertical-center"></div>
+      <div id="clock">
+        <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin"><circle stroke="#333" fill="none" data-bind="attr: { cx: size / 2, cy: size / 2, r: (size - thickness) / 2, 'stroke-width': thickness }"></circle><path stroke="#999" fill="none" data-bind="attr: { d: getPath(), 'stroke-width': thickness }"></path><text text-anchor="middle" data-bind="text: getDisplayTime()" font-size="16" x="20" y="26" fill="#999"></text></svg>
+      </div>
       <div id="updates">
         <div id="updates-list">
-          <ul data-bind="foreach: updates">
-            <li class="popup-container update-container" data-bind="style: { 'border-color': color }, css: { 'popup-container--has-info': status.key !== 'normal' }">
-              <p class="popup-status" data-bind="style: { color: status.color }">
-                <span class="popup-status-icon"><span data-bind="if: status.key === 'normal'"><i class="fa fa-check"></i></span><span data-bind="if: status.key === 'info'"><i class="fa fa-info-circle"></i></span><span data-bind="if: status.key === 'delay'"><i class="fa fa-warning"></i></span><span data-bind="if: status.key === 'suspend'"><i class="fa fa-minus-circle"></i></span><span data-bind="if: status.key === 'restart'"><i class="fa fa-refresh"></i></span></span><span class="popup-status-label" data-bind="text: status.label, style: { background: status.color }"></span>
+          <ul data-bind="foreach: filtered">
+            <li class="update-container line-display" data-bind="style: { 'border-color': color }, css: { 'line--has-info': status().key !== 'normal' }">
+              <p class="line-status" data-bind="style: { color: status().color }">
+                <span class="line-status-icon"><span data-bind="if: status().key === 'normal'"><i class="fa fa-check"></i></span><span data-bind="if: status().key === 'info'"><i class="fa fa-info-circle"></i></span><span data-bind="if: status().key === 'delay'"><i class="fa fa-warning"></i></span><span data-bind="if: status().key === 'suspend'"><i class="fa fa-minus-circle"></i></span><span data-bind="if: status().key === 'restart'"><i class="fa fa-refresh"></i></span></span><span class="line-status-label" data-bind="text: status().label, style: { background: status().color }"></span>
               </p>
-              <p class="popup-title" data-bind="text: name"></p>
-              <p class="popup-msg" data-bind="text: content"></p>
+              <p class="line-title" data-bind="text: name"></p>
+              <p class="line-msg" data-bind="text: content"></p>
             </li>
           </ul>
         </div>
-        <nav class="updates-nav-bar" data-bind="css: { 'update-nav-bar--open': isShow }">
+        <nav class="update-nav-bar">
           <ul>
-            <li class="update-nav-toggle" data-bind="event: { click: toggle }, css: { 'update-nav-toggle--open': isShow }">
+            <li>
+              <div class="update-nav-search-box">
+                <label>キーワード</label><input type="text" data-bind="value: keyword, valueUpdate: 'afterinput'"><a class="update-nav-btn update-search-nav-btn" href="javascript:void(0);" data-bind="event: { click: match }"><span class="update-nav-icon"><i class="fa fa-search"></i></span></a>
+              </div>
+            </li>
+            <li class="update-nav-btns">
+              <a class="update-nav-btn" href="javascript:void(0);" data-bind="event: { click: all }"><span class="update-nav-icon"><i class="fa fa-circle-o"></i></span><span class="update-nav-label">すべて</span></a><a class="update-nav-btn" href="javascript:void(0);" data-bind="event: { click: hasInfo }"><span class="update-nav-icon"><i class="fa fa-filter"></i></span><span class="update-nav-label">情報あり</span></a>
+            </li>
+          </ul>
+        </nav>
+        <nav class="updates-bottom-bar" data-bind="css: { 'update-nav-bar--open': isShow }">
+          <ul>
+            <li class="update-toggle-nav" data-bind="event: { click: toggle }, css: { 'update-toggle-nav--open': isShow }">
               <span class="updates-icon"><i class="fa fa-plus"></i></span>
             </li>
           </ul>
