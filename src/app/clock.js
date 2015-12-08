@@ -16,10 +16,10 @@
 
   var trunc = Math.trunc;
   var floor = Math.floor;
-  var ceil = Math.ceil;
-  var sin = Math.sin;
-  var cos = Math.cos;
-  var PI = Math.PI;
+  var ceil  = Math.ceil;
+  var sin   = Math.sin;
+  var cos   = Math.cos;
+  var PI    = Math.PI;
 
   function Clock() {
     this.measureTime = 60000;

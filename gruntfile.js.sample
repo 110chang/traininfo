@@ -3,12 +3,20 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     watch: {
-      files: [
-        'src/**/*.js'
-      ],
-      tasks: ['browserify'],
-      options: {
-        livereload: true
+      src: {
+        files: [
+          'src/**/*.js'
+        ],
+        tasks: ['browserify'],
+        options: {
+          livereload: true
+        }
+      },
+      spec: {
+        files: [
+          'spec/**/*.js'
+        ],
+        tasks: ['jasmine_nodejs']
       }
     },
 
@@ -38,8 +46,36 @@ module.exports = function(grunt) {
       },
       build: {
         options: {
-          command: 'build'
+          command: 'build',
+          clean: true,
         }
+      }
+    },
+    jasmine_nodejs: {
+      // task specific (default) options
+      options: {
+        specNameSuffix: "spec.js", // also accepts an array
+        helperNameSuffix: "helper.js",
+        useHelpers: false,
+        stopOnFailure: false,
+        // configure one or more built-in reporters
+        reporters: {
+          console: {
+            colors: true,
+            cleanStack: 1,       // (0|false)|(1|true)|2|3
+            verbosity: 4,        // (0|false)|1|2|3|(4|true)
+            listStyle: "indent", // "flat"|"indent"
+            activity: false
+          },
+        },
+        // add custom Jasmine reporter(s)
+        customReporters: []
+      },
+      src: {
+        // spec files
+        specs: [
+          "spec/**/*.js"
+        ]
       }
     }
   });
@@ -49,6 +85,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('i', ['browserify']);
   grunt.registerTask('s', ['middleman:server']);
-  grunt.registerTask('w', ['watch']);
+  grunt.registerTask('w', ['watch:src']);
+  grunt.registerTask('j', ['watch:spec']);
   grunt.registerTask('b', ['browserify', 'middleman:build']);
+  grunt.registerTask('t', ['jasmine_nodejs']);
 };

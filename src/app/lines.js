@@ -29,9 +29,6 @@
     this.updates = ko.observableArray([]);
     this.focused = ko.observableArray([]);
 
-    //ajax.get('./lines.json').end(this.loadComplete.bind(this));
-
-
     Q.all([this.loadLineData(), this.loadUpdateData()])
       .then(this.loadComplete.bind(this));
 
@@ -74,12 +71,6 @@
       this.updates(updates);
       this.emit('loadComplete');
     },
-    get: function() {
-      return this.data();
-    },
-    getData: function() {
-      return this.originalData.slice();
-    },
     setUp: function(geoCoords) {
       console.log('Lines#setUp');
       var point;
@@ -99,36 +90,6 @@
         this.data().push(lineVM);
       }, this);
       //console.log(this.data());
-    },
-    bringToTop: function(e) {
-      this.data().splice(this.data.indexOf(e), 1);
-      this.data.push(e);
-    },
-    takeDownBottom: function(e) {
-      if (e.status().id === 0) {
-        var _self = this;
-        setTimeout(function() {
-          _self.data().splice(_self.data.indexOf(e), 1);
-          _self.data.unshift(e);
-        }, 250);
-      }
-    },
-    update: function() {
-      this.data().forEach(function(line) {
-        line.update();
-      }, this);
-    },
-    onLineMouseOver: function(data, e) {
-      //console.log('Lines#onLineMouseOver');
-      this.bringToTop(data);
-      this.emit('lineMouseOver', data, e);
-      this.focused(data);
-    },
-    onLineMouseOut: function(data, e) {
-      //console.log('Lines#onLineMouseOut');
-      this.takeDownBottom(data);
-      this.emit('lineMouseOut', data, e);
-      this.focused([]);
     },
     applyUpdates: function() {
       console.log('Lines#applyUpdates');
@@ -151,6 +112,47 @@
           this.bringToTop(line);
         }
       }, this);
+    },
+    getOriginalData: function() {
+      return this.originalData.slice();
+    },
+    bringToTop: function(e) {
+      this.data().splice(this.data.indexOf(e), 1);
+      this.data.push(e);
+    },
+    takeDownBottom: function(e) {
+      if (e.status().id === 0) {
+        var _self = this;
+        setTimeout(function() {
+          _self.data().splice(_self.data.indexOf(e), 1);
+          _self.data.unshift(e);
+        }, 250);
+      }
+    },
+    update: function() {
+      Q.when(this.loadUpdateData()).then(this.updateComplete.bind(this));
+    },
+    updateComplete: function(responce) {
+      console.log('Lines#updateComplete');
+      console.log(responce);
+      this.updates(responce);
+    },
+    draw: function() {
+      this.data().forEach(function(line) {
+        line.update();
+      }, this);
+    },
+    onLineMouseOver: function(data, e) {
+      //console.log('Lines#onLineMouseOver');
+      this.bringToTop(data);
+      this.emit('lineMouseOver', data, e);
+      this.focused(data);
+    },
+    onLineMouseOut: function(data, e) {
+      //console.log('Lines#onLineMouseOut');
+      this.takeDownBottom(data);
+      this.emit('lineMouseOut', data, e);
+      this.focused([]);
     }
   });
 
