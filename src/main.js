@@ -41,7 +41,7 @@
 
     mapControl.on('boundsChanged', function(e) {
       //console.log('Main#changed');
-      lines.update();
+      lines.draw();
       routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
     });
 
@@ -55,14 +55,13 @@
 
     clock.on(Clock.STOP, function(e) {
       console.log('Main#clock');
-      console.log(e);
-      //updates.load();
+      lines.update();
     });
 
     lines.on('loadComplete', function(e) {
       console.log('Main#loadComplete');
-      stations.initialize(lines.getData());
-      geoCoords.initialize(stations.getData());
+      stations.initialize(lines.getOriginalData());
+      geoCoords.initialize(stations.getOriginalData());
       //geoCoords.setOffset(10, 10);
       lines.setUp(geoCoords);
       stations.setUp(geoCoords);
