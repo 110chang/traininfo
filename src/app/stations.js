@@ -27,8 +27,8 @@ function Stations() {
   _instance = this;
 }
 extend(Stations.prototype, {
-  getData:function() {
-    return this.originalData;
+  getOriginalData:function() {
+    return this.originalData.slice();
   },
   initialize: function(lines) {
     console.log('Stations#initialize');
