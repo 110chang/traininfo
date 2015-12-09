@@ -135,6 +135,9 @@ extend(LineVM.prototype, {
     this.status(status);
     this.content(content);
   },
+  clear: function() {
+    this.selected(false);
+  },
   mouseOverPath: function(data, e) {
     //console.log('LineVM#mouseOverPath');
     this.selected(true);

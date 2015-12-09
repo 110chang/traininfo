@@ -113,18 +113,18 @@
         }, this);
       }, this);
 
-      this.data().forEach(function(line) {
-        if (line.status().id > 0) {
-          this.bringToTop(line);
-        }
+      this.data().filter(function(line) {
+        return line.status().id > 0;
+      }, this).forEach(function(line) {
+        this.bringToTop(line);
       }, this);
     },
     getOriginalData: function() {
       return this.originalData.slice();
     },
-    bringToTop: function(e) {
-      this.data().splice(this.data.indexOf(e), 1);
-      this.data.push(e);
+    bringToTop: function(line) {
+      this.data().splice(this.data.indexOf(line), 1);
+      this.data.push(line);
     },
     takeDownBottom: function(e) {
       if (e.status().id === 0) {
@@ -147,6 +147,13 @@
     draw: function() {
       this.data().forEach(function(line) {
         line.update();
+      }, this);
+    },
+    clearFocus: function() {
+      console.log('Lines#clearFocus');
+      this.focused([]);
+      this.data().forEach(function(line) {
+        line.clear();
       }, this);
     },
     onLineMouseOver: function(data, e) {

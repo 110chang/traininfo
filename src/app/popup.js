@@ -37,6 +37,8 @@
     this.left    = ko.observable(0);
     this.top     = ko.observable(0);
 
+    this.memVM = null;
+
     ko.applyBindings(this, this.$el.get(0));
 
     _instance = this;
@@ -45,6 +47,8 @@
   extend(Popup.prototype, {
     show: function(lineVM, e) {
       //console.log('Popup#show');
+      this.memVM = lineVM;
+
       this.name(lineVM.name());
       this.content(lineVM.content());
       this.color(lineVM.color);
@@ -55,11 +59,13 @@
       var left = e.clientX - ww / 2;
       var top = e.clientY;
 
-      if (left < 0) {
-        left = 0;
-      } else if (Screen.clientWidth() < left + ww) {
+      if (Screen.clientWidth() < left + ww) {
         left = Screen.clientWidth() - ww - 10;
       }
+      if (left < 10) {
+        left = 10;
+      }
+
       this.left(left + 'px');
       this.top(top - wh - 10 + 'px');
       this.$el.addClass('popup--show');
@@ -67,6 +73,10 @@
     hide: function() {
       //console.log('Popup#hide');
       this.$el.removeClass('popup--show');
+      this.emit('popupClose', this.memVM);
+    },
+    onClick: function() {
+      this.hide();
     }
   });
 

@@ -41,7 +41,7 @@ div#routemap
     p data-bind="text: 'Pixel ratio:' + dumpDevicePixelRatio()"
 
 
-#popup.popup-container data-bind="style: { left: left, top: top }"
+#popup.popup-container data-bind="style: { left: left, top: top }, event: { touchstart: onClick }"
   .popup-container-wrapper.line-display data-bind="style: { 'border-color': color }, css: { 'line--has-info': status().key !== 'normal' }"
     p.line-status data-bind="style: { color: status().color }"
       span.line-status-icon
@@ -148,7 +148,7 @@ div#routemap
             | 情報あり
   nav.updates-bottom-bar data-bind="css: { 'update-nav-bar--open': isShow }"
     ul
-      li.update-toggle-nav data-bind="event: { click: toggle }, css: { 'update-toggle-nav--open': isShow }"
+      li.update-toggle-nav data-bind="event: { mouseup: toggle, touchstart: toggle }, css: { 'update-toggle-nav--open': isShow }"
         span.updates-icon
           i.fa.fa-plus
 

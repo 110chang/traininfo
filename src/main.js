@@ -53,6 +53,11 @@
       popup.hide();
     });
 
+    popup.on('popupClose', function(data, e) {
+      console.log(data);
+      lines.clearFocus();
+    });
+
     clock.on(Clock.STOP, function(e) {
       console.log('Main#clock');
       lines.update();
