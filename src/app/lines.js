@@ -96,8 +96,14 @@
       var targets = [];
       this.data().forEach(function(line) {
         this.updates().forEach(function(update) {
-          //console.log(update.title + '===' + line.goo_key);
-          if (update.title.match(line.goo_key)) {
+          var title = update.title.replace(/\[(.+)\]/, '');
+          //if (title.match('総武線')) {
+          //  console.log(title + '===' + line.goo_key, 
+          //    title.match(line.goo_key), 
+          //    line.goo_key.match(update.title), 
+          //    title === line.goo_key);
+          //}
+          if (title === line.goo_key || title.match(line.goo_key)) {
             //console.log(update);
             line.update(update.status, update.content);
             //this.bringToTop(line);
@@ -136,6 +142,7 @@
       console.log('Lines#updateComplete');
       console.log(responce);
       this.updates(responce);
+      this.applyUpdates();
     },
     draw: function() {
       this.data().forEach(function(line) {
@@ -159,3 +166,4 @@
   module.exports = Lines;
 
 })((this || 0).self || global);
+

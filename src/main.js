@@ -81,6 +81,7 @@
       mapControl.resize(window.innerWidth, window.innerHeight);
       //updates.resize(lines.getData());
       routeMap.setSVGAttr.apply(routeMap, mapControl.getSVGAttr());
+      popup.hide();
     }
 
     $(window).on('reducedResize', resize);
