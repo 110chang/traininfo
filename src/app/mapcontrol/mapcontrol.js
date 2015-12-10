@@ -9,6 +9,7 @@ var inherit = require('util').inherits;
 var ko = require('knockout');
 var $ = require('jQuery');
 
+var Screen = require('../../mod/screen');
 var Rectangle = require('../../geom/rectangle');
 var GeoCoords = require('../../app/geocoords');
 var Slider = require('./slider');
@@ -38,7 +39,9 @@ function MapControl() {
   this.slider.on('change', this.onSliderChange.bind(this));
 
   // Minimap instance
-  this.minimap = new Minimap();
+  // Screen.clientHeight() * 1 / x = 40
+  // x = Screen.clientHeight() / 40
+  this.minimap = new Minimap(trunc(Screen.clientHeight() / 40, 2));
 
   // Memory interaction coords
   this.translater = new Translater();

@@ -10,6 +10,9 @@ description: ""
 / Index
 /
 
+h1#title
+  | TRAININFO.TOKYO
+
 div#routemap
   svg xmlns="http://www.w3.org/2000/svg" data-bind="attr: { width: width, height: height, viewBox: viewBox }" preserveAspectRatio="xMinYMin"
     g data-bind="foreach: lines.data"
@@ -106,8 +109,8 @@ div#routemap
     path stroke="#333" fill="none" data-bind="attr: { d: getPath(), 'stroke-width': thickness }"
     text text-anchor="middle" data-bind="text: getDisplayTime()" font-size="16" x="20" y="26" fill="#999"
 
-#updates
-  #updates-list
+#footer
+  .updates-list
     ul data-bind="foreach: filtered"
       li.update-container.line-display data-bind="style: { 'border-color': color }, css: { 'line--has-info': status().key !== 'normal' }"
         p.line-status data-bind="style: { color: status().color }"
@@ -138,17 +141,20 @@ div#routemap
       li.update-nav-btns
         a.update-nav-btn href="javascript:void(0);" data-bind="event: { click: all }"
           span.update-nav-icon
-            i.fa.fa-circle-o
+            i.fa.fa-asterisk
           span.update-nav-label
             | すべて
         a.update-nav-btn href="javascript:void(0);" data-bind="event: { click: hasInfo }"
           span.update-nav-icon
-            i.fa.fa-filter
+            i.fa.fa-exclamation
           span.update-nav-label
             | 情報あり
-  nav.updates-bottom-bar data-bind="css: { 'update-nav-bar--open': isShow }"
+  nav.footer-nav-bar
     ul
-      li.update-toggle-nav data-bind="event: { mouseup: toggle, touchstart: toggle }, css: { 'update-toggle-nav--open': isShow }"
-        span.updates-icon
+      li
+        = link_to "/"
+          i.fa.fa-info
+      li.footer-nav-updates data-bind="event: { mouseup: /Android/.test(navigator.userAgent) ? null : toggle, touchstart: toggle }, css: { 'footer-nav-updates--open': isShow }"
+        a href="javascript:void(0);"
           i.fa.fa-plus
 

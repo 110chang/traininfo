@@ -60,7 +60,7 @@
       var top = e.clientY;
 
       if (Screen.clientWidth() < left + ww) {
-        left = Screen.clientWidth() - ww - 10;
+        left = Screen.clientWidth() - ww - 20;
       }
       if (left < 10) {
         left = 10;

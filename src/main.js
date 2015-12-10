@@ -54,17 +54,16 @@
     });
 
     popup.on('popupClose', function(data, e) {
-      console.log(data);
-      lines.clearFocus();
+      lines.clearFocus(data);
     });
 
     clock.on(Clock.STOP, function(e) {
-      console.log('Main#clock');
+      //console.log('Main#clock');
       lines.update();
     });
 
     lines.on('loadComplete', function(e) {
-      console.log('Main#loadComplete');
+      //console.log('Main#loadComplete');
       stations.initialize(lines.getOriginalData());
       geoCoords.initialize(stations.getOriginalData());
       //geoCoords.setOffset(10, 10);

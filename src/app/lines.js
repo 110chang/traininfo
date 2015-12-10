@@ -89,15 +89,15 @@
         lineVM.on('mouseOut', this.onLineMouseOut.bind(this));
         this.data().push(lineVM);
       }, this);
-      //console.log(this.data());
     },
     applyUpdates: function() {
       console.log('Lines#applyUpdates');
       var targets = [];
       this.data().forEach(function(line) {
+        line.update(Status().decode(0));
         this.updates().forEach(function(update) {
-          var title = update.title.replace(/\[(.+)\]/, '');
-          //if (title.match('総武線')) {
+          var title = update.title.replace(/\[(.+)\]/, '\1');
+          //if (title.match('埼京川越')) {
           //  console.log(title + '===' + line.goo_key, 
           //    title.match(line.goo_key), 
           //    line.goo_key.match(update.title), 
@@ -140,7 +140,7 @@
     },
     updateComplete: function(responce) {
       console.log('Lines#updateComplete');
-      console.log(responce);
+      //console.log(responce);
       this.updates(responce);
       this.applyUpdates();
     },
@@ -149,12 +149,13 @@
         line.update();
       }, this);
     },
-    clearFocus: function() {
+    clearFocus: function(lineVM) {
       console.log('Lines#clearFocus');
       this.focused([]);
       this.data().forEach(function(line) {
         line.clear();
       }, this);
+      this.takeDownBottom(lineVM);
     },
     onLineMouseOver: function(data, e) {
       //console.log('Lines#onLineMouseOver');
