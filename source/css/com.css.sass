@@ -183,8 +183,23 @@ input.placeholder
 //    left: 0
 //    top: 0
 //    font-size: 0.75rem
+.station
+  opacity: 0.4
+.station-path
+  stroke: #FFF
+  fill: #FFF
+  transition: all 0.25s ease-in-out
 .station-label
   cursor: default
+  text-shadow: 0 0 2px rgba(0,0,0,0.8)
+  transition: all 0.25s ease-in-out
+.station--visible
+  opacity: 0.8
+.station--selected
+  opacity: 1
+  .station-label
+    text-shadow: 0 0 2px rgba(0,0,0,1), 0 0 4px rgba(0,0,0,1)
+    
 
 /* ===== Popup ===== */
 

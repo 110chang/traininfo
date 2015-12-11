@@ -18,7 +18,8 @@ var defaults = {
     },
     station: {
       strokeWidth: 4,
-      fontSize: 8
+      fontSize: 8,
+      fontSizeSelected: 12
     }
   },
   pc: {
@@ -31,7 +32,8 @@ var defaults = {
     },
     station: {
       strokeWidth: 6,
-      fontSize: 10
+      fontSize: 10,
+      fontSizeSelected: 16
     }
   }
 };

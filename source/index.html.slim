@@ -24,11 +24,22 @@ div#routemap
         /! ###/ko
         path.mainline stroke-linecap="round" stroke-linejoin="round" pointer-events="none" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }"
     g data-bind="foreach: stations.data"
-      //circle.station-point fill="#FFF" data-bind="attr: { cx: x, cy: y, r: r }"
-      path stroke="#FFF" fill="#FFF" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { d: getPointPath(), stroke: getStrokeColor(), fill: getStrokeColor(), 'stroke-width': getStrokeWidth() }"
-      /! ko if: switchVisibility()
-      text.station-label text-anchor="middle" data-bind="text: name, attr: { x: x, y: getLabelY(), 'font-size': getFontSize() }"
-      /! /ko
+      g.station data-bind="css: className, event: { \
+        mouseover: onMouseOver, \
+        mouseout: onMouseOut \
+      }"
+        //circle.station-point fill="#FFF" data-bind="attr: { cx: x, cy: y, r: r }"
+        path.station-path stroke="#999" fill="#999" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { \
+          d: getPointPath(), \
+          'stroke-width': getStrokeWidth() \
+        }"
+        /! ko if: visibility()
+        text.station-label text-anchor="middle" data-bind="text: name, attr: { \
+          x: x, \
+          y: getLabelY(), \
+          'font-size': getFontSize() \
+        }"
+        /! /ko
     /circle r="3" data-bind="attr: { cx: mapControl.avaterX(), cy: mapControl.avaterY() }"
     /g / for test
       - 150.times do |i|

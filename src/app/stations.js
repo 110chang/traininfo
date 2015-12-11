@@ -44,7 +44,10 @@ extend(Stations.prototype, {
     var point;
     this.originalData.forEach(function(station) {
       //console.log(station);
-      //console.log(station.name);
+      if (station.name.match('市(:?ケ|ヶ)谷')) {
+        //console.log(station.name);
+        station.name = '市ケ谷';
+      }
       var target;
       registered = stations.filter(function(s) {
         return s.name === station.name && s.prefecture === station.prefecture;
@@ -52,6 +55,7 @@ extend(Stations.prototype, {
       //console.log(registered);
       if (registered.length === 0) {
         target = new StationVM(station);
+        target.on('onStationSelected', this.onStationSelected.bind(this));
         stations.push(target);
       } else {
         target = registered[0];
@@ -88,6 +92,13 @@ extend(Stations.prototype, {
       station.setThreshold(this.priorityRange.min, this.priorityRange.max);
       //console.log(station);
     }, this);
+  },
+  bringToTop: function(station) {
+    this.data().splice(this.data.indexOf(station), 1);
+    this.data.push(station);
+  },
+  onStationSelected: function(data, e) {
+    this.bringToTop(data);
   }
 });
 

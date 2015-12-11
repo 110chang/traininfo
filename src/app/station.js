@@ -43,21 +43,40 @@ function StationVM(o) {
   this.postal     = o.postal;
   this.prefecture = o.prefecture;
   this.next       = [];
-  this.addNext(o.next);
   this.prev       = [];
-  this.addPrev(o.prev);
   this.x          = o.x * 1;
   this.y          = o.y * 1;
   this.points     = [new Point(this.x, this.y)];
   this.priority   = ko.observable(0);
-  this.threshold  = 0;
+  this.threshold  = ko.observable(0);
+  this.selected = ko.observable(false);
 
-  this.r = ko.computed(function() {
-    return (1 + ceil(this.priority() / 3)) / this.map.getScale();
-  }, this);
+  // computed variables
+  this.visibility = ko.computed(this.computedVisibility.bind(this));
+  this.className = ko.computed(this.computedClassName.bind(this));
+  this.r = ko.computed(this.computedRadius.bind(this));
+
+  this.addNext(o.next);
+  this.addPrev(o.prev);
 }
 inherit(StationVM, events.EventEmitter);
 extend(StationVM.prototype, {
+  computedVisibility: function() {
+    return this.map.scale() >= this.threshold() && this.priority() > 0;
+  },
+  computedClassName: function() {
+    var clsname = 'station';
+    if (this.isSelected()) {
+      clsname += ' station--selected';
+    }
+    if (this.visibility()) {
+      clsname += ' station--visible';
+    }
+    return clsname;
+  },
+  computedRadius: function() {
+    return (1 + ceil(this.priority() / 3)) / this.map.scale();
+  },
   averageLatLng: function(lat, lng) {
     this.lat = (this.lat + lat) / 2;
     this.lng = (this.lng + lng) / 2;
@@ -96,9 +115,20 @@ extend(StationVM.prototype, {
       this.prev.push(name);
     }
   },
+  isSelected: function() {
+    return !!this.selected();
+  },
+  onMouseOver: function(e) {
+    console.log('StationVM#onMouseOver');
+    this.selected(true);
+    this.emit('onStationSelected', this, e);
+  },
+  onMouseOut: function(e) {
+    console.log('StationVM#onMouseOut');
+    this.selected(false);
+    this.emit('onStationRemoved', this, e);
+  },
   setPriority: function() {
-    //console.log(this.prev);
-    //console.log(this.next);
     this.priority(this.line.length);
     if (this.prev.length === 0 || this.next.length === 0) {
       this.priority(this.priority() + 1);
@@ -106,13 +136,10 @@ extend(StationVM.prototype, {
   },
   setThreshold: function(min, max) {
     var p = this.priority();
-    this.threshold = max - p - ceil(p / 2 - 1) + min;
+    this.threshold(max - p - ceil(p / 2 - 1) + min);
   },
   getFontSize: function() {
-    return skin.station.fontSize / this.map.getScale();
-  },
-  getYSupple: function() {
-    return 1 + this.r() * 2 / this.map.getScale();
+    return (this.isSelected() ? skin.station.fontSizeSelected : skin.station.fontSize) / this.map.getScale();
   },
   getLabelY: function() {
     var top = this.points[0].y;
@@ -124,10 +151,7 @@ extend(StationVM.prototype, {
     return top - 1 - this.r() * 2 / this.map.getScale();
   },
   getStrokeWidth: function() {
-    return (this.switchVisibility() ? skin.station.strokeWidth : 1) / this.map.getScale();
-  },
-  getStrokeColor: function() {
-    return this.switchVisibility() ? "#FFF" : "#999";
+    return (this.visibility() ? skin.station.strokeWidth : 1) / this.map.scale();
   },
   getPointPath: function() {
     //console.log('StationVM#getPointPath');
@@ -219,9 +243,6 @@ extend(StationVM.prototype, {
     console.log(path);
 
     return path;
-  },
-  switchVisibility: function() {
-    return this.map.getScale() >= this.threshold && this.priority() > 0;
   }
 });
 
