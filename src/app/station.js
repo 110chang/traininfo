@@ -25,8 +25,10 @@ var ko = require('knockout');
 
 var MapControlFactory = require('./mapcontrolfactory');
 var Status = require('./status');
+var Skin = require('./skin');
 var Point = require('../geom/point');
 
+var skin = Skin();
 var ceil = Math.ceil;
 
 function StationVM(o) {
@@ -107,7 +109,7 @@ extend(StationVM.prototype, {
     this.threshold = max - p - ceil(p / 2 - 1) + min;
   },
   getFontSize: function() {
-    return 10 / this.map.getScale();
+    return skin.station.fontSize / this.map.getScale();
   },
   getYSupple: function() {
     return 1 + this.r() * 2 / this.map.getScale();
@@ -122,7 +124,10 @@ extend(StationVM.prototype, {
     return top - 1 - this.r() * 2 / this.map.getScale();
   },
   getStrokeWidth: function() {
-    return 6 / this.map.getScale();
+    return (this.switchVisibility() ? skin.station.strokeWidth : 1) / this.map.getScale();
+  },
+  getStrokeColor: function() {
+    return this.switchVisibility() ? "#FFF" : "#999";
   },
   getPointPath: function() {
     //console.log('StationVM#getPointPath');

@@ -12,6 +12,8 @@ description: ""
 
 h1#title
   | TRAININFO.TOKYO
+  span.title-beta
+    | β
 
 div#routemap
   svg xmlns="http://www.w3.org/2000/svg" data-bind="attr: { width: width, height: height, viewBox: viewBox }" preserveAspectRatio="xMinYMin"
@@ -22,9 +24,9 @@ div#routemap
         /! ###/ko
         path.mainline stroke-linecap="round" stroke-linejoin="round" pointer-events="none" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }"
     g data-bind="foreach: stations.data"
-      /! ko if: switchVisibility()
       //circle.station-point fill="#FFF" data-bind="attr: { cx: x, cy: y, r: r }"
-      path stroke="#FFF" fill="#FFF" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { d: getPointPath(), 'stroke-width': getStrokeWidth() }"
+      path stroke="#FFF" fill="#FFF" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { d: getPointPath(), stroke: getStrokeColor(), fill: getStrokeColor(), 'stroke-width': getStrokeWidth() }"
+      /! ko if: switchVisibility()
       text.station-label text-anchor="middle" data-bind="text: name, attr: { x: x, y: getLabelY(), 'font-size': getFontSize() }"
       /! /ko
     /circle r="3" data-bind="attr: { cx: mapControl.avaterX(), cy: mapControl.avaterY() }"

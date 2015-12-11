@@ -20,6 +20,9 @@ var ko = require('knockout');
 
 var MapControlFactory = require('./mapcontrolfactory');
 var Status = require('./status');
+var Skin = require('./skin');
+
+var skin = Skin();
 
 function LineVM(o) {
   events.EventEmitter.call(this);
@@ -99,19 +102,19 @@ extend(LineVM.prototype, {
   },
   getMainStrokeWidth: function() {
     if (this.isSelected()) {
-      return 10 / this.map.getScale();
+      return skin.line.mainStrokeSelected / this.map.getScale();
     }
     if (this.hasStatus()) {
-      return 4 / this.map.getScale();
+      return skin.line.mainStrokeHasInfo / this.map.getScale();
     }
-    return 1 / this.map.getScale();
+    return skin.line.mainStrokeWidth / this.map.getScale();
   },
   getSubStrokeColor: function() {
     var normalColor = this.isSelected() ? 'rgba(0,0,0,1)' : 'rgba(0,0,0,0.05)';
     return this.hasStatus() ? this.status().color : normalColor;
   },
   getSubStrokeWidth: function() {
-    var fat = this.isSelected() ? 12 : 6;
+    var fat = this.isSelected() ? skin.line.subStrokeSelected : skin.line.subStrokeWidth;
     return this.getMainStrokeWidth() + fat / this.map.getScale();
   },
   getPath: function() {

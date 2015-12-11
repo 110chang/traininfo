@@ -12,6 +12,7 @@
   require('./mod/trunc');
   require('./mod/reducedresize');
 
+  var Skin              = require('./app/skin');
   var Lines             = require('./app/lines');
   var Stations          = require('./app/stations');
   var MapControlFactory = require('./app/mapcontrolfactory');
@@ -24,6 +25,7 @@
   document.addEventListener('DOMContentLoaded', function(e) {
     console.log('dom ready.');
 
+    var skin = new Skin();
     var geoCoords  = new GeoCoords({
       meet: true
     });
@@ -81,6 +83,7 @@
 
     function resize() {
       console.log('Main#resize');
+      skin.resize();
       geoCoords.resize(window.innerWidth, window.innerHeight);
       mapControl.resize(window.innerWidth, window.innerHeight);
       //updates.resize(lines.getData());
