@@ -32,7 +32,7 @@ json.each.with_index(0) do |line, i|
   end
 end
 
-File.open("lines2.json", 'w') { |f| f.write(json.to_json) }
+File.open("lines.json", 'w') { |f| f.write(json.to_json) }
 
 # csv_string = CSV.generate do |csv|
 #   JSON.parse(File.open("foo.json").read).each do |hash|

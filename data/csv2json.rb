@@ -35,8 +35,8 @@ lines.each.with_index(0) do |line, i|
   orig_idx = orig.index do |v|
     v['goo_key'] == line['goo_key']
   end
-  if !orig_idx.nil? then
-    #p orig[orig_idx]['goo_key']
+  if !orig_idx.nil? && line['goo_key'].scan(/成田線|埼京川越線/).size == 0 then
+    p orig[orig_idx]['stations']
     line['stations'] = orig[orig_idx]['stations']
   else
     #p line['goo_key']

@@ -89,15 +89,15 @@
         lineVM.on('mouseOut', this.onLineMouseOut.bind(this));
         this.data().push(lineVM);
       }, this);
-      //console.log(this.data());
     },
     applyUpdates: function() {
       console.log('Lines#applyUpdates');
       var targets = [];
       this.data().forEach(function(line) {
+        line.update(Status().decode(0));
         this.updates().forEach(function(update) {
-          var title = update.title.replace(/\[(.+)\]/, '');
-          //if (title.match('総武線')) {
+          var title = update.title.replace(/\[(.+)\]/, '\1');
+          //if (title.match('埼京川越')) {
           //  console.log(title + '===' + line.goo_key, 
           //    title.match(line.goo_key), 
           //    line.goo_key.match(update.title), 
@@ -113,18 +113,18 @@
         }, this);
       }, this);
 
-      this.data().forEach(function(line) {
-        if (line.status().id > 0) {
-          this.bringToTop(line);
-        }
+      this.data().filter(function(line) {
+        return line.status().id > 0;
+      }, this).forEach(function(line) {
+        this.bringToTop(line);
       }, this);
     },
     getOriginalData: function() {
       return this.originalData.slice();
     },
-    bringToTop: function(e) {
-      this.data().splice(this.data.indexOf(e), 1);
-      this.data.push(e);
+    bringToTop: function(line) {
+      this.data().splice(this.data.indexOf(line), 1);
+      this.data.push(line);
     },
     takeDownBottom: function(e) {
       if (e.status().id === 0) {
@@ -140,7 +140,7 @@
     },
     updateComplete: function(responce) {
       console.log('Lines#updateComplete');
-      console.log(responce);
+      //console.log(responce);
       this.updates(responce);
       this.applyUpdates();
     },
@@ -148,6 +148,14 @@
       this.data().forEach(function(line) {
         line.update();
       }, this);
+    },
+    clearFocus: function(lineVM) {
+      console.log('Lines#clearFocus');
+      this.focused([]);
+      this.data().forEach(function(line) {
+        line.clear();
+      }, this);
+      this.takeDownBottom(lineVM);
     },
     onLineMouseOver: function(data, e) {
       //console.log('Lines#onLineMouseOver');

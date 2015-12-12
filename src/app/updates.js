@@ -17,12 +17,14 @@
   var Lines = require('./lines');
 
   function UpdatesVM() {
-    this.$el = $('#updates');
-    this.$list = $('#updates-list');
+    this.$el = $('#footer');
     this.isShow = ko.observable(false);
     this.close();
 
     this.lines = Lines();
+    this.lines.data.subscribe(function() {
+      this.filtered(this.filterHasInfo());
+    }, this);
     this.keyword = ko.observable('');
     this.keyword.subscribe(function(val) {
       if (val) {
@@ -55,8 +57,8 @@
     match: function() {
       this.filtered(this.filterKeyword());
     },
-    toggle: function() {
-      console.log('UpdatesVM#toggle');
+    toggle: function(e) {
+      //console.log('UpdatesVM#toggle');
       if (this.isShow()) {
         this.close();
       } else {

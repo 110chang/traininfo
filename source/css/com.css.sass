@@ -98,16 +98,51 @@ input.placeholder
   line-height: 140%
   text-align: center
 
+@media screen and (min-width:767px)
+  .line-container
+    font-size: 1rem
+    line-height: 140%
+
+  .line-msg
+    font-size: 0.75rem
+    line-height: 120%
+
+  .line-status-label
+    font-size: 0.75rem
+    line-height: 140%
+
+/* ===== Main ===== */
 
 #main
   height: 100%
   position: relative
 
-@keyframes dash-anim
-  from
-    stroke-dashoffset: 0
-  to
-    stroke-dashoffset: 60px
+//@keyframes dash-anim
+//  from
+//    stroke-dashoffset: 0
+//  to
+//    stroke-dashoffset: 60px
+
+
+#title
+  position: fixed
+  left: 0
+  top: 0
+  z-index: 9999
+  padding: 10px
+  font-size: 1rem
+  line-height: 120%
+  color: rgba(255,255,255,0.8)
+.title-beta
+  font-size: 0.5em
+
+@media screen and (min-width:767px)
+  #title
+    padding: 20px
+    font-size: 2rem
+    line-height: 120%
+
+/* ===== SVG Routemap ===== */
 
 #routemap
   position: fixed
@@ -137,20 +172,41 @@ input.placeholder
     fill: #FFF
     text-shadow: 0 0 1px rgba(0,0,0,1)
 
+/* ===== Stations ===== */
 
 #stations
   position: fixed
 
-.stations-list
-  .station
-    position: fixed
-    left: 0
-    top: 0
-    font-size: 0.75rem
+//.stations-list
+//  .station
+//    position: fixed
+//    left: 0
+//    top: 0
+//    font-size: 0.75rem
+.station
+  opacity: 0.4
+.station-path
+  stroke: #FFF
+  fill: #FFF
+  transition: all 0.25s ease-in-out
+.station-label
+  cursor: default
+  text-shadow: 0 0 2px rgba(0,0,0,0.8)
+  transition: all 0.25s ease-in-out
+.station--visible
+  opacity: 0.8
+.station--selected
+  opacity: 1
+  .station-label
+    text-shadow: 0 0 2px rgba(0,0,0,1), 0 0 4px rgba(0,0,0,1)
+    
+
+/* ===== Popup ===== */
 
 #popup
   position: absolute
   z-index: 999
+  max-width: 100%
 
 .popup-container
   overflow: hidden
@@ -168,15 +224,7 @@ input.placeholder
   .popup-container-wrapper
     margin-bottom: 0
 
-
-#debug
-  display: none
-  position: absolute
-  right: 0
-  top: 0
-  z-index: 10
-  background: rgba(0,0,255,0.9)
-
+/* ===== Map control ===== */
 //#mapcontrol
 
 /* ===== horizontal slider ===== */
@@ -286,28 +334,22 @@ input.placeholder
     bottom: 50%
     margin-bottom: -0.5em
 
-#clock
-  position: fixed
-  right: 20px
-  top: 20px
-  width: 40px
-  height: 40px
-  //background: rgba(0,0,255,0.5)
-  color: #FFF
-
+/* Hide slider for small height */
 @media screen and (max-height: 414px)
   #map-slider-vertical
     display: none
 
+/* ===== Minimap ===== */
+
 .minimap
   position: fixed
-  left: 10px
-  bottom: 10px
+  right: 65px
+  top: 10px
   z-index: 7
 .minimap-init
   position: absolute
-  left: 0
-  bottom: 0
+  right: 0
+  top: 0
   border: 1px solid #666
   background: #333
   opacity: 0.8
@@ -315,17 +357,34 @@ input.placeholder
   position: absolute
   +checkered-background(2px, rgba(255,255,255,0.6))
 
-.dedug-mapcontrol
-  position: fixed
-  left: 0
-  top: 0
-  text-align: center
-  color: #F66
-  font-size: 0.5rem
-  line-height: 140%
-  border: 1px solid #F00
+@media screen and (min-width:767px)
+  .minimap
+    position: fixed
+    right: 80px
+    top: 20px
 
-#updates
+
+/* ===== Clock ===== */
+
+#clock
+  position: fixed
+  right: 10px
+  top: 10px
+  width: 40px
+  height: 40px
+  //background: rgba(0,0,255,0.5)
+  color: #FFF
+
+@media screen and (min-width:767px)
+  #clock
+    right: 20px
+    top: 20px
+
+
+
+/* ===== Updates ===== */
+
+#footer
   position: fixed
   left: 0
   bottom: 0
@@ -334,7 +393,7 @@ input.placeholder
   z-index: 9999
   background: rgba(0,0,0,0.8)
 
-#updates-list
+.updates-list
   box-sizing: border-box
   overflow: scroll
   position: relative
@@ -342,6 +401,8 @@ input.placeholder
   //height: 200px
   max-height: 100%
   padding-bottom: 96px
+
+/* ----- update nav bar ----- */
 
 .update-nav-bar
   position: absolute
@@ -416,80 +477,7 @@ input.placeholder
   vertical-align: top
   border-left: 0
 
-.update-container
-  margin: 1px
-  border-left: 3px solid #666
-  border-bottom: 0
-
-.updates-bottom-bar
-  position: fixed
-  left: 0
-  bottom: 0
-  width: 100%
-  text-align: center
-  font-size: 2rem
-  line-height: 140%
-  //background: rgba(0,0,0,0)
-  //transition: background 0.25s ease-in-out
-  text-align: center
-
-  li
-    display: inline-block
-
-//.update-nav-bar--open
-//  background: rgba(0,0,0,0)
-
-.update-toggle-nav
-  transform: rotate(0)
-  transition: transform 0.25s ease-in-out
-
-.update-toggle-nav--open
-  transform: rotate(45deg)
-
-//.updates-icon
-
-#horizontal-center
-  position: fixed
-  left: 50%
-  top: 0
-  width: 0
-  height: 100%
-  border-left: 1px solid rgba(0,255,128,0.4)
-
-#vertical-center
-  position: fixed
-  top: 50%
-  left: 0
-  width: 100%
-  height: 0
-  border-top: 1px solid rgba(0,255,128,0.4)
-
-
-/* ============================
- * 
- *     Tablet, PC
- *
- * ============================ */
-
 @media screen and (min-width:767px)
-  .line-container
-    font-size: 1rem
-    line-height: 140%
-
-  .line-msg
-    font-size: 0.75rem
-    line-height: 120%
-
-  .line-status-label
-    font-size: 0.75rem
-    line-height: 140%
-
-  .update-popup
-    li
-      padding: 3px 6px
-      font-size: 1rem
-      line-height: 140%
-
   .update-nav-bar
     ul
       display: table
@@ -526,5 +514,49 @@ input.placeholder
     top: auto
     vertical-align: top
     border-right: 1px solid #000
+
+
+/* ----- update contents ----- */
+
+.update-container
+  margin: 1px
+  border-left: 3px solid #666
+  border-bottom: 0
+
+/* ----- update bottom bar ----- */
+
+.footer-nav-bar
+  position: fixed
+  left: 0
+  bottom: 0
+  width: 100%
+  text-align: center
+  font-size: 2rem
+  line-height: 140%
+  text-align: center
+
+  li
+    display: inline-block
+    margin: 0 1em
+  a
+    +link-colors(#FFF, #CCC, #FFF, #FFF, #FFF)//n-h-a-v-f
+
+.footer-nav-updates
+  transform: rotate(0)
+  transition: transform 0.25s ease-in-out
+
+.footer-nav-updates--open
+  transform: rotate(45deg)
+
+/* ===== Debug ===== */
+
+#debug
+  display: none
+  position: absolute
+  right: 0
+  top: 0
+  z-index: 10
+  background: rgba(0,0,255,0.9)
+
 
 // EOF
