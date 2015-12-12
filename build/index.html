@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, shrink-to-fit=no">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>新規サイト</title>
+    <title>TRAININFO.TOKYO(β)</title>
     <meta name="keywords" content="">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1">
@@ -23,10 +23,13 @@
   
   <body id="doc-index">
     <article id="main">
+      <h1 id="title">
+        TRAININFO.TOKYO<span class="title-beta">β</span>
+      </h1>
       <div id="routemap">
-        <svg xmlns="http://www.w3.org/2000/svg" data-bind="attr: { width: width, height: height, viewBox: viewBox }" preserveAspectRatio="xMinYMin"><g data-bind="foreach: lines.data"><a data-bind="attr: { 'xlink:href': '#' + name() }" fill="none"><!--###ko if: hasStatus()--><path class="subline" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: subColor, 'stroke-width': subStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"></path><!--###/ko--><path class="mainline" stroke-linecap="round" stroke-linejoin="round" pointer-events="none" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }"></path></a></g><g data-bind="foreach: stations.data"><!--ko if: switchVisibility()--><path stroke="#FFF" fill="#FFF" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { d: getPointPath(), 'stroke-width': getStrokeWidth() }"></path><text class="station-label" text-anchor="middle" data-bind="text: name, attr: { x: x, y: getLabelY(), 'font-size': getFontSize() }"></text><!--/ko--></g></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" data-bind="attr: { width: width, height: height, viewBox: viewBox }" preserveAspectRatio="xMinYMin"><g data-bind="foreach: lines.data"><a data-bind="attr: { 'xlink:href': '#' + name() }" fill="none"><!--###ko if: hasStatus()--><path class="subline" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: { id: 'path' + id(), d: path, stroke: subColor, 'stroke-width': subStrokeWidth }, event: { mouseover: mouseOverPath, mouseout: mouseOutPath }"></path><!--###/ko--><path class="mainline" stroke-linecap="round" stroke-linejoin="round" pointer-events="none" data-bind="attr: { id: 'path' + id(), d: path, stroke: mainColor, 'stroke-width': mainStrokeWidth }"></path></a></g><g data-bind="foreach: stations.data"><g class="station" data-bind="css: className, event: {  mouseover: onMouseOver,  mouseout: onMouseOut  }"><path class="station-path" stroke="#999" fill="#999" stroke-linecap="round" stroke-linejoin="round" data-bind="attr: {  d: getPointPath(),  'stroke-width': getStrokeWidth()  }"></path><!--ko if: visibility()--><text class="station-label" text-anchor="middle" data-bind="text: name, attr: {  x: x,  y: getLabelY(),  'font-size': getFontSize()  }"></text><!--/ko--></g></g></svg>
       </div>
-      <div id="popup" class="popup-container" data-bind="style: { left: left, top: top }">
+      <div id="popup" class="popup-container" data-bind="style: { left: left, top: top }, event: { touchstart: onClick }">
         <div class="popup-container-wrapper line-display" data-bind="style: { 'border-color': color }, css: { 'line--has-info': status().key !== 'normal' }">
           <p class="line-status" data-bind="style: { color: status().color }">
             <span class="line-status-icon"><span data-bind="if: status().key === 'normal'"><i class="fa fa-check"></i></span><span data-bind="if: status().key === 'info'"><i class="fa fa-info-circle"></i></span><span data-bind="if: status().key === 'delay'"><i class="fa fa-warning"></i></span><span data-bind="if: status().key === 'suspend'"><i class="fa fa-minus-circle"></i></span><span data-bind="if: status().key === 'restart'"><i class="fa fa-refresh"></i></span></span><span class="line-status-label" data-bind="text: status().label, style: { background: status().color }"></span>
@@ -50,8 +53,8 @@
       <div id="clock">
         <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin"><circle stroke="none" fill="rgba(0,0,0,0.5)" data-bind="attr: { cx: size / 2, cy: size / 2, r: (size - thickness) / 2 }"></circle><circle stroke="#999" fill="none" data-bind="attr: { cx: size / 2, cy: size / 2, r: (size - thickness) / 2, 'stroke-width': thickness }"></circle><path stroke="#333" fill="none" data-bind="attr: { d: getPath(), 'stroke-width': thickness }"></path><text text-anchor="middle" data-bind="text: getDisplayTime()" font-size="16" x="20" y="26" fill="#999"></text></svg>
       </div>
-      <div id="updates">
-        <div id="updates-list">
+      <div id="footer">
+        <div class="updates-list">
           <ul data-bind="foreach: filtered">
             <li class="update-container line-display" data-bind="style: { 'border-color': color }, css: { 'line--has-info': status().key !== 'normal' }">
               <p class="line-status" data-bind="style: { color: status().color }">
@@ -70,14 +73,14 @@
               </div>
             </li>
             <li class="update-nav-btns">
-              <a class="update-nav-btn" href="javascript:void(0);" data-bind="event: { click: all }"><span class="update-nav-icon"><i class="fa fa-circle-o"></i></span><span class="update-nav-label">すべて</span></a><a class="update-nav-btn" href="javascript:void(0);" data-bind="event: { click: hasInfo }"><span class="update-nav-icon"><i class="fa fa-filter"></i></span><span class="update-nav-label">情報あり</span></a>
+              <a class="update-nav-btn" href="javascript:void(0);" data-bind="event: { click: all }"><span class="update-nav-icon"><i class="fa fa-asterisk"></i></span><span class="update-nav-label">すべて</span></a><a class="update-nav-btn" href="javascript:void(0);" data-bind="event: { click: hasInfo }"><span class="update-nav-icon"><i class="fa fa-exclamation"></i></span><span class="update-nav-label">情報あり</span></a>
             </li>
           </ul>
         </nav>
-        <nav class="updates-bottom-bar" data-bind="css: { 'update-nav-bar--open': isShow }">
+        <nav class="footer-nav-bar">
           <ul>
-            <li class="update-toggle-nav" data-bind="event: { click: toggle }, css: { 'update-toggle-nav--open': isShow }">
-              <span class="updates-icon"><i class="fa fa-plus"></i></span>
+            <li class="footer-nav-updates" data-bind="event: { mouseup: /Android/.test(navigator.userAgent) ? null : toggle, touchstart: toggle }, css: { 'footer-nav-updates--open': isShow }">
+              <a href="javascript:void(0);"><i class="fa fa-plus"></i></a>
             </li>
           </ul>
         </nav>
